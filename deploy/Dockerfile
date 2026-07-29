@@ -43,7 +43,11 @@ WORKDIR /opt/odoo
 
 # Dependencies first so source edits don't bust the pip layer.
 COPY requirements.txt requirements-custom.txt ./
-RUN pip install --upgrade pip wheel setuptools \
+# setuptools must stay below 81: that release dropped pkg_resources, which
+# gevent 22.10.2 imports at monkey-patch time. Without the pin the gevent
+# worker dies on startup, port 8072 never opens, and every /websocket request
+# 502s - i.e. Discuss realtime is silently dead while HTTP looks fine.
+RUN pip install --upgrade pip wheel "setuptools<81" \
     && pip install -r requirements.txt -r requirements-custom.txt
 
 COPY --chown=odoo:odoo . /opt/odoo
