@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_eh_batch_payment_list" model="ir.ui.view">
+        <field name="name">eh.batch.payment.list</field>
+        <field name="model">eh.batch.payment</field>
+        <field name="arch" type="xml">
+            <tree string="Batch Payments" default_order="payment_date desc">
+                <field name="name"/>
+                <field name="batch_type"/>
+                <field name="journal_id"/>
+                <field name="payment_date"/>
+                <field name="payment_count"/>
+                <field name="total_amount" widget="monetary" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'posted'"
+                       decoration-info="state == 'confirmed'"
+                       decoration-warning="state == 'draft'"
+                       decoration-danger="state == 'cancelled'"/>
+                <field name="is_fully_reconciled" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eh_batch_payment_form" model="ir.ui.view">
+        <field name="name">eh.batch.payment.form</field>
+        <field name="model">eh.batch.payment</field>
+        <field name="arch" type="xml">
+            <form string="Batch Payment">
+                <header>
+                    <button name="action_open_build_wizard"
+                            type="object"
+                            string="Add Payments"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_confirm"
+                            type="object"
+                            string="Confirm"
+                            invisible="state != 'draft'"/>
+                    <button name="action_post"
+                            type="object"
+                            string="Post Batch"
+                            class="btn-success"
+                            invisible="state not in ('draft', 'confirmed')"
+                            confirm="Post every draft payment in this batch. Continue?"/>
+                    <button name="action_export_csv"
+                            type="object"
+                            string="Export CSV"
+                            invisible="state != 'posted'"/>
+                    <button name="action_cancel"
+                            type="object"
+                            string="Cancel"
+                            invisible="state in ('posted', 'cancelled')"/>
+                    <button name="action_set_to_draft"
+                            type="object"
+                            string="Set to Draft"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,posted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_payments"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-money">
+                            <field name="payment_count"
+                                   widget="statinfo"
+                                   string="Payments"/>
+                        </button>
+                    </div>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group string="Configuration">
+                            <field name="batch_type"
+                                   readonly="state != 'draft'"/>
+                            <field name="journal_id"
+                                   readonly="state != 'draft'"
+                                   options="{'no_create': True}"/>
+                            <field name="payment_method_line_id"
+                                   readonly="state != 'draft'"
+                                   options="{'no_create': True}"/>
+                            <field name="payment_date"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Totals">
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="total_amount" widget="monetary"/>
+                            <field name="posted_count"/>
+                            <field name="reconciled_count"/>
+                            <field name="is_fully_reconciled"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Payments">
+                            <field name="payment_ids"
+                                   readonly="state != 'draft'">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="amount" widget="monetary" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="ref"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'posted'"
+                                           decoration-info="state == 'posted'"
+                                           decoration-warning="state == 'draft'"/>
+                                    <field name="is_reconciled"
+                                           widget="boolean_toggle"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eh_batch_payment_search" model="ir.ui.view">
+        <field name="name">eh.batch.payment.search</field>
+        <field name="model">eh.batch.payment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="journal_id"/>
+                <field name="payment_date"/>
+                <filter name="filter_inbound" string="Inbound"
+                        domain="[('batch_type', '=', 'inbound')]"/>
+                <filter name="filter_outbound" string="Outbound"
+                        domain="[('batch_type', '=', 'outbound')]"/>
+                <separator/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_confirmed" string="Confirmed"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter name="filter_posted" string="Posted"
+                        domain="[('state', '=', 'posted')]"/>
+                <group>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_journal" string="Journal"
+                            context="{'group_by': 'journal_id'}"/>
+                    <filter name="group_payment_date" string="Payment Date"
+                            context="{'group_by': 'payment_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_eh_batch_payment_kanban" model="ir.ui.view">
+        <field name="name">eh.batch.payment.kanban</field>
+        <field name="model">eh.batch.payment</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state"
+                    quick_create="false"
+                    class="o_kanban_small_column"
+                    sample="1">
+                <field name="name"/>
+                <field name="batch_type"/>
+                <field name="journal_id"/>
+                <field name="payment_count"/>
+                <field name="total_amount"/>
+                <field name="state"/>
+                <field name="payment_date"/>
+                <field name="company_id"/>
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="kanban-box" class="row g-0">
+                        <main class="col-12">
+                            <field name="name" class="fs-5 fw-bold"/>
+                            <field name="batch_type" class="text-muted"/>
+                            <div class="d-flex justify-content-between mt-2">
+                                <field name="total_amount"
+                                       widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <span class="badge text-bg-secondary">
+                                    <field name="payment_count"/> pmts
+                                </span>
+                            </div>
+                            <div class="text-muted mt-1">
+                                <i class="fa fa-bank" title="Bank journal"/>
+                                <field name="journal_id"/>
+                            </div>
+                            <div class="text-muted mt-1" t-if="record.payment_date.value">
+                                <i class="fa fa-calendar" title="Payment date"/>
+                                <field name="payment_date"/>
+                            </div>
+                            <footer class="d-flex justify-content-end mt-2">
+                                <field name="company_id"
+                                       groups="base.group_multi_company"/>
+                            </footer>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="eh_account_batch_payment_eh_batch_payment_view_graph" model="ir.ui.view">
+        <field name="name">eh.batch.payment.graph</field>
+        <field name="model">eh.batch.payment</field>
+        <field name="arch" type="xml">
+            <graph string="Batch Payments" type="bar" sample="1">
+                <field name="payment_date" interval="month"/>
+                <field name="batch_type"/>
+                <field name="total_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="eh_account_batch_payment_eh_batch_payment_view_pivot" model="ir.ui.view">
+        <field name="name">eh.batch.payment.pivot</field>
+        <field name="model">eh.batch.payment</field>
+        <field name="arch" type="xml">
+            <pivot string="Batch Payments" sample="1">
+                <field name="payment_date" interval="month" type="row"/>
+                <field name="state" type="col"/>
+                <field name="total_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_eh_batch_payment" model="ir.actions.act_window">
+        <field name="name">Batch Payments</field>
+        <field name="res_model">eh.batch.payment</field>
+        <field name="view_mode">kanban,tree,form,graph,pivot</field>
+        <field name="search_view_id" ref="view_eh_batch_payment_search"/>
+        <field name="context">{'search_default_filter_draft': 1, 'search_default_filter_confirmed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No batch payments yet.</p>
+            <p>Create a batch, add the invoices or bills you want to pay together, and post them all in one go. Per partner aggregation collapses multiple invoices into a single payment.</p>
+        </field>
+    </record>
+
+</odoo>

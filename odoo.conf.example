@@ -1,0 +1,33 @@
+[options]
+; Copy this file to odoo.conf and fill in real values.
+; odoo.conf is git-ignored because it holds credentials.
+
+db_host = localhost
+db_name = obms_17
+db_user = odoo
+db_password = CHANGE_ME
+db_port = 5432
+
+; Odoo core + our custom modules
+addons_path = ./addons,./custom
+
+; Master password for the database manager. CHANGE THIS.
+admin_passwd = CHANGE_ME
+
+pg_path = C:\Program Files\PostgreSQL\17\bin
+bin_path = C:\Program Files\wkhtmltopdf\bin
+
+http_port = 8069
+without_demo = True
+list_db = False
+
+; Windows cannot fork, so the threaded server (workers = 0) is the only option.
+workers = 0
+limit_time_cpu = 300        # 5 minutes
+limit_time_real = 600       # 10 minutes
+limit_memory_hard = 3221225472   # 3 GB
+limit_memory_soft = 2684354560
+
+; Set these when running behind an HTTPS reverse proxy (needed for Discuss
+; calls and browser notifications on anything other than localhost):
+; proxy_mode = True

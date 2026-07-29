@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_eh_provision_list" model="ir.ui.view">
+        <field name="name">eh.provision.list</field>
+        <field name="model">eh.provision</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="classification"/>
+                <field name="provision_type"/>
+                <field name="best_estimate" widget="monetary"/>
+                <field name="present_value" widget="monetary" optional="show"/>
+                <field name="carrying_amount" widget="monetary" optional="show"/>
+                <field name="reimbursement_recognised" widget="monetary" optional="hide"/>
+                <field name="rate_basis" optional="hide"/>
+                <field name="expected_settlement_date" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('recognised', 'recognised_asset')"
+                       decoration-muted="state in ('cancelled', 'settled', 'reversed')"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eh_provision_form" model="ir.ui.view">
+        <field name="name">eh.provision.form</field>
+        <field name="model">eh.provision</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_recognise" type="object"
+                            string="Recognise" class="btn-primary"
+                            invisible="state != 'draft' or classification != 'provision'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_recognise_asset" type="object"
+                            string="Recognise Asset" class="btn-primary"
+                            invisible="state != 'draft' or classification != 'contingent_asset'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_unwind" type="object"
+                            string="Unwind Discount"
+                            invisible="state != 'recognised'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_remeasure" type="object"
+                            string="Remeasure"
+                            invisible="state != 'recognised'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_utilise" type="object"
+                            string="Utilise"
+                            invisible="state != 'recognised'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_recognise_reimbursement" type="object"
+                            string="Recognise Reimbursement"
+                            invisible="state != 'recognised' or classification != 'provision'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_reverse" type="object"
+                            string="Reverse"
+                            invisible="state not in ('recognised', 'recognised_asset')"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('settled', 'cancelled', 'reversed')"/>
+                    <field name="state" widget="statusbar" readonly="1"
+                           statusbar_visible="draft,recognised,settled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_moves" type="object"
+                                class="oe_stat_button" icon="fa-book">
+                            <field name="move_count" widget="statinfo"
+                                   string="Entries"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="classification"
+                                   readonly="state != 'draft'"/>
+                            <field name="provision_type"
+                                   readonly="state != 'draft'"/>
+                            <field name="best_estimate" widget="monetary"
+                                   readonly="state != 'draft' or (provision_type == 'onerous' and not onerous_override)"/>
+                            <field name="discount_rate"
+                                   readonly="state != 'draft'"/>
+                            <field name="rate_basis"
+                                   readonly="state != 'draft'"/>
+                            <field name="rate_source"/>
+                            <field name="periods_to_settlement"
+                                   readonly="state != 'draft'"/>
+                            <field name="expected_settlement_date"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="present_value" widget="monetary" readonly="1"/>
+                            <field name="carrying_amount" widget="monetary" readonly="1"/>
+                            <field name="utilised_amount" widget="monetary" readonly="1"/>
+                            <field name="utilise_amount" widget="monetary"
+                                   invisible="state != 'recognised'"/>
+                            <field name="remeasure_estimate" widget="monetary"
+                                   invisible="state != 'recognised' or (provision_type == 'onerous' and not onerous_override)"/>
+                            <field name="remeasure_cost_fulfil" widget="monetary"
+                                   invisible="state != 'recognised' or provision_type != 'onerous' or onerous_override"/>
+                            <field name="remeasure_benefit_expected" widget="monetary"
+                                   invisible="state != 'recognised' or provision_type != 'onerous' or onerous_override"/>
+                            <field name="remeasure_penalty_exit" widget="monetary"
+                                   invisible="state != 'recognised' or provision_type != 'onerous' or onerous_override"/>
+                        </group>
+                    </group>
+                    <group string="Onerous Contract (IAS 37.66-69)"
+                           invisible="provision_type != 'onerous'">
+                        <group>
+                            <field name="unavoidable_cost_fulfil" widget="monetary"
+                                   readonly="state != 'draft'"/>
+                            <field name="contract_benefit_expected" widget="monetary"
+                                   readonly="state != 'draft'"/>
+                            <field name="penalty_exit" widget="monetary"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="onerous_override"
+                                   readonly="state != 'draft'"/>
+                            <field name="onerous_override_reason"
+                                   invisible="not onerous_override"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Restructuring Gate (IAS 37.72)"
+                           invisible="provision_type != 'restructuring'">
+                        <group>
+                            <field name="restructuring_plan"
+                                   readonly="state != 'draft'"/>
+                            <field name="restructuring_expectation"
+                                   readonly="state != 'draft'"/>
+                            <field name="restructuring_announcement_date"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="restructuring_component_total"
+                                   widget="monetary" readonly="1"/>
+                            <field name="restructuring_excluded_total"
+                                   widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+                    <group invisible="provision_type != 'restructuring'">
+                        <field name="restructuring_announcement" nolabel="1" colspan="2"
+                               readonly="state != 'draft'"
+                               placeholder="How the valid expectation was raised: what was announced, to whom, and when implementation began (IAS 37.72)..."/>
+                    </group>
+                    <group string="Cost Components (IAS 37.80-81)"
+                           invisible="provision_type != 'restructuring'">
+                        <field name="restructuring_line_ids" nolabel="1" colspan="2"
+                               readonly="state != 'draft'">
+                            <tree editable="bottom"
+                                  decoration-muted="cost_kind in ('retraining', 'marketing', 'new_systems')">
+                                <field name="name"/>
+                                <field name="cost_kind"/>
+                                <field name="in_scope"/>
+                                <field name="amount" widget="monetary"/>
+                                <field name="currency_id" column_invisible="1"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Contingent Asset (IAS 37.33-35)"
+                           invisible="classification != 'contingent_asset'">
+                        <group>
+                            <field name="virtually_certain"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="asset_account_id"/>
+                            <field name="income_account_id"/>
+                            <field name="journal_id"/>
+                        </group>
+                    </group>
+                    <group string="Reimbursement (IAS 37.53)"
+                           invisible="classification != 'provision'">
+                        <group>
+                            <field name="reimbursement_partner_id"/>
+                            <field name="reimbursement_account_id"/>
+                        </group>
+                        <group>
+                            <field name="reimbursement_amount" widget="monetary"
+                                   invisible="state != 'recognised'"/>
+                            <field name="reimbursement_recognised"
+                                   widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Accounts"
+                           invisible="classification != 'provision'">
+                        <group>
+                            <field name="provision_account_id"/>
+                            <field name="expense_account_id"/>
+                            <field name="finance_cost_account_id"/>
+                        </group>
+                        <group>
+                            <field name="settlement_account_id"/>
+                            <field name="journal_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" nolabel="1" colspan="2"
+                               placeholder="Nature of the obligation, uncertainties, and for contingent items the disclosure basis..."/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="eh_account_provisions_provision_view_graph" model="ir.ui.view">
+        <field name="name">eh.provision.graph</field>
+        <field name="model">eh.provision</field>
+        <field name="arch" type="xml">
+            <graph string="Provisions" type="bar">
+                <field name="provision_type"/>
+                <field name="best_estimate" type="measure"/>
+                <field name="carrying_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="eh_account_provisions_provision_view_pivot" model="ir.ui.view">
+        <field name="name">eh.provision.pivot</field>
+        <field name="model">eh.provision</field>
+        <field name="arch" type="xml">
+            <pivot string="Provisions">
+                <field name="provision_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="best_estimate" type="measure"/>
+                <field name="carrying_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_eh_provision" model="ir.actions.act_window">
+        <field name="name">Provisions</field>
+        <field name="res_model">eh.provision</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Record your first provision</p>
+            <p>Register IAS 37 provisions and contingencies here, then use New to recognise a present obligation at its best estimate.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!-- Statement of Changes in Equity -->
+    <record id="view_eh_soce_list" model="ir.ui.view">
+        <field name="name">eh.soce.list</field>
+        <field name="model">eh.soce</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="period_end"/>
+                <field name="total_opening" widget="monetary" optional="show"/>
+                <field name="total_closing" widget="monetary" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirmed'"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eh_soce_form" model="ir.ui.view">
+        <field name="name">eh.soce.form</field>
+        <field name="model">eh.soce</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_derive_from_ledger" type="object"
+                            string="Derive from Ledger"
+                            invisible="state == 'confirmed'"/>
+                    <button name="action_derive_profit_from_ledger" type="object"
+                            string="Derive Profit from Ledger"
+                            invisible="state == 'confirmed'"/>
+                    <button name="action_prefill_nci_from_consolidation" type="object"
+                            string="Prefill NCI from Consolidation"
+                            invisible="state == 'confirmed'"/>
+                    <button name="action_confirm" type="object"
+                            string="Confirm" class="btn-primary"
+                            invisible="state == 'confirmed'"/>
+                    <button name="action_set_to_draft" type="object"
+                            string="Set to Draft" invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar" readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                        </group>
+                        <group>
+                            <field name="total_opening" widget="monetary" readonly="1"/>
+                            <field name="total_profit" widget="monetary" readonly="1"/>
+                            <field name="total_oci" widget="monetary" readonly="1"/>
+                            <field name="total_dividends" widget="monetary" readonly="1"/>
+                            <field name="total_closing" widget="monetary" readonly="1"/>
+                            <field name="ledger_closing" widget="monetary" readonly="1"/>
+                            <field name="closing_tie_out" widget="monetary" readonly="1"/>
+                            <field name="tied" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Interim reporting (IAS 34)">
+                        <field name="period_type"/>
+                        <field name="presentation_label" readonly="1"/>
+                        <field name="condensed"
+                               invisible="period_type != 'interim'"/>
+                        <field name="comparative_interim_id"
+                               invisible="period_type != 'interim'"/>
+                        <field name="comparative_annual_id"
+                               invisible="period_type != 'interim'"/>
+                    </group>
+                    <group string="Profit movement tie-out">
+                        <field name="reported_profit" widget="monetary"/>
+                        <field name="total_profit" widget="monetary" readonly="1"/>
+                        <field name="profit_movement_tie_out" widget="monetary" readonly="1"/>
+                        <field name="profit_ties" readonly="1"/>
+                    </group>
+                    <group string="NCI per consolidation run">
+                        <field name="consol_nci_available" invisible="1"/>
+                        <field name="consol_run_name" readonly="1"
+                               invisible="not consol_nci_available"/>
+                        <field name="consol_nci_amount" widget="monetary" readonly="1"
+                               invisible="not consol_nci_available"/>
+                        <field name="nci_component_closing" widget="monetary" readonly="1"
+                               invisible="not consol_nci_available"/>
+                        <field name="nci_consol_discrepancy" widget="monetary" readonly="1"
+                               invisible="not consol_nci_available"/>
+                        <field name="nci_consol_tied" readonly="1"
+                               invisible="not consol_nci_available"/>
+                    </group>
+                    <group string="Classification completeness (IAS 1.60)">
+                        <field name="classification_override"/>
+                        <field name="classification_override_reason"
+                               invisible="not classification_override"
+                               colspan="2"/>
+                        <field name="classification_misfit_note" readonly="1"
+                               colspan="2"/>
+                    </group>
+                    <field name="line_ids">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="component"/>
+                            <field name="equity_account_ids" widget="many2many_tags" optional="hide"/>
+                            <field name="opening_balance" widget="monetary"/>
+                            <field name="profit" widget="monetary"/>
+                            <field name="oci_movement" widget="monetary"/>
+                            <field name="issue_of_shares" widget="monetary"/>
+                            <field name="dividends" widget="monetary"/>
+                            <field name="other_movement" widget="monetary"/>
+                            <field name="closing_balance" widget="monetary" readonly="1"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </tree>
+                    </field>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="eh_account_statements_soce_view_graph" model="ir.ui.view">
+        <field name="name">eh.soce.graph</field>
+        <field name="model">eh.soce</field>
+        <field name="arch" type="xml">
+            <graph string="Changes in Equity" type="bar">
+                <field name="period_end" interval="month"/>
+                <field name="total_closing" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="eh_account_statements_soce_view_pivot" model="ir.ui.view">
+        <field name="name">eh.soce.pivot</field>
+        <field name="model">eh.soce</field>
+        <field name="arch" type="xml">
+            <pivot string="Changes in Equity">
+                <field name="period_end" interval="year" type="row"/>
+                <field name="total_opening" type="measure"/>
+                <field name="total_profit" type="measure"/>
+                <field name="total_oci" type="measure"/>
+                <field name="total_dividends" type="measure"/>
+                <field name="total_closing" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_eh_soce" model="ir.actions.act_window">
+        <field name="name">Changes in Equity</field>
+        <field name="res_model">eh.soce</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first statement of changes in equity</p>
+            <p>This screen reconciles the opening to closing balance of each equity component across profit, other comprehensive income, dividends and share movements. Use New to prepare a statement for a company and period, then derive the figures from the posted ledger.</p>
+        </field>
+    </record>
+
+    <!-- Statement of Comprehensive Income -->
+    <record id="view_eh_soci_list" model="ir.ui.view">
+        <field name="name">eh.soci.list</field>
+        <field name="model">eh.soci</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="period_end"/>
+                <field name="profit_for_period" widget="monetary" optional="show"/>
+                <field name="total_oci" widget="monetary" optional="show"/>
+                <field name="total_comprehensive_income" widget="monetary" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirmed'"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eh_soci_form" model="ir.ui.view">
+        <field name="name">eh.soci.form</field>
+        <field name="model">eh.soci</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_derive_profit_from_ledger" type="object"
+                            string="Derive Profit from Ledger"
+                            invisible="state == 'confirmed'"/>
+                    <button name="action_apply_oci_recycling_tags" type="object"
+                            string="Apply OCI Recycling Tags"
+                            invisible="state == 'confirmed'"/>
+                    <button name="action_prefill_nci_from_consolidation" type="object"
+                            string="Prefill NCI from Consolidation"
+                            invisible="state == 'confirmed'"/>
+                    <button name="action_confirm" type="object"
+                            string="Confirm" class="btn-primary"
+                            invisible="state == 'confirmed'"/>
+                    <button name="action_set_to_draft" type="object"
+                            string="Set to Draft" invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar" readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="profit_for_period" widget="monetary"/>
+                        </group>
+                        <group>
+                            <field name="oci_will_reclassify" widget="monetary" readonly="1"/>
+                            <field name="oci_no_reclassify" widget="monetary" readonly="1"/>
+                            <field name="total_oci" widget="monetary" readonly="1"/>
+                            <field name="total_comprehensive_income" widget="monetary" readonly="1"/>
+                            <field name="recycling_discrepancy_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Interim reporting (IAS 34)">
+                        <field name="period_type"/>
+                        <field name="presentation_label" readonly="1"/>
+                        <field name="condensed"
+                               invisible="period_type != 'interim'"/>
+                        <field name="comparative_interim_id"
+                               invisible="period_type != 'interim'"/>
+                        <field name="comparative_annual_id"
+                               invisible="period_type != 'interim'"/>
+                    </group>
+                    <group string="Attribution">
+                        <field name="attributable_to_owners" widget="monetary"/>
+                        <field name="attributable_to_nci" widget="monetary"/>
+                        <field name="attribution_residual" widget="monetary" readonly="1"/>
+                        <field name="attribution_tied" readonly="1"/>
+                    </group>
+                    <group string="NCI per consolidation run">
+                        <field name="consol_nci_available" invisible="1"/>
+                        <field name="consol_run_name" readonly="1"
+                               invisible="not consol_nci_available"/>
+                        <field name="consol_nci_amount" widget="monetary" readonly="1"
+                               invisible="not consol_nci_available"/>
+                        <field name="nci_consol_discrepancy" widget="monetary" readonly="1"
+                               invisible="not consol_nci_available"/>
+                        <field name="nci_consol_tied" readonly="1"
+                               invisible="not consol_nci_available"/>
+                    </group>
+                    <group string="Classification completeness (IAS 1.60)">
+                        <field name="classification_override"/>
+                        <field name="classification_override_reason"
+                               invisible="not classification_override"
+                               colspan="2"/>
+                        <field name="classification_misfit_note" readonly="1"
+                               colspan="2"/>
+                    </group>
+                    <group string="OCI recycling completeness (IAS 1.82A)">
+                        <field name="oci_untagged_count" readonly="1"/>
+                        <field name="oci_tag_override"/>
+                        <field name="oci_tag_override_reason"
+                               invisible="not oci_tag_override"
+                               colspan="2"/>
+                        <field name="oci_recycling_misfit_note" readonly="1"
+                               colspan="2"/>
+                    </group>
+                    <field name="line_ids" invisible="condensed">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="oci_type"/>
+                            <field name="account_id" optional="show"/>
+                            <field name="amount" widget="monetary"/>
+                            <field name="will_reclassify"/>
+                            <field name="tag_reclassify" optional="show"/>
+                            <field name="reclassify_discrepancy" optional="show"
+                                   decoration-warning="reclassify_discrepancy"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </tree>
+                    </field>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="eh_account_statements_soci_view_graph" model="ir.ui.view">
+        <field name="name">eh.soci.graph</field>
+        <field name="model">eh.soci</field>
+        <field name="arch" type="xml">
+            <graph string="Comprehensive Income" type="bar">
+                <field name="period_end" interval="month"/>
+                <field name="total_comprehensive_income" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="eh_account_statements_soci_view_pivot" model="ir.ui.view">
+        <field name="name">eh.soci.pivot</field>
+        <field name="model">eh.soci</field>
+        <field name="arch" type="xml">
+            <pivot string="Comprehensive Income">
+                <field name="period_end" interval="year" type="row"/>
+                <field name="profit_for_period" type="measure"/>
+                <field name="total_oci" type="measure"/>
+                <field name="total_comprehensive_income" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_eh_soci" model="ir.actions.act_window">
+        <field name="name">Comprehensive Income</field>
+        <field name="res_model">eh.soci</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first statement of comprehensive income</p>
+            <p>This screen adds the other comprehensive income components to profit for the period to give total comprehensive income, split by reclassification and attributed to owners and non-controlling interests. Use New to prepare a statement for a company and period, then derive profit from the posted ledger.</p>
+        </field>
+    </record>
+
+</odoo>

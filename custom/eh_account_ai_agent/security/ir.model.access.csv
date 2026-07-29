@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_eh_anomaly_finding_user,eh.account.anomaly.finding user,model_eh_account_anomaly_finding,eh_account_base.group_eh_user,1,1,0,0
+access_eh_anomaly_finding_manager,eh.account.anomaly.finding manager,model_eh_account_anomaly_finding,eh_account_base.group_eh_manager,1,1,1,1

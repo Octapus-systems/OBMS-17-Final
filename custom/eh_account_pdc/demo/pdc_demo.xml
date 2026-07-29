@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+        <!--
+        Cheque books require an active bank journal which is company
+        specific. Real demo data ships in real install via the
+        configuration wizard. The bounce reasons are seeded by
+        data/bounce_reasons.xml, which is enough to demonstrate the
+        bounce workflow on test cheques created interactively.
+        -->
+    </data>
+</odoo>

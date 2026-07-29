@@ -1,0 +1,245 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * spreadsheet_dashboard_pos_hr
+#
+# Translators:
+# Martin Trigaux, 2023
+# lhmflexerp <lhm@flexerp.dk>, 2023
+# Sanne Kristensen <sanne@vkdata.dk>, 2024
+# Sammi Iversen <sammi@vkdata.dk>, 2025
+# Kira Petersen, 2025
+# Weblate <noreply-mt-weblate@weblate.org>, 2026.
+# "Kira Petersen François (peti)" <peti@odoo.com>, 2026.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-29 18:38+0000\n"
+"PO-Revision-Date: 2026-06-23 15:04+0000\n"
+"Last-Translator: \"Kira Petersen François (peti)\" <peti@odoo.com>\n"
+"Language-Team: Danish <https://translate.odoo.com/projects/odoo-17/"
+"spreadsheet_dashboard_pos_hr/da/>\n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2026.6.1\n"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Average order"
+msgstr "Gennemsnitlig ordre"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Current"
+msgstr "Nuværende"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Customer"
+msgstr "Kunde"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Date"
+msgstr "Dato"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Employee"
+msgstr "Medarbejder"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "KPI"
+msgstr "KPI"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Order"
+msgstr "Ordre"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Orders"
+msgstr "Ordrer"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Orders by Month"
+msgstr "Ordrer pr. måned"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Orders by Total"
+msgstr ""
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Period"
+msgstr "Periode"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#: model:spreadsheet.dashboard,name:spreadsheet_dashboard_pos_hr.spreadsheet_dashboard_pos
+#, python-format
+msgid "Point of Sale"
+msgstr "POS"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Point of Sale Analysis by Point of Sale"
+msgstr ""
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Point of Sale Analysis by Product"
+msgstr ""
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Point of Sale Analysis by Session"
+msgstr ""
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Point of Sale Analysis by User"
+msgstr ""
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Previous"
+msgstr "Forrige"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Product"
+msgstr "Produkt"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Responsible"
+msgstr "Ansvarlig"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Revenue"
+msgstr "Omsætning"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Session"
+msgstr "Session"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Sessions"
+msgstr "Sessioner"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Top Orders"
+msgstr "Topordrer"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Top Points of Sale"
+msgstr "Bedste POS"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Top Products"
+msgstr "Bedste produkter"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Top Responsibles"
+msgstr "Topansvarlige"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Top Sessions"
+msgstr "Bedste sessioner"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "Total"
+msgstr "I alt"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "since last period"
+msgstr "siden forrige periode"
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "stats - current"
+msgstr ""
+
+#. module: spreadsheet_dashboard_pos_hr
+#. odoo-javascript
+#: code:addons/spreadsheet_dashboard_pos_hr/data/files/pos_dashboard.json:0
+#, python-format
+msgid "stats - previous"
+msgstr ""

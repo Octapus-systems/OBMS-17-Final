@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_eh_investment_property_list" model="ir.ui.view">
+        <field name="name">eh.investment.property.list</field>
+        <field name="model">eh.investment.property</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="model_basis"/>
+                <field name="carrying_amount" widget="monetary" optional="show"/>
+                <field name="fair_value" widget="monetary" optional="show"/>
+                <field name="transfer_date" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'held'"
+                       decoration-info="state == 'transferred'"
+                       decoration-muted="state in ('cancelled', 'disposed')"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eh_investment_property_form" model="ir.ui.view">
+        <field name="name">eh.investment.property.form</field>
+        <field name="model">eh.investment.property</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object"
+                            string="Recognise at Cost" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_remeasure" type="object"
+                            string="Remeasure to Fair Value" class="btn-primary"
+                            invisible="state != 'held' or model_basis != 'fair_value'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_depreciate" type="object"
+                            string="Post Depreciation" class="btn-primary"
+                            invisible="state != 'held' or model_basis != 'cost'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_transfer_out" type="object"
+                            string="Transfer Out (IAS 40.57)"
+                            invisible="state != 'held'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_transfer_in" type="object"
+                            string="Transfer In from Asset (IAS 40.61)"
+                            invisible="state != 'draft' or model_basis != 'fair_value'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_dispose" type="object" string="Dispose"
+                            invisible="state != 'held'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('disposed', 'cancelled')"/>
+                    <field name="state" widget="statusbar" readonly="1"
+                           statusbar_visible="draft,held,disposed,transferred"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_moves" type="object"
+                                class="oe_stat_button" icon="fa-book">
+                            <field name="move_count" widget="statinfo"
+                                   string="Entries"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="description"/>
+                            <field name="model_basis"
+                                   readonly="state != 'draft'"/>
+                            <field name="acquisition_date"/>
+                            <field name="initial_cost" widget="monetary"
+                                   readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="carrying_amount" widget="monetary" readonly="1"/>
+                            <field name="fair_value" widget="monetary"
+                                   invisible="model_basis != 'fair_value'"/>
+                            <field name="remeasurement" widget="monetary" readonly="1"
+                                   invisible="model_basis != 'fair_value'"/>
+                            <field name="useful_life_years"
+                                   invisible="model_basis != 'cost'"/>
+                            <field name="accumulated_depreciation" widget="monetary"
+                                   readonly="1"
+                                   invisible="model_basis != 'cost'"/>
+                        </group>
+                    </group>
+                    <group string="Accounts">
+                        <group>
+                            <field name="property_account_id"/>
+                            <field name="fv_gain_loss_account_id"
+                                   invisible="model_basis != 'fair_value'"/>
+                            <field name="depreciation_expense_account_id"
+                                   invisible="model_basis != 'cost'"/>
+                            <field name="accumulated_depreciation_account_id"
+                                   invisible="model_basis != 'cost'"/>
+                        </group>
+                        <group>
+                            <field name="journal_id"/>
+                            <field name="transfer_target_account_id"/>
+                            <field name="transfer_reason"/>
+                        </group>
+                    </group>
+                    <group string="Transfers (IAS 40.57-62)">
+                        <group>
+                            <field name="transfer_date"/>
+                            <field name="transfer_fair_value"
+                                   widget="monetary"/>
+                            <field name="revaluation_surplus_account_id"
+                                   invisible="model_basis != 'fair_value'"/>
+                        </group>
+                        <group>
+                            <field name="transfer_in_asset_id"
+                                   invisible="state != 'draft' or model_basis != 'fair_value'"/>
+                            <field name="transfer_in_asset_display"
+                                   invisible="not transfer_in_asset_display"/>
+                        </group>
+                    </group>
+                    <group string="Transfer Audit Trail (IAS 40.57-62)"
+                           invisible="not transfer_log_ids">
+                        <field name="transfer_log_ids" nolabel="1"
+                               colspan="2" readonly="1">
+                            <tree>
+                                <field name="date"/>
+                                <field name="direction"/>
+                                <field name="basis"/>
+                                <field name="carrying_before"
+                                       widget="monetary"/>
+                                <field name="fair_value" widget="monetary"/>
+                                <field name="delta_posted"
+                                       widget="monetary"/>
+                                <field name="delta_routing"/>
+                                <field name="remeasure_move_id"
+                                       optional="show"/>
+                                <field name="move_id"/>
+                                <field name="source_document"
+                                       optional="hide"/>
+                                <field name="note" optional="hide"/>
+                                <field name="currency_id"
+                                       column_invisible="1"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Disposal (IAS 40.66-69)"
+                           invisible="state == 'draft'">
+                        <group>
+                            <field name="disposal_date"/>
+                            <field name="disposal_proceeds" widget="monetary"
+                                   readonly="state == 'disposed'"/>
+                        </group>
+                        <group>
+                            <field name="disposal_cash_account_id"
+                                   readonly="state == 'disposed'"/>
+                            <field name="disposal_gain_loss_account_id"
+                                   readonly="state == 'disposed'"/>
+                        </group>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="eh_account_investment_property_view_graph" model="ir.ui.view">
+        <field name="name">eh.investment.property.graph</field>
+        <field name="model">eh.investment.property</field>
+        <field name="arch" type="xml">
+            <graph string="Investment Property" type="bar">
+                <field name="acquisition_date" interval="month"/>
+                <field name="state"/>
+                <field name="carrying_amount" type="measure"/>
+                <field name="fair_value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="eh_account_investment_property_view_pivot" model="ir.ui.view">
+        <field name="name">eh.investment.property.pivot</field>
+        <field name="model">eh.investment.property</field>
+        <field name="arch" type="xml">
+            <pivot string="Investment Property">
+                <field name="model_basis" type="row"/>
+                <field name="state" type="col"/>
+                <field name="carrying_amount" type="measure"/>
+                <field name="fair_value" type="measure"/>
+                <field name="initial_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_eh_investment_property" model="ir.actions.act_window">
+        <field name="name">Investment Property</field>
+        <field name="res_model">eh.investment.property</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first investment property</p>
+            <p>Track land or buildings held to earn rentals or for capital appreciation under IAS 40, using the cost or fair value model. Click New to recognise a property at cost, then remeasure, depreciate, transfer, or dispose of it.</p>
+        </field>
+    </record>
+
+</odoo>

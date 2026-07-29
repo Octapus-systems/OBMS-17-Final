@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ERP Heritage
+    Copyright (C) 2026 (https://www.erpheritage.com.au/)
+
+    Multi-company record rules. A user only sees consolidation entities,
+    members, runs, run lines, eliminations, and elimination lines whose
+    parent company is among the user's allowed companies. Without these,
+    any internal user could read another company group's consolidated
+    figures.
+-->
+<odoo>
+    <data noupdate="1">
+
+        <record id="eh_consol_entity_company_rule" model="ir.rule">
+            <field name="name">Consolidation entity: allowed companies</field>
+            <field name="model_id" ref="model_eh_consol_entity"/>
+            <field name="domain_force">[('parent_company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="eh_consol_member_company_rule" model="ir.rule">
+            <field name="name">Consolidation member: allowed companies</field>
+            <field name="model_id" ref="model_eh_consol_member"/>
+            <field name="domain_force">[('entity_id.parent_company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="eh_consol_run_company_rule" model="ir.rule">
+            <field name="name">Consolidation run: allowed companies</field>
+            <field name="model_id" ref="model_eh_consol_run"/>
+            <field name="domain_force">[('entity_id.parent_company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="eh_consol_run_line_company_rule" model="ir.rule">
+            <field name="name">Consolidation run line: allowed companies</field>
+            <field name="model_id" ref="model_eh_consol_run_line"/>
+            <field name="domain_force">[('run_id.entity_id.parent_company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="eh_consol_elimination_company_rule" model="ir.rule">
+            <field name="name">Consolidation elimination: allowed companies</field>
+            <field name="model_id" ref="model_eh_consol_elimination"/>
+            <field name="domain_force">[('run_id.entity_id.parent_company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="eh_consol_elimination_line_company_rule" model="ir.rule">
+            <field name="name">Consolidation elimination line: allowed companies</field>
+            <field name="model_id" ref="model_eh_consol_elimination_line"/>
+            <field name="domain_force">[('elimination_id.run_id.entity_id.parent_company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="eh_consol_unrealised_profit_company_rule" model="ir.rule">
+            <field name="name">Consolidation unrealised profit: allowed companies</field>
+            <field name="model_id" ref="model_eh_consol_unrealised_profit"/>
+            <field name="domain_force">[('run_id.entity_id.parent_company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

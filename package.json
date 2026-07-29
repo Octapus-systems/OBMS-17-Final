@@ -1,0 +1,17 @@
+{
+  "name": "odoo-17-obms",
+  "version": "17.0.0",
+  "private": true,
+  "description": "Shortcuts to run Odoo 17 (obms_17) from the local venv",
+  "scripts": {
+    "start": "venv\\Scripts\\python.exe odoo-bin -c odoo.conf",
+    "dev": "venv\\Scripts\\python.exe odoo-bin -c odoo.conf --dev=xml,reload",
+    "shell": "venv\\Scripts\\python.exe odoo-bin shell -c odoo.conf -d obms_17",
+    "init": "venv\\Scripts\\python.exe odoo-bin -c odoo.conf -d obms_17 -i base --stop-after-init",
+    "upgrade": "venv\\Scripts\\python.exe odoo-bin -c odoo.conf -d obms_17 -u all --stop-after-init",
+    "install:module": "venv\\Scripts\\python.exe odoo-bin -c odoo.conf -d obms_17 --stop-after-init -i",
+    "update:module": "venv\\Scripts\\python.exe odoo-bin -c odoo.conf -d obms_17 --stop-after-init -u",
+    "deps": "venv\\Scripts\\python.exe -m pip install -r requirements.txt -r requirements-custom.txt",
+    "venv": "py -3.10 -m venv venv && venv\\Scripts\\python.exe -m pip install --upgrade pip wheel setuptools"
+  }
+}

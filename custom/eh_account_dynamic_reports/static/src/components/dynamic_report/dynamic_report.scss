@@ -1,0 +1,752 @@
+// ============================================================================
+// ERP Heritage
+// Copyright (C) 2026 (https://www.erpheritage.com.au/)
+// ============================================================================
+//
+// Dynamic report viewer - house dark/mint theme (WS5).
+//
+// The viewer now wears the same myawqat-dark design language as the
+// financial dashboard, resolved from the shared token bridge
+// (eh_account_base/static/src/scss/eh_tokens.scss, declared on
+// `.eh_dashboard_root, .eh_dr`). Every colour, radius, and the type stack
+// comes from var(--eh-*); each var() carries a system fallback so the
+// surface stays readable even if the token bundle ever resolves late.
+//
+// Sticky header: thead th is position:sticky against .eh_dr_body (the
+// existing overflow:auto scroll container), so the column headers stay
+// pinned while the windowed body scrolls. The header background must be
+// opaque (var(--eh-surface-2)) or scrolled rows bleed through.
+
+.eh_dr {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--eh-bg, #080C0A);
+    background-image: var(--eh-bg-grad, none);
+    color: var(--eh-text, #E8EDE9);
+    font-family: var(--eh-font, system-ui, -apple-system, sans-serif);
+
+    .eh_dr_topbar {
+        background: var(--eh-surface, #0F1512);
+        padding: var(--eh-4, 16px) var(--eh-5, 20px);
+        border-bottom: 1px solid var(--eh-border, #1E2A24);
+    }
+
+    .eh_dr_titlebar {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--eh-4, 16px);
+        margin-bottom: var(--eh-3, 12px);
+    }
+
+    .eh_dr_title_block {
+        display: flex;
+        flex-direction: column;
+        gap: var(--eh-1, 4px);
+    }
+
+    .eh_dr_title {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--eh-text, #E8EDE9);
+    }
+
+    .eh_dr_subtitle {
+        display: flex;
+        gap: var(--eh-3, 12px);
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .eh_dr_currency_badge,
+    .eh_dr_period_badge {
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: var(--eh-accent-soft, rgba(123, 206, 160, 0.10));
+        color: var(--eh-accent, #7BCEA0);
+        border: 1px solid var(--eh-border-strong, #2A3B32);
+        letter-spacing: 0.02em;
+    }
+
+    .eh_dr_currency_badge--multi {
+        background: var(--eh-warn-soft, rgba(224, 194, 123, 0.12));
+        border-color: var(--eh-warn, #E0C27B);
+        color: var(--eh-warn, #E0C27B);
+    }
+
+    .eh_dr_period_badge {
+        background: var(--eh-surface-2, #151D19);
+        color: var(--eh-text-dim, #6B7E72);
+        border-color: var(--eh-border, #1E2A24);
+    }
+
+    .eh_dr_actions {
+        display: flex;
+        gap: var(--eh-1, 6px);
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .eh_dr_saved_view_select {
+        padding: 4px 8px;
+        border: 1px solid var(--eh-border-strong, #2A3B32);
+        border-radius: var(--eh-radius-sm, 10px);
+        background: var(--eh-surface-2, #151D19);
+        color: var(--eh-text, #E8EDE9);
+        font-size: 0.85rem;
+        max-width: 160px;
+        cursor: pointer;
+
+        &:hover {
+            border-color: var(--eh-accent, #7BCEA0);
+        }
+    }
+
+    .eh_dr_collapse_toggle {
+        font-size: 0.85rem;
+        text-decoration: none;
+        color: var(--eh-text-dim, #6B7E72);
+
+        &:hover {
+            color: var(--eh-accent, #7BCEA0);
+        }
+    }
+
+    .eh_dr_filter_count {
+        background: var(--eh-accent, #7BCEA0);
+        color: var(--eh-bg, #080C0A);
+        padding: 0 6px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.7rem;
+    }
+
+    .eh_dr_filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--eh-3, 14px);
+        align-items: flex-end;
+    }
+
+    .eh_dr_filters_advanced {
+        margin-top: var(--eh-3, 12px);
+        padding-top: var(--eh-3, 12px);
+        border-top: 1px dashed var(--eh-border, #1E2A24);
+        display: flex;
+        flex-direction: column;
+        gap: var(--eh-3, 12px);
+    }
+
+    .eh_dr_filter_group {
+        display: flex;
+        gap: var(--eh-3, 14px);
+        flex-wrap: wrap;
+    }
+
+    .eh_dr_filter_actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        font-size: 0.85rem;
+    }
+
+    .eh_dr_filter {
+        display: flex;
+        flex-direction: column;
+        gap: var(--eh-1, 4px);
+        margin: 0;
+
+        > span {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--eh-text-dim, #6B7E72);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        > input[type="date"],
+        > input[type="search"],
+        > input[type="text"],
+        > input[type="number"],
+        > select {
+            padding: 4px 8px;
+            border: 1px solid var(--eh-border-strong, #2A3B32);
+            border-radius: var(--eh-radius-sm, 10px);
+            font-size: 0.9rem;
+            background: var(--eh-surface-2, #151D19);
+            color: var(--eh-text, #E8EDE9);
+            color-scheme: dark;
+            min-width: 160px;
+
+            &:focus {
+                outline: none;
+                border-color: var(--eh-accent, #7BCEA0);
+            }
+
+            // Native <option> rows in the multiselect pickers (companies,
+            // journals, accounts, account types) inherit the browser default
+            // otherwise, which is dark-on-light. Force the house surface so
+            // they are readable, with the mint tint on the chosen rows.
+            option {
+                background: var(--eh-surface-2, #151D19);
+                color: var(--eh-text, #E8EDE9);
+            }
+
+            option:checked,
+            option:hover {
+                background: var(--eh-accent-soft, rgba(123, 206, 160, 0.18));
+                color: var(--eh-accent, #7BCEA0);
+            }
+        }
+
+        &.eh_dr_filter_wide {
+            flex: 1 1 220px;
+            min-width: 220px;
+
+            > select[multiple] {
+                min-height: 80px;
+            }
+        }
+
+        &.eh_dr_check {
+            flex-direction: row;
+            align-items: center;
+            gap: 6px;
+
+            > input[type="checkbox"] {
+                margin: 0;
+            }
+
+            > span {
+                font-size: 0.9rem;
+                font-weight: 400;
+                color: var(--eh-text, #E8EDE9);
+                text-transform: none;
+                letter-spacing: 0;
+            }
+        }
+    }
+
+    .eh_dr_more_btn {
+        font-size: 0.78rem;
+        text-align: left;
+        text-decoration: none;
+        color: var(--eh-accent, #7BCEA0);
+
+        &:hover {
+            color: var(--eh-text, #E8EDE9);
+        }
+    }
+
+    .eh_dr_chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--eh-border, #1E2A24);
+    }
+
+    .eh_dr_chips_label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--eh-text-dim, #6B7E72);
+        letter-spacing: 0.05em;
+        margin-right: 4px;
+    }
+
+    .eh_dr_chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 2px 4px 2px 10px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        background: var(--eh-accent-soft, rgba(123, 206, 160, 0.10));
+        color: var(--eh-accent, #7BCEA0);
+        border: 1px solid var(--eh-border-strong, #2A3B32);
+    }
+
+    .eh_dr_chip_x {
+        background: var(--eh-flat-soft, rgba(133, 151, 142, 0.14));
+        border: 0;
+        border-radius: 50%;
+        color: var(--eh-text, #E8EDE9);
+        cursor: pointer;
+        font-size: 0.95rem;
+        line-height: 1;
+        height: 18px;
+        width: 18px;
+        padding: 0;
+
+        &:hover {
+            background: var(--eh-accent, #7BCEA0);
+            color: var(--eh-bg, #080C0A);
+        }
+    }
+
+    .eh_dr_body {
+        flex: 1;
+        // min-height:0 lets this flex child shrink so its own overflow:auto
+        // scrolls internally (without it the column can push past the viewport
+        // and the wheel scrolls an outer container instead).
+        min-height: 0;
+        overflow: auto;
+        // NO top padding: a sticky <thead> with top:0 pins to the scroll
+        // container's PADDING edge, so any top padding becomes a band above the
+        // header where scrolled rows bleed through. Top spacing lives on the
+        // meta bar instead. Sides + bottom padding are fine.
+        padding: 0 var(--eh-5, 20px) var(--eh-4, 16px);
+        position: relative;
+    }
+
+    .eh_dr_brand_footer {
+        font-size: 0.72rem;
+        text-align: center;
+        padding: var(--eh-2, 8px) var(--eh-3, 12px);
+        background: var(--eh-surface, #0F1512);
+        color: var(--eh-accent, #7BCEA0);
+        letter-spacing: 0.06em;
+        border-top: 1px solid var(--eh-border, #1E2A24);
+
+        > strong {
+            color: var(--eh-text, #E8EDE9);
+        }
+
+        .eh_dr_heart {
+            color: var(--eh-text, #E8EDE9);
+            display: inline-block;
+            transform: translateY(1px);
+            margin: 0 2px;
+        }
+    }
+
+    .eh_dr_loading {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--eh-text-dim, #6B7E72);
+        font-size: 0.95rem;
+    }
+
+    .eh_dr_meta_bar {
+        display: flex;
+        align-items: center;
+        gap: var(--eh-3, 12px);
+        // Top spacing moved here from .eh_dr_body so the scroll container has no
+        // top padding (which would let rows bleed above the sticky header).
+        padding-top: var(--eh-4, 16px);
+        margin-bottom: var(--eh-2, 8px);
+        font-size: 0.78rem;
+        color: var(--eh-text-dim, #6B7E72);
+    }
+
+    .eh_dr_meta {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    // In-table search: matches the dashboard select chrome. Pure client-side
+    // filter feeding step 1 of windowedLines().
+    .eh_dr_search {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 2px 10px;
+        margin: 0;
+        border: 1px solid var(--eh-border-strong, #2A3B32);
+        border-radius: 999px;
+        background: var(--eh-surface-2, #151D19);
+        color: var(--eh-text-dim, #6B7E72);
+
+        > input[type="search"] {
+            border: 0;
+            background: transparent;
+            color: var(--eh-text, #E8EDE9);
+            font-size: 0.8rem;
+            outline: none;
+            min-width: 160px;
+
+            &::placeholder {
+                color: var(--eh-text-muted, #3A4D42);
+            }
+        }
+
+        &:focus-within {
+            border-color: var(--eh-accent, #7BCEA0);
+        }
+    }
+
+    .eh_dr_search_empty {
+        color: var(--eh-text-dim, #6B7E72);
+    }
+
+    .eh_dr_table {
+        background: var(--eh-surface, #0F1512);
+        border: 1px solid var(--eh-border, #1E2A24);
+        border-radius: var(--eh-radius-sm, 10px);
+        margin: 0;
+        color: var(--eh-text, #E8EDE9);
+        // Bootstrap's .table defaults to border-collapse: collapse, under
+        // which a position:sticky <th> is unreliable: the collapsed top
+        // border of a scrolled data row resolves against the sticky cell and
+        // the header visually detaches into the middle of the body during a
+        // virtual scroll. Separate borders (with zero spacing) pin the sticky
+        // header rock-solid at the top while the windowed rows scroll under
+        // it. Each cell paints its own 1px border (see tbody td below) so the
+        // grid looks identical.
+        border-collapse: separate;
+        border-spacing: 0;
+
+        // STICKY HEADER: resolves against .eh_dr_body (the scroll container),
+        // so the header floats above the windowed body. Stick the whole
+        // <thead> AND its cells so the row never drops into the body; opaque
+        // background is mandatory or scrolled rows bleed through; z-index
+        // sits above row content (annotation popovers use a higher layer).
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            background: var(--eh-surface-2, #151D19);
+            color: var(--eh-text-dim, #6B7E72);
+            border-bottom: 1px solid var(--eh-border-strong, #2A3B32);
+            font-weight: 600;
+            font-size: 0.72rem;
+            font-family: var(--eh-mono, ui-monospace, monospace);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            padding: var(--eh-2, 8px) var(--eh-3, 12px);
+        }
+
+        .eh_dr_col_unit {
+            font-size: 0.7rem;
+            color: var(--eh-accent, #7BCEA0);
+            margin-left: 4px;
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 500;
+        }
+
+        tbody tr {
+            transition: background-color 0.1s ease;
+
+            &:hover {
+                background-color: var(--eh-surface-hover, #18221C);
+            }
+        }
+
+        // Fixed row height keeps the virtual-scroll math (floor(scrollTop /
+        // ROW_HEIGHT)) exact. Every row is exactly ROW_HEIGHT (28px) tall;
+        // overflowing cell content is clipped/ellipsised rather than wrapping.
+        tbody tr:not(.eh_dr_spacer_row) {
+            height: 28px;
+        }
+
+        tbody td {
+            font-size: 0.85rem;
+            padding: 4px var(--eh-3, 12px);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-top: 1px solid var(--eh-border, #1E2A24);
+            color: var(--eh-text, #E8EDE9);
+        }
+
+        // Spacer rows reproduce the height of the windowed-out rows so the
+        // scrollbar matches the full list. Zero chrome, not hoverable.
+        .eh_dr_spacer_row {
+            &:hover { background: transparent; }
+            > td { padding: 0; border: 0; }
+        }
+
+        // Numeric cells: mono + tabular figures so columns align digit for
+        // digit like the dashboard KPI tiles.
+        .eh_dr_num {
+            font-family: var(--eh-mono, ui-monospace, monospace);
+            font-variant-numeric: tabular-nums;
+        }
+
+        // WS1 gesture split: only the amount cells open the full-page
+        // drilldown, so only they get the pointer affordance.
+        .eh_dr_amount_cell {
+            cursor: pointer;
+        }
+
+        .eh_dr_aging_num {
+            width: 5rem;
+        }
+
+        // ---- WS5 semantic good/bad coloring ----
+        // Favourable change = mint, unfavourable = warm-red, neutral = muted.
+        // .eh_dr_negative is kept as an alias of .eh_dr_bad for any
+        // non-comparison report that still emits it directly.
+        .eh_dr_good {
+            color: var(--eh-up, #7BCEA0);
+        }
+
+        .eh_dr_bad,
+        .eh_dr_negative {
+            color: var(--eh-down, #E08C7B);
+        }
+
+        .eh_dr_muted {
+            color: var(--eh-text-muted, #3A4D42);
+        }
+
+        .eh_dr_unfold_caret {
+            display: inline-block;
+            width: 18px;
+            color: var(--eh-accent, #7BCEA0);
+            cursor: pointer;
+        }
+
+        .eh_dr_section_row {
+            background-color: var(--eh-surface-2, #151D19);
+
+            > td {
+                font-weight: 600;
+                border-top: 1px solid var(--eh-border-strong, #2A3B32);
+            }
+        }
+
+        .eh_dr_section_row.eh_dr_total > td {
+            border-top: 2px solid var(--eh-accent, #7BCEA0);
+            background-color: var(--eh-surface-2, #151D19);
+        }
+
+        .eh_dr_section_row.eh_dr_header > td {
+            background-color: var(--eh-surface-hover, #18221C);
+            font-size: 0.92rem;
+            color: var(--eh-text, #E8EDE9);
+        }
+
+        .eh_dr_computed > td {
+            font-weight: 700;
+            background-color: var(--eh-accent-soft, rgba(123, 206, 160, 0.10));
+            border-top: 2px solid var(--eh-border-strong, #2A3B32);
+        }
+
+        .eh_dr_check > td {
+            font-style: italic;
+            color: var(--eh-text-dim, #6B7E72);
+            background-color: var(--eh-surface-2, #151D19);
+        }
+
+        // ---- WS5 ellipsis reveal ----
+        .eh_dr_ellipsis {
+            display: inline;
+        }
+
+        .eh_dr_ellipsis_btn {
+            border: 0;
+            background: transparent;
+            color: var(--eh-accent, #7BCEA0);
+            cursor: pointer;
+            padding: 0 2px;
+            font-weight: 700;
+            line-height: 1;
+
+            &:hover {
+                color: var(--eh-text, #E8EDE9);
+            }
+        }
+
+        // ---- WS3 annotations ----
+        // The note popover is absolute-positioned relative to its host cell
+        // so it travels with the row even while the body scrolls.
+        .eh_dr_name_cell,
+        .eh_dr_value_cell {
+            position: relative;
+            overflow: visible;
+        }
+
+        // The value text keeps the drilldown affordance; the cell-level
+        // note button sits beside it without underlining.
+        .eh_dr_value_text {
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+                text-decoration-color: var(--eh-accent, #7BCEA0);
+                text-underline-offset: 2px;
+            }
+        }
+
+        // Quiet by default, revealed on row hover; solid + accented when a
+        // note exists so a figure that carries context is visible at a glance.
+        .eh_dr_note_btn {
+            border: none;
+            background: transparent;
+            color: var(--eh-text-muted, #3A4D42);
+            cursor: pointer;
+            padding: 0 4px;
+            margin-left: 6px;
+            font-size: 0.8rem;
+            line-height: 1;
+            opacity: 0;
+            transition: opacity 0.12s ease, color 0.12s ease;
+            position: relative;
+
+            &:hover {
+                color: var(--eh-accent, #7BCEA0);
+            }
+        }
+
+        .eh_dr_note_btn--has {
+            opacity: 1;
+            color: var(--eh-accent, #7BCEA0);
+        }
+
+        tr:hover .eh_dr_note_btn {
+            opacity: 1;
+        }
+
+        .eh_dr_note_badge {
+            display: inline-block;
+            min-width: 14px;
+            padding: 0 3px;
+            margin-left: 2px;
+            font-size: 0.62rem;
+            font-weight: 700;
+            line-height: 14px;
+            text-align: center;
+            color: var(--eh-bg, #080C0A);
+            background: var(--eh-accent, #7BCEA0);
+            border-radius: 999px;
+            vertical-align: top;
+        }
+
+        .eh_dr_note_backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 1040;
+        }
+
+        .eh_dr_note_popover {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1050;
+            width: 280px;
+            margin-top: 4px;
+            background: var(--eh-surface, #0F1512);
+            border: 1px solid var(--eh-border-strong, #2A3B32);
+            border-radius: var(--eh-radius-sm, 10px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+            padding: 10px;
+            text-align: left;
+            white-space: normal;
+            cursor: default;
+        }
+
+        .eh_dr_note_pop_head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .eh_dr_note_pop_title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--eh-text-dim, #6B7E72);
+        }
+
+        .eh_dr_note_pop_close {
+            border: none;
+            background: transparent;
+            font-size: 1.1rem;
+            line-height: 1;
+            color: var(--eh-text-dim, #6B7E72);
+            cursor: pointer;
+        }
+
+        .eh_dr_note_list {
+            max-height: 180px;
+            overflow-y: auto;
+            margin-bottom: 8px;
+        }
+
+        .eh_dr_note_item {
+            padding: 6px 0;
+            border-bottom: 1px solid var(--eh-border, #1E2A24);
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+
+        .eh_dr_note_text {
+            font-size: 0.82rem;
+            color: var(--eh-text, #E8EDE9);
+            white-space: pre-wrap;
+        }
+
+        .eh_dr_note_meta {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 2px;
+            font-size: 0.7rem;
+            color: var(--eh-text-dim, #6B7E72);
+        }
+
+        .eh_dr_note_del {
+            border: none;
+            background: transparent;
+            color: var(--eh-down, #E08C7B);
+            cursor: pointer;
+            font-size: 0.9rem;
+            line-height: 1;
+            margin-left: auto;
+            padding: 0 2px;
+        }
+
+        .eh_dr_note_empty {
+            font-size: 0.78rem;
+            color: var(--eh-text-dim, #6B7E72);
+            font-style: italic;
+            padding: 4px 0;
+        }
+
+        .eh_dr_note_add {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .eh_dr_note_textarea {
+            width: 100%;
+            font-size: 0.82rem;
+            border: 1px solid var(--eh-border-strong, #2A3B32);
+            border-radius: 6px;
+            padding: 6px 8px;
+            resize: vertical;
+            background: var(--eh-surface-2, #151D19);
+            color: var(--eh-text, #E8EDE9);
+
+            &:focus {
+                outline: none;
+                border-color: var(--eh-accent, #7BCEA0);
+            }
+        }
+
+        .eh_dr_note_add_btn {
+            align-self: flex-end;
+        }
+    }
+}

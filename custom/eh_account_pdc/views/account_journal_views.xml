@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Bank journal form: bounce charges expense account, placed next to the
+    suspense account the PDC flow already reads from the journal.
+-->
+<odoo>
+
+    <record id="view_account_journal_form_eh_pdc" model="ir.ui.view">
+        <field name="name">account.journal.form.eh.pdc</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='suspense_account_id']" position="after">
+                <field name="eh_pdc_bounce_charge_account_id"
+                       invisible="type not in ('bank', 'cash')"
+                       options="{'no_quick_create': True}"
+                       groups="account.group_account_readonly"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

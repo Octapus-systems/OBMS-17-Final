@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_eh_ap_tolerance_profile_user,eh.ap.tolerance.profile user,model_eh_ap_tolerance_profile,eh_account_base.group_eh_user,1,0,0,0
+access_eh_ap_tolerance_profile_manager,eh.ap.tolerance.profile manager,model_eh_ap_tolerance_profile,eh_account_base.group_eh_manager,1,1,1,1
+access_eh_ap_intake_user,eh.ap.intake user,model_eh_ap_intake,eh_account_base.group_eh_user,1,1,1,0
+access_eh_ap_intake_manager,eh.ap.intake manager,model_eh_ap_intake,eh_account_base.group_eh_manager,1,1,1,1
+access_eh_ap_intake_line_user,eh.ap.intake.line user,model_eh_ap_intake_line,eh_account_base.group_eh_user,1,1,1,0
+access_eh_ap_intake_line_manager,eh.ap.intake.line manager,model_eh_ap_intake_line,eh_account_base.group_eh_manager,1,1,1,1

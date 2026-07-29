@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_eh_collections_case_form_ai" model="ir.ui.view">
+        <field name="name">eh.collections.case.form.ai</field>
+        <field name="model">eh.collections.case</field>
+        <field name="inherit_id"
+               ref="eh_account_collections.view_eh_collections_case_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_eh_ai_refresh_suggestion"
+                        type="object"
+                        string="Refresh AI suggestion"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="AI Next Action" name="ai_next_action">
+                    <group string="Suggested next action">
+                        <field name="eh_ai_suggested_action" readonly="1"/>
+                        <field name="eh_ai_suggested_priority"
+                               widget="badge"
+                               decoration-danger="eh_ai_suggested_priority == 'high'"
+                               decoration-warning="eh_ai_suggested_priority == 'medium'"
+                               decoration-success="eh_ai_suggested_priority == 'low'"
+                               readonly="1"/>
+                    </group>
+                    <separator string="Rationale"/>
+                    <field name="eh_ai_suggestion_rationale" readonly="1"/>
+                    <p class="text-muted">
+                        Deterministic suggestion from the dunning ladder.
+                        An active promise to pay always suppresses
+                        escalation. Configure an AI provider on the
+                        company and press Refresh AI suggestion to enrich
+                        the narrative below.
+                    </p>
+                    <separator string="AI narrative"
+                               invisible="not eh_ai_suggestion_narrative"/>
+                    <field name="eh_ai_suggestion_narrative" readonly="1"
+                           invisible="not eh_ai_suggestion_narrative"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

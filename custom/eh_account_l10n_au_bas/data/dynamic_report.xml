@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+
+    <!--
+        Register the BAS run as an entry in the dynamic-reports
+        catalog. The bas_run.action_compute path looks this record
+        up by code='au_bas' and writes a row to the
+        eh.account.report.execution audit table on each compute, so
+        the BAS lodgement chain has a queryable execution trail
+        alongside the other statutory reports. handler_model is
+        deliberately blank: BAS computes via its own bas_run code
+        path, not via the dynamic-reports rendering pipeline. The
+        catalog record exists for audit linkage only.
+    -->
+    <record id="report_au_bas" model="eh.account.dynamic.report">
+        <field name="code">au_bas</field>
+        <field name="name">Australian BAS Run</field>
+        <field name="handler_model">eh.account.dynamic.report.handler.profit_and_loss</field>
+        <field name="sequence">200</field>
+        <field name="description">Australian Business Activity Statement quarterly run. Computed amounts feed the BAS form labels (G1 to G20, 1A, 1B, W1, W2). Audit-row linkage only; the actual compute lives in eh.bas.run.</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_eh_cost_card_list" model="ir.ui.view">
+        <field name="name">eh.cost.card.list</field>
+        <field name="model">eh.cost.card</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="product_id" optional="show"/>
+                <field name="item_name" optional="show"/>
+                <field name="std_cost_unit"/>
+                <field name="std_variable_cost_unit" optional="show"/>
+                <field name="std_fixed_cost_unit" optional="hide"/>
+                <field name="normal_capacity" optional="hide"/>
+                <field name="budget_fixed_overhead" widget="monetary" optional="hide"/>
+                <field name="date_from" optional="hide"/>
+                <field name="date_to" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-muted="state == 'superseded'"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eh_cost_card_form" model="ir.ui.view">
+        <field name="name">eh.cost.card.form</field>
+        <field name="model">eh.cost.card</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object"
+                            string="Activate" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_supersede" type="object"
+                            string="Supersede"
+                            invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar" readonly="1"
+                           statusbar_visible="draft,active"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="product_id"
+                                   readonly="state != 'draft'"/>
+                            <field name="item_name"
+                                   readonly="state != 'draft'"/>
+                            <field name="normal_capacity"
+                                   readonly="state != 'draft'"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="std_cost_unit" readonly="1"/>
+                            <field name="std_variable_cost_unit" readonly="1"/>
+                            <field name="std_fixed_cost_unit" readonly="1"/>
+                            <field name="budget_fixed_overhead"
+                                   widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Standard Cost Elements (per unit of output)">
+                        <field name="line_ids" nolabel="1" colspan="2"
+                               readonly="state != 'draft'">
+                            <tree editable="bottom">
+                                <field name="element"/>
+                                <field name="name"/>
+                                <field name="uom_name"/>
+                                <field name="std_qty"/>
+                                <field name="std_price"/>
+                                <field name="std_cost" readonly="1"/>
+                                <field name="currency_id" column_invisible="1"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group>
+                        <field name="notes" nolabel="1" colspan="2"
+                               placeholder="Basis of the standards (engineering study, prior-year average, supplier quote), review cycle, approval trail..."/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_eh_cost_card" model="ir.actions.act_window">
+        <field name="name">Standard Cost Cards</field>
+        <field name="res_model">eh.cost.card</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first standard cost card</p>
+            <p>Set the standard variable and fixed cost per unit for a product here, then use it as the baseline for period actuals and variance analysis.</p>
+        </field>
+    </record>
+
+</odoo>

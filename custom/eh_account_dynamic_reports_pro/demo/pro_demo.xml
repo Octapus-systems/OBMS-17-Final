@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            Demo saved views and one schedule for the Pro module.
+            Saved views show how a user can pin commonly used filter
+            combinations to the dashboard. The schedule is inactive so
+            it does not actually email anyone after install; an admin
+            flips active=True after pointing it at real recipients.
+        -->
+
+        <record id="demo_saved_view_tb_qtd" model="eh.report.saved.view">
+            <field name="name">Trial Balance, quarter to date</field>
+            <field name="report_id" ref="eh_account_dynamic_reports.report_trial_balance"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="sequence">10</field>
+            <field name="pinned" eval="True"/>
+            <field name="is_shared" eval="True"/>
+            <field name="notes">Default trial balance view from quarter start to today.</field>
+            <field name="options_json">{"date":{"mode":"range","date_from":"auto_qtd","date_to":"today"},"posted_only":true,"show_zero":false}</field>
+        </record>
+
+        <record id="demo_saved_view_pl_ytd" model="eh.report.saved.view">
+            <field name="name">P and L, year to date with comparatives</field>
+            <field name="report_id" ref="eh_account_dynamic_reports.report_profit_and_loss"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="sequence">20</field>
+            <field name="pinned" eval="True"/>
+            <field name="notes">YTD P and L with prior year comparison column.</field>
+            <field name="options_json">{"date":{"mode":"range","date_from":"auto_ytd","date_to":"today"},"posted_only":true,"comparative":"prior_year"}</field>
+        </record>
+
+        <record id="demo_schedule_monthly_pl" model="eh.report.schedule">
+            <field name="name">Monthly P and L to finance team (demo)</field>
+            <field name="report_id" ref="eh_account_dynamic_reports.report_profit_and_loss"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="active" eval="False"/>
+            <field name="interval">1</field>
+            <field name="interval_unit">month</field>
+            <field name="delivery_format">pdf</field>
+            <field name="subject">P and L for the month just closed</field>
+            <field name="body">
+                Hi team,
+                please find the P and L for the month just closed attached.
+                Configure recipients before activating.
+            </field>
+            <field name="options_json">{"date":{"mode":"range","date_from":"auto_prev_month_start","date_to":"auto_prev_month_end"},"posted_only":true}</field>
+        </record>
+
+    </data>
+</odoo>

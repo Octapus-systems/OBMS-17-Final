@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_eh_report_forecast_tree" model="ir.ui.view">
+        <field name="name">eh.report.forecast.list</field>
+        <field name="model">eh.report.forecast</field>
+        <field name="arch" type="xml">
+            <tree string="Forecast Scenarios" sample="1">
+                <field name="name"/>
+                <field name="base_report_id"/>
+                <field name="scenario_label"/>
+                <field name="growth_method"/>
+                <field name="monthly_growth_pct"/>
+                <field name="horizon_months"/>
+                <field name="last_run"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eh_report_forecast_form" model="ir.ui.view">
+        <field name="name">eh.report.forecast.form</field>
+        <field name="model">eh.report.forecast</field>
+        <field name="arch" type="xml">
+            <form string="Forecast Scenario">
+                <header>
+                    <button name="action_project_now"
+                            type="object"
+                            string="Run Projection"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="name" placeholder="2026 Optimistic Case"/>
+                    </h1>
+                    <group>
+                        <group string="Base Period">
+                            <field name="base_report_id"/>
+                            <field name="base_date_from"/>
+                            <field name="base_date_to"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Projection">
+                            <field name="scenario_label"/>
+                            <field name="horizon_months"/>
+                            <field name="growth_method"/>
+                            <field name="monthly_growth_pct"
+                                   invisible="growth_method != 'linear'"/>
+                            <field name="last_run" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eh_report_forecast_search" model="ir.ui.view">
+        <field name="name">eh.report.forecast.search</field>
+        <field name="model">eh.report.forecast</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="base_report_id"/>
+                <field name="scenario_label"/>
+                <filter name="filter_method_flat" string="Flat Growth"
+                        domain="[('growth_method', '=', 'flat')]"/>
+                <filter name="filter_method_linear" string="Linear Growth"
+                        domain="[('growth_method', '=', 'linear')]"/>
+                <group>
+                    <filter name="group_base_report" string="Base Report"
+                            context="{'group_by': 'base_report_id'}"/>
+                    <filter name="group_growth_method" string="Growth Method"
+                            context="{'group_by': 'growth_method'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_eh_report_forecast" model="ir.actions.act_window">
+        <field name="name">Forecast Scenarios</field>
+        <field name="res_model">eh.report.forecast</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_eh_report_forecast_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No forecast scenarios yet.</p>
+            <p>A forecast picks a base report, a baseline period, and a growth method. The projection runs the base report once and applies the growth model to every numeric cell over the configured horizon.</p>
+        </field>
+    </record>
+
+</odoo>

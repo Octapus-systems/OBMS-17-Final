@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_move_form_eh_release_to_pay" model="ir.ui.view">
+        <field name="name">account.move.form.eh.release.to.pay</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <field name="eh_payment_hold" invisible="1"/>
+                <button name="action_eh_hold_payment" type="object"
+                        string="Hold Payment"
+                        invisible="move_type != 'in_invoice' or state != 'posted' or eh_payment_hold"/>
+                <button name="action_eh_release_payment" type="object"
+                        string="Release Payment"
+                        invisible="move_type != 'in_invoice' or not eh_payment_hold"/>
+                <field name="eh_release_to_pay" widget="badge"
+                       decoration-muted="eh_release_to_pay == 'not_ready'"
+                       decoration-warning="eh_release_to_pay == 'hold'"
+                       decoration-danger="eh_release_to_pay == 'exception'"
+                       decoration-success="eh_release_to_pay == 'released'"
+                       invisible="move_type != 'in_invoice'"/>
+            </header>
+            <sheet position="inside">
+                <group name="eh_release_to_pay_group"
+                       invisible="move_type != 'in_invoice' or not eh_payment_hold">
+                    <field name="eh_hold_reason"/>
+                </group>
+            </sheet>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,28 @@
+{'name': 'Blue MuK Chatter',
+ 'summary': 'Adds options for the chatter',
+ 'description': '\n'
+                '        This module improves the design of the chatter and adds a user\n'
+                '        preference to set the position of the chatter in the form view.\n'
+                '    ',
+ 'version': '17.0.1.0.0',
+ 'category': 'Tools/UI',
+ 'license': 'LGPL-3',
+ 'author': 'MuK IT',
+ 'website': 'http://www.mukit.at',
+ 'live_test_url': 'https://mukit.at/demo',
+ 'contributors': ['Mathias Markl <mathias.markl@mukit.at>'],
+ 'depends': ['mail'],
+ 'data': ['views/res_users.xml'],
+ 'assets': {'web._assets_primary_variables': [('after',
+                                               'web/static/src/scss/primary_variables.scss',
+                                               'blue_web_chatter/static/src/scss/variables.scss')],
+            'web.assets_backend': [('after',
+                                    'mail/static/src/views/web/form/form_compiler.js',
+                                    'blue_web_chatter/static/src/views/form/form_compiler.js'),
+                                   'blue_web_chatter/static/src/core/**/*.xml',
+                                   'blue_web_chatter/static/src/core/**/*.scss']},
+ 'images': ['static/description/banner.png'],
+ 'installable': True,
+ 'application': False,
+ 'auto_install': False,
+ 'maintainer': 'Conexão Azul Digital'}

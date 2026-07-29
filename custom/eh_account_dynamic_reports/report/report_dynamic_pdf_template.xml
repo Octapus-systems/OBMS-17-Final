@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!--
+        QWeb template that backs every PDF export from the dynamic
+        reports viewer (Trial Balance, Profit & Loss, Balance Sheet,
+        General Ledger, Aged Receivables / Payables, Cash Flow,
+        Customer Statement, Partner Ledger, Tax Summary, etc.).
+
+        Renders one page per `r in rendered`; each `r` carries the
+        report doc and the cached payload (columns + lines + meta +
+        currency).
+
+        Visual identity is delegated to the suite stylesheet at
+        `eh_account_base.eh_report_styles` and the footer at
+        `eh_account_base.eh_report_footer`. The paperformat sets a
+        generous top margin so web.external_layout's company header
+        band never collides with the report title on the first page.
+    -->
+
+    <template id="report_dynamic_pdf_template">
+        <t t-call="web.html_container">
+            <t t-foreach="rendered" t-as="r">
+                <t t-set="company" t-value="r.get('doc').env.company"/>
+                <t t-call="eh_account_base.eh_clean_layout">
+                    <t t-call="eh_account_base.eh_report_styles"/>
+                    <div class="page eh_pdf_page">
+
+                        <t t-call="eh_account_base.eh_report_header">
+                            <t t-set="title" t-value="r.get('doc').name"/>
+                        </t>
+
+                        <div class="eh_pdf_meta">
+                            <t t-set="meta" t-value="r.get('payload').get('meta', {})"/>
+                            <t t-if="meta.get('date_from') and meta.get('date_to')">
+                                <span class="eh_pdf_meta_field"><strong>Period:</strong>
+                                    <t t-out="meta.get('date_from')"/> to
+                                    <t t-out="meta.get('date_to')"/>
+                                </span>
+                                <span class="eh_pdf_meta_sep">|</span>
+                            </t>
+                            <t t-elif="meta.get('date_to')">
+                                <span class="eh_pdf_meta_field"><strong>As at:</strong>
+                                    <t t-out="meta.get('date_to')"/>
+                                </span>
+                                <span class="eh_pdf_meta_sep">|</span>
+                            </t>
+                            <span class="eh_pdf_meta_field"><strong>Posted only:</strong>
+                                <t t-out="'Yes' if meta.get('posted_only') else 'No'"/>
+                            </span>
+                            <t t-set="curr" t-value="r.get('payload').get('currency') or {}"/>
+                            <t t-if="curr">
+                                <span class="eh_pdf_meta_sep">|</span>
+                                <span class="eh_pdf_meta_field">
+                                    <strong>Currency:</strong>
+                                    <t t-if="curr.get('multi_currency')">Multi-currency</t>
+                                    <t t-else="">
+                                        <t t-out="curr.get('name', '')"/>
+                                        <t t-if="curr.get('symbol')">
+                                            (<t t-out="curr.get('symbol')"/>)
+                                        </t>
+                                    </t>
+                                </span>
+                            </t>
+                            <span class="eh_pdf_meta_sep">|</span>
+                            <span class="eh_pdf_meta_field"><strong>Generated:</strong>
+                                <t t-out="r.get('payload').get('generated_at', '')"/>
+                            </span>
+                        </div>
+
+                        <table class="eh_pdf_table">
+                            <thead>
+                                <tr>
+                                    <t t-foreach="r.get('payload').get('columns') or []"
+                                       t-as="col">
+                                        <th t-att-class="'text-end' if col.get('figure_type') in ('monetary', 'integer', 'float', 'percentage') else ''">
+                                            <t t-out="col.get('name')"/>
+                                        </th>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="r.get('lines') or []" t-as="line">
+                                    <tr t-att-class="line.get('css_class')">
+                                        <td t-att-style="'padding-left: %sem;' % str((line.get('level') or 0) * 1.0)">
+                                            <t t-out="line.get('name')"/>
+                                        </td>
+                                        <t t-foreach="line.get('cells') or []" t-as="cell">
+                                            <td t-att-class="'text-end' if cell.get('align_right') else ''">
+                                                <t t-out="cell.get('display')"/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                                <t t-if="not r.get('lines')">
+                                    <tr>
+                                        <td t-att-colspan="len(r.get('payload').get('columns') or []) or 1"
+                                            class="text-center text-muted"
+                                            style="padding: 20pt;">
+                                            No data for the selected filters.
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <t t-call="eh_account_base.eh_report_footer"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

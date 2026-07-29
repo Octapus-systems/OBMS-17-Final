@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<!-- Long-text cell wrapper. Below the threshold the text renders verbatim
+     (no chrome). Above it, the clipped text plus a "..." reveal button that
+     opens the popover. Inline-styled with the house tokens so it matches the
+     dark theme even though the Odoo popover root sits outside .eh_dr. -->
+<t t-name="eh_account_dynamic_reports.CellEllipsis">
+    <t t-if="!isLong">
+        <t t-out="text"/>
+    </t>
+    <t t-else="">
+        <span class="eh_dr_ellipsis" t-ref="target" t-att-title="text">
+            <span class="eh_dr_ellipsis_text"><t t-out="truncated"/></span><button
+                class="eh_dr_ellipsis_btn"
+                t-on-click.stop="() => this.onReveal()"
+                title="Show full text">…</button>
+        </span>
+    </t>
+</t>
+
+<!-- Popover body: full text + a Copy action. Inline styles keep it on the
+     dark palette since the popover is portalled to the document root, away
+     from the .eh_dr token scope. -->
+<t t-name="eh_account_dynamic_reports.CellEllipsisPopover">
+    <div class="eh_dr_ellipsis_pop"
+         style="max-width:340px; padding:10px; background:var(--eh-surface, #0F1512); color:var(--eh-text, #E8EDE9); border:1px solid var(--eh-border, #1E2A24); border-radius:var(--eh-radius-sm, 10px); box-shadow:0 8px 24px rgba(0,0,0,0.45);">
+        <div class="eh_dr_ellipsis_pop_text"
+             style="white-space:normal; word-break:break-word; font-size:0.85rem; line-height:1.4;">
+            <t t-out="props.text"/>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+            <button class="btn btn-sm eh_dr_ellipsis_copy"
+                    style="font-size:0.78rem; padding:2px 10px; border:1px solid var(--eh-border-strong, #2A3B32); border-radius:6px; background:var(--eh-surface-2, #151D19); color:var(--eh-accent, #7BCEA0); cursor:pointer;"
+                    t-on-click.stop="() => this.onCopyClick()">
+                <i class="fa fa-copy me-1"/>Copy
+            </button>
+        </div>
+    </div>
+</t>
+
+</templates>

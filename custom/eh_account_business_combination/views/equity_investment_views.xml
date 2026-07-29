@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_eh_equity_investment_list" model="ir.ui.view">
+        <field name="name">eh.equity.investment.list</field>
+        <field name="model">eh.equity.investment</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="investee_name"/>
+                <field name="kind"/>
+                <field name="ownership_pct"/>
+                <field name="cost_of_investment" widget="monetary" optional="hide"/>
+                <field name="carrying_amount" widget="monetary" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-muted="state in ('cancelled', 'disposed')"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eh_equity_investment_form" model="ir.ui.view">
+        <field name="name">eh.equity.investment.form</field>
+        <field name="model">eh.equity.investment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object"
+                            string="Activate at Cost" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_pickup_profit" type="object"
+                            string="Pick up Share of Profit"
+                            invisible="state != 'active'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_record_dividend" type="object"
+                            string="Record Dividend"
+                            invisible="state != 'active'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_impair" type="object"
+                            string="Impair"
+                            invisible="state != 'active'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_dispose" type="object" string="Dispose"
+                            invisible="state != 'active'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('disposed', 'cancelled')"/>
+                    <field name="state" widget="statusbar" readonly="1"
+                           statusbar_visible="draft,active,disposed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_moves" type="object"
+                                class="oe_stat_button" icon="fa-book">
+                            <field name="move_count" widget="statinfo"
+                                   string="Entries"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="investee_name"/>
+                            <field name="kind"/>
+                            <field name="ownership_pct"/>
+                            <field name="cost_of_investment" widget="monetary"
+                                   readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="carrying_amount" widget="monetary" readonly="1"/>
+                            <field name="cumulative_share_of_profit" widget="monetary" readonly="1"/>
+                            <field name="cumulative_dividends" widget="monetary" readonly="1"/>
+                            <field name="cumulative_impairment" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Period Inputs" invisible="state != 'active'">
+                        <group>
+                            <field name="investee_profit" widget="monetary"/>
+                            <field name="dividend_received" widget="monetary"/>
+                            <field name="impairment_amount" widget="monetary"/>
+                            <field name="disposal_proceeds" widget="monetary"/>
+                        </group>
+                    </group>
+                    <group string="Accounts">
+                        <group>
+                            <field name="investment_account_id"/>
+                            <field name="share_of_profit_account_id"/>
+                            <field name="cash_account_id"/>
+                        </group>
+                        <group>
+                            <field name="impairment_account_id"/>
+                            <field name="disposal_gain_loss_account_id"/>
+                            <field name="journal_id"/>
+                        </group>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="eh_account_business_combination_equity_investment_view_graph" model="ir.ui.view">
+        <field name="name">eh.equity.investment.graph</field>
+        <field name="model">eh.equity.investment</field>
+        <field name="arch" type="xml">
+            <graph string="Associates &amp; JVs" type="bar">
+                <field name="kind"/>
+                <field name="carrying_amount" type="measure"/>
+                <field name="cost_of_investment" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="eh_account_business_combination_equity_investment_view_pivot" model="ir.ui.view">
+        <field name="name">eh.equity.investment.pivot</field>
+        <field name="model">eh.equity.investment</field>
+        <field name="arch" type="xml">
+            <pivot string="Associates &amp; JVs">
+                <field name="kind" type="row"/>
+                <field name="state" type="col"/>
+                <field name="cost_of_investment" type="measure"/>
+                <field name="carrying_amount" type="measure"/>
+                <field name="cumulative_share_of_profit" type="measure"/>
+                <field name="cumulative_impairment" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_eh_equity_investment" model="ir.actions.act_window">
+        <field name="name">Associates &amp; JVs</field>
+        <field name="res_model">eh.equity.investment</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add your first equity investment</p>
+            <p>Account for associates and joint ventures under the equity method, tracking cost, share of profit, dividends, and impairment against the carrying amount. Use the New button to add an investee.</p>
+        </field>
+    </record>
+
+</odoo>

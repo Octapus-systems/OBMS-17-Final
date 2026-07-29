@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_eh_revenue_contract_list" model="ir.ui.view">
+        <field name="name">eh.revenue.contract.list</field>
+        <field name="model">eh.revenue.contract</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="contract_date"/>
+                <field name="transaction_price" widget="monetary"/>
+                <field name="amount_recognised" widget="monetary" optional="show"/>
+                <field name="amount_billed" widget="monetary" optional="show"/>
+                <field name="contract_asset" widget="monetary" optional="hide"/>
+                <field name="contract_liability" widget="monetary" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-muted="state in ('cancelled', 'done')"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eh_revenue_contract_form" model="ir.ui.view">
+        <field name="name">eh.revenue.contract.form</field>
+        <field name="model">eh.revenue.contract</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object"
+                            string="Activate" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_recognise" type="object"
+                            string="Recognise Revenue" class="btn-primary"
+                            invisible="state != 'active'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_accrue_financing" type="object"
+                            string="Accrue Financing Interest"
+                            invisible="state != 'active' or not financing_payment_date"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_bill" type="object"
+                            string="Record Billing"
+                            invisible="state != 'active'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_open_modification_wizard"
+                            type="object" string="Modify Contract"
+                            invisible="state != 'active'"
+                            groups="eh_account_base.group_eh_manager"/>
+                    <button name="action_open_period_reviews" type="object"
+                            string="Period Constraint Review"
+                            invisible="state != 'active'"/>
+                    <button name="action_close" type="object" string="Close"
+                            invisible="state != 'active'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('done', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,done" readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_moves" type="object"
+                                class="oe_stat_button" icon="fa-book">
+                            <field name="move_count" widget="statinfo"
+                                   string="Entries"/>
+                        </button>
+                        <button name="action_view_modifications" type="object"
+                                class="oe_stat_button" icon="fa-exchange"
+                                invisible="modification_count == 0">
+                            <field name="modification_count" widget="statinfo"
+                                   string="Modifications"/>
+                        </button>
+                        <button name="action_view_constraint_reviews"
+                                type="object" class="oe_stat_button"
+                                icon="fa-balance-scale"
+                                invisible="review_count == 0">
+                            <field name="review_count" widget="statinfo"
+                                   string="Reviews"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"
+                                   readonly="state != 'draft'"/>
+                            <field name="contract_date"
+                                   readonly="state != 'draft'"/>
+                            <field name="transaction_price" widget="monetary"
+                                   readonly="state != 'draft'"/>
+                            <field name="total_ssp" widget="monetary" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="amount_recognised" widget="monetary" readonly="1"/>
+                            <field name="amount_billed" widget="monetary" readonly="1"/>
+                            <field name="contract_asset" widget="monetary" readonly="1"/>
+                            <field name="contract_liability" widget="monetary" readonly="1"/>
+                            <field name="bill_amount" widget="monetary"
+                                   invisible="state != 'active'"/>
+                        </group>
+                    </group>
+                    <group string="Accounts">
+                        <group>
+                            <field name="revenue_account_id"/>
+                            <field name="contract_asset_account_id"/>
+                        </group>
+                        <group>
+                            <field name="contract_liability_account_id"/>
+                            <field name="receivable_account_id"/>
+                            <field name="journal_id"/>
+                        </group>
+                    </group>
+                    <group string="Financing Component (IFRS 15.60-65)">
+                        <group>
+                            <field name="financing_component"
+                                   readonly="state != 'draft'"/>
+                            <field name="financing_direction"
+                                   invisible="not financing_component"
+                                   readonly="state != 'draft'"/>
+                            <field name="financing_rate"
+                                   invisible="not financing_component"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="financing_period_months"
+                                   invisible="not financing_component"
+                                   readonly="state != 'draft'"/>
+                            <field name="financing_payment_date"
+                                   invisible="not financing_component"
+                                   readonly="state != 'draft'"/>
+                            <field name="financing_account_id"
+                                   invisible="not financing_component"/>
+                            <field name="financing_pv" widget="monetary"
+                                   readonly="1"
+                                   invisible="not financing_component"/>
+                            <field name="financing_component_amount"
+                                   widget="monetary" readonly="1"
+                                   invisible="not financing_component"/>
+                            <field name="financing_interest_recognised"
+                                   widget="monetary" readonly="1"
+                                   invisible="not financing_component"/>
+                        </group>
+                    </group>
+                    <group string="Closure"
+                           invisible="state not in ('active', 'done')">
+                        <group>
+                            <field name="close_with_remainder"
+                                   readonly="state != 'active'"/>
+                            <field name="close_release_to"
+                                   invisible="not close_with_remainder"
+                                   readonly="state != 'active'"/>
+                            <field name="refund_liability_account_id"
+                                   invisible="not close_with_remainder or close_release_to != 'refund'"
+                                   readonly="state != 'active'"/>
+                            <field name="close_released_amount"
+                                   widget="monetary" readonly="1"
+                                   invisible="not close_released_amount"/>
+                        </group>
+                        <field name="close_reason" colspan="2"
+                               invisible="not close_with_remainder"
+                               readonly="state != 'active'"
+                               placeholder="Manager reason for closing with unsatisfied obligations (required for the override)."/>
+                    </group>
+                    <notebook>
+                        <page string="Performance Obligations">
+                            <field name="obligation_ids"
+                                   readonly="state in ('done', 'cancelled')">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="standalone_price" widget="monetary"/>
+                                    <field name="discount_specific" widget="monetary" optional="hide"/>
+                                    <field name="variable_consideration" optional="hide"/>
+                                    <field name="variable_method" optional="hide"/>
+                                    <field name="variable_estimate" widget="monetary" optional="hide"/>
+                                    <field name="variable_constraint" widget="monetary" optional="hide"/>
+                                    <field name="variable_included" widget="monetary" readonly="1" optional="hide"/>
+                                    <field name="allocated_price" widget="monetary" readonly="1"/>
+                                    <field name="satisfaction"/>
+                                    <field name="progress_method" optional="show"/>
+                                    <field name="method_basis" optional="hide"/>
+                                    <field name="cost_incurred" widget="monetary" optional="hide"/>
+                                    <field name="cost_total_estimate" widget="monetary" optional="hide"/>
+                                    <field name="units_delivered" optional="hide"/>
+                                    <field name="units_total" optional="hide"/>
+                                    <field name="percent_complete"
+                                           readonly="progress_method in ('input_cost', 'output_units')"/>
+                                    <field name="satisfied"/>
+                                    <field name="recognised_amount" widget="monetary" readonly="1"/>
+                                    <field name="to_recognise" widget="monetary" readonly="1"/>
+                                    <field name="allocation_frozen" optional="hide" readonly="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Constraint Reviews">
+                            <field name="review_ids" readonly="1">
+                                <tree>
+                                    <field name="review_date"/>
+                                    <field name="obligation_id"/>
+                                    <field name="previous_estimate" widget="monetary"/>
+                                    <field name="previous_constraint" widget="monetary"/>
+                                    <field name="new_estimate" widget="monetary"/>
+                                    <field name="new_constraint" widget="monetary"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'draft'"
+                                           decoration-success="state == 'applied'"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" nolabel="1" colspan="2"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="eh_account_revenue_contract_view_graph" model="ir.ui.view">
+        <field name="name">eh.revenue.contract.graph</field>
+        <field name="model">eh.revenue.contract</field>
+        <field name="arch" type="xml">
+            <graph string="Revenue Contracts" type="bar">
+                <field name="contract_date" interval="month"/>
+                <field name="transaction_price" type="measure"/>
+                <field name="amount_recognised" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="eh_account_revenue_contract_view_pivot" model="ir.ui.view">
+        <field name="name">eh.revenue.contract.pivot</field>
+        <field name="model">eh.revenue.contract</field>
+        <field name="arch" type="xml">
+            <pivot string="Revenue Contracts">
+                <field name="partner_id" type="row"/>
+                <field name="contract_date" interval="month" type="col"/>
+                <field name="transaction_price" type="measure"/>
+                <field name="amount_recognised" type="measure"/>
+                <field name="amount_billed" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_eh_revenue_contract" model="ir.actions.act_window">
+        <field name="name">Revenue Contracts</field>
+        <field name="res_model">eh.revenue.contract</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first revenue contract</p>
+            <p>Capture an IFRS 15 contract with its performance obligations, allocate the transaction price by standalone selling price, and recognise revenue as each obligation is satisfied. Click New to start.</p>
+        </field>
+    </record>
+
+</odoo>

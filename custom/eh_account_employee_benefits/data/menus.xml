@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <menuitem id="menu_eh_benefit_plan"
+                  name="Benefit Plans"
+                  parent="eh_account_base.menu_eh_ifrs"
+                  action="action_eh_benefit_plan"
+                  sequence="40"
+                  groups="eh_account_base.group_eh_user"/>
+
+        <menuitem id="menu_eh_benefit_valuation"
+                  name="Benefit Valuations"
+                  parent="eh_account_base.menu_eh_ifrs"
+                  action="action_eh_benefit_valuation"
+                  sequence="42"
+                  groups="eh_account_base.group_eh_user"/>
+
+        <menuitem id="menu_eh_benefit_dc_accrual"
+                  name="DC Contribution Accruals"
+                  parent="eh_account_base.menu_eh_ifrs"
+                  action="action_eh_benefit_dc_accrual"
+                  sequence="44"
+                  groups="eh_account_base.group_eh_user"/>
+
+    </data>
+</odoo>

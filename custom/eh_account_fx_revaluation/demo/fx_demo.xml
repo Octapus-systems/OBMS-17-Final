@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+        <!--
+        FX revaluation runs require company specific account ids that
+        are not deterministic across chart of accounts variants. Demo
+        seeds nothing here; the form view itself includes a clear
+        empty state explaining how to create the first run.
+        -->
+    </data>
+</odoo>

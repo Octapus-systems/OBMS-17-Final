@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_eh_asset_lvp_pool_tree" model="ir.ui.view">
+        <field name="name">eh.asset.lvp.pool.list</field>
+        <field name="model">eh.asset.lvp.pool</field>
+        <field name="arch" type="xml">
+            <tree string="Low-value asset pools">
+                <field name="name"/>
+                <field name="company_id"
+                       optional="hide"
+                       groups="base.group_multi_company"/>
+                <field name="asset_count"/>
+                <field name="transferred_in_total" widget="monetary" sum="Total"/>
+                <field name="accumulated_depreciation" widget="monetary"/>
+                <field name="pool_balance" widget="monetary"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eh_asset_lvp_pool_form" model="ir.ui.view">
+        <field name="name">eh.asset.lvp.pool.form</field>
+        <field name="model">eh.asset.lvp.pool</field>
+        <field name="arch" type="xml">
+            <form string="Low-value asset pool">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Low-Value Pool 2026"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="active"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                            <field name="threshold" widget="monetary"/>
+                            <field name="first_year_rate"/>
+                            <field name="subsequent_year_rate"/>
+                        </group>
+                        <group>
+                            <field name="asset_count" readonly="1"/>
+                            <field name="transferred_in_total" widget="monetary" readonly="1"/>
+                            <field name="accumulated_depreciation" widget="monetary" readonly="1"/>
+                            <field name="pool_balance" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="pool_account_id"/>
+                            <field name="accumulated_account_id"/>
+                        </group>
+                        <group>
+                            <field name="expense_account_id"/>
+                            <field name="journal_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Assets in pool">
+                            <field name="asset_ids" readonly="1">
+                                <tree>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="acquisition_cost" widget="monetary"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Annual depreciation">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="year"/>
+                                    <field name="opening_balance" widget="monetary"/>
+                                    <field name="additions" widget="monetary"/>
+                                    <field name="amount" widget="monetary" sum="Total"/>
+                                    <field name="is_posted" widget="boolean_toggle" readonly="1"/>
+                                    <field name="move_id" optional="hide"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <button name="action_post"
+                                            type="object"
+                                            string="Post"
+                                            invisible="is_posted"
+                                            icon="fa-check"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                    <field name="currency_id" invisible="1"/>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eh_asset_lvp_pool_search" model="ir.ui.view">
+        <field name="name">eh.asset.lvp.pool.search</field>
+        <field name="model">eh.asset.lvp.pool</field>
+        <field name="arch" type="xml">
+            <search string="Low-value pools">
+                <field name="name"/>
+                <field name="pool_account_id"/>
+                <field name="journal_id"/>
+                <filter string="Archived" name="archived"
+                        domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Company" name="group_company"
+                            context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                    <filter string="Pool Journal" name="group_journal"
+                            context="{'group_by': 'journal_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_eh_asset_lvp_pool" model="ir.actions.act_window">
+        <field name="name">Low-value pools</field>
+        <field name="res_model">eh.asset.lvp.pool</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_eh_asset_lvp_pool_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first low-value pool</p>
+            <p>Group low-value assets into a single pool for idempotent annual depreciation under the Australian regime. Use New to open a pool, then add eligible assets to it.</p>
+        </field>
+    </record>
+
+</odoo>

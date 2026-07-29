@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data noupdate="1">
+
+    <record id="base.partner_root" model="res.partner">
+        <field name="name">Octapus Bot</field>
+        <field name="image_1920" type="base64" file="web/static/img/odoo-icon-512x512.png"/>
+    </record>
+
+    <!-- user root should not receive emails at creation -->
+    <record id="base.user_root" model="res.users">
+        <field name="notification_type">inbox</field>
+    </record>
+
+</data></odoo>
