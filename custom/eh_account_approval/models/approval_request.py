@@ -130,6 +130,10 @@ class EhApprovalRequest(models.Model):
             "submitted_amount with the correct symbol."
         ),
     )
+    partner_id = fields.Many2one(
+        related='move_id.partner_id', store=True, readonly=True,
+        index=True,
+    )
 
     state = fields.Selection(
         [

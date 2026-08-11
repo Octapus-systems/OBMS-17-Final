@@ -48,12 +48,12 @@ class ResPartner(models.Model):
         # or list view that materialises many records.
         Request = self.env['eh.approval.request'].sudo()
         domain = [
-            ('move_id.partner_id', 'in', self.ids),
+            ('partner_id', 'in', self.ids),
             ('state', 'in', ('pending', 'in_review')),
         ]
         groups = read_group_compat(Request, 
             domain,
-            groupby=['move_id.partner_id'],
+            groupby=['partner_id'],
             aggregates=['__count'],
         )
         counts = {p.id: c for p, c in groups}
@@ -70,7 +70,7 @@ class ResPartner(models.Model):
             'view_mode': 'list,form',
             'views': [(False, 'list'), (False, 'form')],
             'domain': [
-                ('move_id.partner_id', '=', self.id),
+                ('partner_id', '=', self.id),
                 ('state', 'in', ('pending', 'in_review')),
             ],
             'context': {'default_move_id': False},
