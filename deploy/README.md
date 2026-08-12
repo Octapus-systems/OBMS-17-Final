@@ -35,6 +35,31 @@ eh_account_suite,eh_account_dynamic_reports,blue_web_theme \
   --stop-after-init --without-demo=all --workers=0 --max-cron-threads=0
 ```
 
+## Redeploy (update code)
+
+Push updated source to the running EC2 instance and rebuild containers.
+The PostgreSQL data volume is **preserved** — only the Odoo app container is rebuilt.
+
+```powershell
+# From your Windows dev machine (uses the default key + host from the script):
+.\deploy\redeploy.ps1
+
+# With a custom key or different IP:
+.\deploy\redeploy.ps1 -KeyPath "C:\keys\obms-deploy.pem" -Host "1.2.3.4"
+```
+
+What it does:
+
+1. Packages the repo into a tarball (excluding `.git`, `venv`, `node_modules`, `filestore`)
+2. Uploads via SCP to `/opt/obms/` on the EC2 instance
+3. SSHs in, extracts, wires credentials from `deploy.env`, rebuilds the Odoo Docker image
+4. Restarts only the `odoo` and `nginx` containers (`db` stays untouched)
+
+**Prerequisites:**
+- SSH key at `~/.ssh/obms-deploy.pem` (or pass `-KeyPath`)
+- `deploy.env` must already exist at `/opt/obms/deploy.env` on the server (from first deploy)
+- Windows 10+ (ships with `tar` and `ssh`)
+
 ## Gotchas that cost time
 
 **`db_password` must be in `odoo.conf`.** This image runs `odoo-bin` directly,
