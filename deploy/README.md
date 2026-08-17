@@ -30,7 +30,7 @@ docker compose up -d
 # create the database with the same module set as the dev box
 docker compose run --rm --no-deps odoo python odoo-bin \
   -c /etc/odoo/odoo.conf -d obms_17 \
-  -i account,calendar,contacts,crm,purchase,sale_management,stock,\
+  -i account,calendar,contacts,crm,sale_management,stock,\
 eh_account_suite,eh_account_dynamic_reports,blue_web_theme \
   --stop-after-init --without-demo=all --workers=0 --max-cron-threads=0
 ```

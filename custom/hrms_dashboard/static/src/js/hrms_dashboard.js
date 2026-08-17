@@ -552,6 +552,28 @@ export class HrDashboard extends Component{
             target: 'current'
         })
     }
+    loans_to_approve() {
+        this.action.doAction({
+            name: _t("Loan Requests to Approve"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.loan',
+            view_mode: 'tree,form',
+            views: [[false, 'list'], [false, 'form']],
+            domain: [['state', '=', 'waiting_approval_1']],
+            target: 'current'
+        });
+    }
+    advances_to_approve() {
+        this.action.doAction({
+            name: _t("Salary Advances to Approve"),
+            type: 'ir.actions.act_window',
+            res_model: 'salary.advance',
+            view_mode: 'tree,form',
+            views: [[false, 'list'], [false, 'form']],
+            domain: [['state', 'in', ['submit', 'waiting_approval']]],
+            target: 'current'
+        });
+    }
     leaves_request_today() {
         var date = new Date();
         this.action.doAction({
