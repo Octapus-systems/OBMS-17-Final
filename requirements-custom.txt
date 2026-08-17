@@ -4,3 +4,4 @@
 # openpyxl: imported by eh_account_base/tools/xlsx_writer.py (Odoo core itself
 # uses xlsxwriter, so this is not covered by requirements.txt).
 openpyxl==3.1.5
+pandas
