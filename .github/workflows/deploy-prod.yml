@@ -1,0 +1,91 @@
+name: Deploy to AWS Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Package source code
+      run: |
+        tar -czf obms.tar.gz \
+          --exclude=.git \
+          --exclude=.github \
+          --exclude=venv \
+          --exclude=.venv \
+          --exclude=node_modules \
+          --exclude=filestore \
+          --exclude=sessions \
+          --exclude=__pycache__ \
+          --exclude="*.pyc" \
+          --exclude="*.log" \
+          --exclude=Source \
+          .
+          
+    - name: Copy tarball to EC2
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: "obms.tar.gz"
+        target: "/opt/obms"
+        
+    - name: Execute deployment script on EC2
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          set -eux
+          cd /opt/obms
+          
+          echo ">>> Extracting source..."
+          rm -rf src.new
+          mkdir -p src.new
+          tar -xzf obms.tar.gz -C src.new
+          rm -f obms.tar.gz
+          
+          # Swap atomically
+          if [ -d src ]; then
+              mv src src.old
+          fi
+          mv src.new src
+          
+          # Wire credentials from deploy.env
+          if [ -f deploy.env ]; then
+              cp deploy.env src/deploy/.env
+              DB_PASSWORD=$(grep '^DB_PASSWORD=' deploy.env | cut -d= -f2)
+              ADMIN_PASSWD=$(grep '^ADMIN_PASSWD=' deploy.env | cut -d= -f2)
+              sed -i "s|^db_password = .*|db_password = ${DB_PASSWORD}|" src/deploy/odoo.conf
+              sed -i "s|^admin_passwd = .*|admin_passwd = ${ADMIN_PASSWD}|" src/deploy/odoo.conf
+          else
+              echo 'WARNING: deploy.env not found - keeping placeholder credentials in odoo.conf'
+          fi
+          
+          cd src/deploy
+          
+          # Rebuild only the odoo image
+          echo ">>> Building Odoo image..."
+          docker compose build odoo 2>&1 | tail -30
+          
+          # Recreate only changed containers
+          echo ">>> Restarting containers..."
+          docker compose up -d --force-recreate --no-deps odoo
+          docker compose up -d nginx
+          
+          # Cleanup
+          rm -rf /opt/obms/src.old
+          
+          echo ">>> Waiting for health..."
+          sleep 10
+          docker compose ps
+          echo ">>> Done!"
