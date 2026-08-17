@@ -198,19 +198,37 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-6">
                         <div class="card border-0 shadow-sm bg-orange-gradient text-white cursor-pointer hover-lift" t-on-click="leave_allocations_to_approve">
-                            <div class="card-body d-flex align-items-center justify-content-between p-4">
-                                <h6 class="mb-0 text-uppercase tracking-wider">Leave Allocations</h6>
-                                <h2 class="fw-bold mb-0"><t t-esc="this.state.login_employee.leaves_alloc_req"/></h2>
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <h6 class="mb-0 text-uppercase tracking-wider text-xs">Allocations</h6>
+                                <h3 class="fw-bold mb-0"><t t-esc="this.state.login_employee.leaves_alloc_req"/></h3>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-6">
                         <div class="card border-0 shadow-sm bg-teal-gradient text-white cursor-pointer hover-lift" t-on-click="job_applications_to_approve">
-                            <div class="card-body d-flex align-items-center justify-content-between p-4">
-                                <h6 class="mb-0 text-uppercase tracking-wider">Job Applications</h6>
-                                <h2 class="fw-bold mb-0"><t t-esc="this.state.login_employee.job_applications"/></h2>
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <h6 class="mb-0 text-uppercase tracking-wider text-xs">Job Apps</h6>
+                                <h3 class="fw-bold mb-0"><t t-esc="this.state.login_employee.job_applications"/></h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Quick Approvals: Loans, Salary Advances -->
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm bg-purple-gradient text-white cursor-pointer hover-lift" t-on-click="loans_to_approve">
+                            <div class="card-body d-flex flex-column align-items-center justify-content-center p-3 text-center">
+                                <h4 class="fw-bold mb-1"><t t-esc="this.state.login_employee.loans_to_approve"/></h4>
+                                <h6 class="mb-0 text-uppercase text-xs tracking-wider">Loans</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm bg-info-gradient text-white cursor-pointer hover-lift" t-on-click="advances_to_approve">
+                            <div class="card-body d-flex flex-column align-items-center justify-content-center p-3 text-center">
+                                <h4 class="fw-bold mb-1"><t t-esc="this.state.login_employee.advances_to_approve"/></h4>
+                                <h6 class="mb-0 text-uppercase text-xs tracking-wider">Advances</h6>
                             </div>
                         </div>
                     </div>
@@ -269,7 +287,7 @@
     <!-- EmployeeDashboard -->
     <t t-name="EmployeeDashboard">
         <div class="row g-4 mt-1">
-            <div class="col-12 col-lg-4">
+            <div class="col-12 col-lg-6">
                 <div class="card border-0 shadow-sm h-100 notification-card">
                     <div class="card-header bg-white border-bottom pt-4 pb-3">
                         <h5 class="card-title fw-bold text-dark mb-0"><i class="fa fa-birthday-cake text-primary me-2"/> Upcoming Birthdays</h5>
@@ -300,38 +318,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-lg-4">
-                <div class="card border-0 shadow-sm h-100 notification-card">
-                    <div class="card-header bg-white border-bottom pt-4 pb-3">
-                        <h5 class="card-title fw-bold text-dark mb-0"><i class="fa fa-calendar-check-o text-success me-2"/> Upcoming Events</h5>
-                    </div>
-                    <div class="card-body p-0 custom-scrollbar" style="max-height: 350px; overflow-y: auto;">
-                        <ul class="list-group list-group-flush">
-                            <t t-if="this.state.upcoming_events and this.state.upcoming_events.length > 0">
-                                <t t-foreach="this.state.upcoming_events" t-as="event" t-key="event">
-                                    <li class="list-group-item p-3 border-bottom-0">
-                                        <h6 class="mb-1 fw-bold text-dark"><t t-esc="event[0]"/></h6>
-                                        <div class="text-muted small mb-1"><i class="fa fa-clock-o me-1"/> <t t-esc="event[1]"/> - <t t-esc="event[2]"/></div>
-                                        <t t-if="event[3]">
-                                            <div class="text-muted small"><i class="fa fa-map-marker me-1"/> <t t-esc="event[3]"/></div>
-                                        </t>
-                                        <t t-if="event[4]">
-                                            <span class="badge bg-info mt-1">Online</span>
-                                        </t>
-                                    </li>
-                                </t>
-                            </t>
-                            <t t-else="">
-                                <li class="list-group-item p-4 text-center text-muted border-0">
-                                    No upcoming events.
-                                </li>
-                            </t>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-4">
+            <div class="col-12 col-lg-6">
                 <div class="card border-0 shadow-sm h-100 notification-card">
                     <div class="card-header bg-white border-bottom pt-4 pb-3">
                         <h5 class="card-title fw-bold text-dark mb-0"><i class="fa fa-bullhorn text-warning me-2"/> Announcements</h5>
@@ -342,6 +329,20 @@
                                 <t t-foreach="this.state.announcements" t-as="announcement" t-key="announcement">
                                     <li class="list-group-item p-3 border-bottom-0">
                                         <h6 class="mb-1 fw-bold text-dark"><t t-esc="announcement[0]"/></h6>
+                                        <div class="text-muted small"><t t-esc="announcement[1]"/></div>
+                                    </li>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <li class="list-group-item p-4 text-center text-muted border-0">
+                                    No recent announcements.
+                                </li>
+                            </t>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
                                         <div class="text-muted small"><t t-esc="announcement[1]"/></div>
                                     </li>
                                 </t>

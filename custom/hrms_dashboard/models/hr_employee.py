@@ -98,6 +98,29 @@ class HrEmployee(models.Model):
         timesheet_view_id = self.env.ref(
             'hr_timesheet.hr_timesheet_line_search')
         job_applications = self.env['hr.applicant'].sudo().search_count([])
+        
+        # Additional custom HR metrics (Loans, Salary Advance)
+        loans_to_approve = 0
+        if 'hr.loan' in self.env:
+            loans_to_approve = self.env['hr.loan'].sudo().search_count(
+                [('state', '=', 'waiting_approval_1')])
+        
+        advances_to_approve = 0
+        if 'salary.advance' in self.env:
+            advances_to_approve = self.env['salary.advance'].sudo().search_count(
+                [('state', 'in', ['submit', 'waiting_approval'])])
+                
+        my_pending_loans = 0
+        my_pending_advances = 0
+        if employee:
+            emp_id = employee[0]['id']
+            if 'hr.loan' in self.env:
+                my_pending_loans = self.env['hr.loan'].sudo().search_count(
+                    [('employee_id', '=', emp_id), ('state', '=', 'waiting_approval_1')])
+            if 'salary.advance' in self.env:
+                my_pending_advances = self.env['salary.advance'].sudo().search_count(
+                    [('employee_id', '=', emp_id), ('state', 'in', ['submit', 'waiting_approval'])])
+
         if employee:
             sql = """select broad_factor from hr_employee_broad_factor 
             where id =%s"""
@@ -129,6 +152,10 @@ class HrEmployee(models.Model):
                     'leaves_alloc_req': leaves_alloc_req,
                     'emp_timesheets': timesheet_count,
                     'job_applications': job_applications,
+                    'loans_to_approve': loans_to_approve,
+                    'advances_to_approve': advances_to_approve,
+                    'my_pending_loans': my_pending_loans,
+                    'my_pending_advances': my_pending_advances,
                     'timesheet_view_id': timesheet_view_id,
                     'experience': experience,
                     'age': age
@@ -156,17 +183,19 @@ class HrEmployee(models.Model):
         where (to_char(dob,'ddd')::int-to_char(now(),'DDD')::int+
         total_days)%total_days between 0 and 15 order by dif;""")
         birthday = cr.fetchall()
-        # v16:added lang as key for fetching from jsonb;changed query :
-        # retrieve the JSON object field by key
-        lang = f"'{self.env.context['lang']}'"
-        cr.execute("""select  e.name ->> e.lang as name, e.date_begin,
-         e.date_end,rp.name as location
-        from event_event e
-        inner join res_partner rp
-        on e.address_id = rp.id
-        and (e.date_begin >= now())
-        order by e.date_begin""")
-        event = cr.fetchall()
+        event = []
+        if 'event.event' in self.env:
+            try:
+                cr.execute("""select e.name ->> %s as name, e.date_begin,
+                 e.date_end, rp.name as location
+                from event_event e
+                inner join res_partner rp
+                on e.address_id = rp.id
+                and (e.date_begin >= now())
+                order by e.date_begin""", (f"'{self.env.context.get('lang', 'en_US')}'",))
+                event = cr.fetchall()
+            except Exception:
+                event = []
         announcement = []
         if employee:
             department = employee.department_id

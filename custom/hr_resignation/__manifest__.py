@@ -43,7 +43,7 @@
     'live_test_url': 'https://youtu.be/BorJthxY_VI',
     'images': ['static/description/banner.jpg'],
     'license': 'LGPL-3',
-    'installable': True,
+    'installable': False,
     'auto_install': False,
-    'application': True,
+    'application': False,
 }
