@@ -1,6 +1,6 @@
 /** @odoo-module **/
 import { registry } from '@web/core/registry';
-const  { Component, useState } = owl
+import { Component, useState } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 
 class ReminderMenu extends Component {
@@ -8,10 +8,10 @@ class ReminderMenu extends Component {
     setup(){
         this.action = useService("action");
         this.reminder = [];
-        this.rpc = this.env.services.rpc
+        this.rpc = useService("rpc");
         this.state = useState({
             all_remainders:[],
-        })
+        });
     }
 //    Function to work when clicked on the reminder in systray
     async showReminder(ev){

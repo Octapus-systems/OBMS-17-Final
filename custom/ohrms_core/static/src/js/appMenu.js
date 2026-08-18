@@ -1,7 +1,7 @@
 /** @odoo-module */
 import { NavBar } from "@web/webclient/navbar/navbar";
 import { registry } from "@web/core/registry";
-const { fuzzyLookup } = require('@web/core/utils/search');
+import { fuzzyLookup } from "@web/core/utils/search";
 import { computeAppsAndMenuItems } from "@web/webclient/menus/menu_helpers";
 import { onMounted, Component, useRef, useState } from "@odoo/owl";
 const commandProviderRegistry = registry.category("command_provider");
@@ -15,14 +15,20 @@ patch(NavBar.prototype, {
      */
      setup() {
         super.setup();
-        this.search_input = useRef("search-input")
-        this._search_def = new $.Deferred();
-        let { apps, menuItems } = computeAppsAndMenuItems(this.menuService.getMenuAsTree("root"));
-        this._apps = apps;
-        this._searchableMenus = menuItems;
+        this.search_input = useRef("search-input");
+        this._search_def = (window.$ && $.Deferred) ? new $.Deferred() : null;
+        const menuTree = this.menuService?.getMenuAsTree?.("root");
+        if (menuTree) {
+            const { apps, menuItems } = computeAppsAndMenuItems(menuTree);
+            this._apps = apps;
+            this._searchableMenus = menuItems;
+        } else {
+            this._apps = [];
+            this._searchableMenus = [];
+        }
         this.state = useState({
-            results : [],
-        })
+            results: [],
+        });
     },
      _searchMenusSchedule() {
         $('.search-results').removeClass("o_hidden");

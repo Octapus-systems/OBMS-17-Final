@@ -13,7 +13,7 @@ export class AppsMenu extends Dropdown {
     	this.commandPaletteOpen = false;
         this.commandService = useService("command");
     	this.companyService = useService('company');
-    	if (this.companyService.currentCompany.has_background_image) {
+    	if (this.companyService?.currentCompany?.has_background_image) {
             this.backgroundImageUrl = url('/web/image', {
                 model: 'res.company',
                 field: 'background_image',
