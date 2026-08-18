@@ -55,7 +55,12 @@ jobs:
           tar -xzf obms.tar.gz -C src.new
           rm -f obms.tar.gz
           
-          # Swap atomically
+          # Swap atomically.
+          # Always remove src.old first – if a previous deploy failed mid-way,
+          # src.old may still exist. Without this, `mv src src.old` tries to
+          # move src *inside* the existing src.old directory, then fails with
+          # "cannot overwrite src.old/src: Directory not empty".
+          rm -rf src.old
           if [ -d src ]; then
               mv src src.old
           fi
