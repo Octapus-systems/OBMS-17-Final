@@ -343,20 +343,6 @@
                 </div>
             </div>
         </div>
-                                        <div class="text-muted small"><t t-esc="announcement[1]"/></div>
-                                    </li>
-                                </t>
-                            </t>
-                            <t t-else="">
-                                <li class="list-group-item p-4 text-center text-muted border-0">
-                                    No recent announcements.
-                                </li>
-                            </t>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row g-4 mt-1 mb-4">
             <div class="col-12">
