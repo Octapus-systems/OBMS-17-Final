@@ -83,39 +83,45 @@ jobs:
           docker compose up -d --force-recreate --no-deps odoo
 
           # ── TLS bootstrap ──────────────────────────────────────────────────
-          # nginx.conf (TLS) requires the cert to exist before nginx will start.
-          # On the very first deploy the cert is absent, causing the restart loop.
-          # Solution: boot nginx with the HTTP-only config first, run certbot once
-          # to obtain the cert, then switch to the TLS config and reload.
-          # On all future deploys the cert already exists so we skip straight to
-          # the TLS start (the --keep-until-expiring flag makes certbot a no-op).
-          CERT="/etc/letsencrypt/live/obms.octopus.ae/fullchain.pem"
+          # The certbot service has a custom entrypoint (an infinite renew loop).
+          # All one-shot certbot calls MUST use --entrypoint certbot to bypass
+          # that loop; without it docker compose run inherits the entrypoint,
+          # ignores our subcommand, and runs forever → GHA times out.
+          #
+          # Cert lives in the certbot-conf Docker volume, NOT on the host FS.
+          # Check existence inside the volume via --entrypoint sh.
 
-          if [ ! -f "$CERT" ]; then
+          if docker compose run --rm --no-deps --entrypoint sh certbot \
+               -c "test -f /etc/letsencrypt/live/obms.octopus.ae/fullchain.pem" \
+               2>/dev/null; then
+            # ── cert already present: normal start + opportunistic renewal ──
+            echo ">>> Certificate present – starting nginx with TLS config..."
+            docker compose up -d --force-recreate --no-deps nginx
+            # Renew only if expiry is within 30 days; certbot exits 0 either way.
+            docker compose run --rm --no-deps --entrypoint certbot certbot \
+              renew --webroot -w /var/www/certbot --quiet || true
+          else
+            # ── first deploy: obtain cert via HTTP ACME challenge ────────────
             echo ">>> Certificate absent – bootstrapping ACME..."
-            # Save the TLS config and temporarily replace with HTTP-only
+            # Start nginx in HTTP-only mode so port 80 serves the ACME challenge.
             cp nginx.conf nginx.conf.tls
             cp nginx-http.conf nginx.conf
             docker compose up -d --force-recreate --no-deps nginx
-            sleep 5  # give nginx a moment to bind port 80
+            sleep 5   # let nginx bind port 80
 
-            # Obtain the certificate (one-shot container, shares certbot volumes)
-            docker compose run --rm certbot certonly \
+            # Issue the certificate. timeout 90 ensures GHA fails fast if
+            # Let's Encrypt cannot reach port 80 (e.g., Cloudflare proxy blocking).
+            timeout 90 docker compose run --rm --no-deps --entrypoint certbot certbot \
+              certonly \
               --webroot -w /var/www/certbot \
               --domain obms.octopus.ae \
               --email admin@octopus.ae \
               --agree-tos --non-interactive
 
-            # Restore TLS config and do a hot reload (no port flap)
+            # Restore TLS config and hot-reload nginx (no port flap).
             mv nginx.conf.tls nginx.conf
             docker compose exec nginx nginx -s reload
             echo ">>> Certificate obtained – nginx now serving HTTPS"
-          else
-            echo ">>> Certificate present – starting nginx with TLS config..."
-            docker compose up -d --force-recreate --no-deps nginx
-            # Keep cert fresh; certbot skips renewal when >30 days remain
-            docker compose run --rm certbot renew \
-              --webroot -w /var/www/certbot --quiet || true
           fi
           # ───────────────────────────────────────────────────────────────────
 
