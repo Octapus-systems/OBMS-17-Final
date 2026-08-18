@@ -15,7 +15,7 @@ jobs:
       
     - name: Package source code
       run: |
-        tar -czf obms.tar.gz \
+        tar -czf /tmp/obms.tar.gz \
           --exclude=.git \
           --exclude=.github \
           --exclude=venv \
@@ -28,6 +28,7 @@ jobs:
           --exclude="*.log" \
           --exclude=Source \
           .
+        cp /tmp/obms.tar.gz ./obms.tar.gz
           
     - name: Copy tarball to EC2
       uses: appleboy/scp-action@v0.1.7
