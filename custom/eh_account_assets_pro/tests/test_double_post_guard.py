@@ -55,7 +55,7 @@ class TestDoublePostGuard(EhAssetTestCase):
         )
         asset.action_activate()
         asset.action_post_due_lines()
-        line = asset.depreciation_line_ids.filtered(lambda l: l.is_posted)[:1]
+        line = asset.depreciation_line_ids.filtered(lambda line_item: line_item.is_posted)[:1]
         self.assertTrue(line, "expected a posted depreciation line")
         return asset, line
 
@@ -69,7 +69,7 @@ class TestDoublePostGuard(EhAssetTestCase):
         lease.action_activate()
         lease.action_post_due_lines()
         line = lease.schedule_line_ids.filtered(
-            lambda l: l.is_posted).sorted('sequence')[:1]
+            lambda line_item: line_item.is_posted).sorted('sequence')[:1]
         self.assertTrue(line, "expected a posted lease line")
         return lease, line
 

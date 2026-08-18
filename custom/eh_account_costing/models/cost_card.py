@@ -323,7 +323,7 @@ class EhCostCardLine(models.Model):
         # under NewId in onchange.
         for line in self:
             siblings = line.card_id.line_ids.filtered(
-                lambda l: l.element == line.element)
+                lambda line_item: line_item.element == line.element)
             if len(siblings) > 1:
                 raise ValidationError(_(
                     "Cost card %(card)s already has a %(element)s line; one "

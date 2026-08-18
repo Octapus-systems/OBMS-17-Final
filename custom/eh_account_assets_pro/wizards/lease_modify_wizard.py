@@ -341,7 +341,7 @@ class EhLeaseModifyWizard(models.TransientModel):
         # ROU carrying amount going into the rebuild moves by rou_change
         # (which already reflects the floor / proportionate reduction).
         posted_rou = sum(lease.schedule_line_ids.filtered(
-            lambda l: l.is_posted,
+            lambda line_item: line_item.is_posted,
         ).mapped('rou_amount'))
         lease._eh_workflow_write({
             'term_months': self.new_term_months,
@@ -356,7 +356,7 @@ class EhLeaseModifyWizard(models.TransientModel):
             'last_modified_at': fields.Datetime.now(),
         })
 
-        unposted = lease.schedule_line_ids.filtered(lambda l: not l.is_posted)
+        unposted = lease.schedule_line_ids.filtered(lambda line_item: not line_item.is_posted)
         unposted.unlink()
         self._build_modified_schedule(lease, effects)
         lease.message_post(
@@ -393,12 +393,12 @@ class EhLeaseModifyWizard(models.TransientModel):
         )
         rou_accumulated_at_mod = sum(
             lease.schedule_line_ids.filtered(
-                lambda l: l.is_posted,
+                lambda line_item: line_item.is_posted,
             ).mapped('rou_amount'),
         )
 
         posted_seqs = lease.schedule_line_ids.filtered(
-            lambda l: l.is_posted,
+            lambda line_item: line_item.is_posted,
         ).mapped('sequence')
         last_seq = max(posted_seqs) if posted_seqs else 0
 

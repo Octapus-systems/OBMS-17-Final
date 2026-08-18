@@ -29,7 +29,7 @@ import logging
 from datetime import timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError  # noqa: F401
 
 from odoo.addons.eh_account_bank_statement_import.connectors.registry import (
     connector_choices, get_connector,
@@ -246,7 +246,7 @@ class EhBankLiveConnectorProfile(models.Model):
             'company_id': self.company_id.id,
             'journal_id': self.journal_id.id,
             'currency_code': self.journal_id.currency_id.name
-                or self.company_id.currency_id.name,
+                or self.company_id.currency_id.name,  # noqa: E131
             'credentials': creds,
         })()
 

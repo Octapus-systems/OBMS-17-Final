@@ -25,8 +25,8 @@
     'version': '17.0.1.0.0',
     'category': 'Human Resources',
     'summary': 'HR Reminder For OHRMS',
-    'description': """This module is a powerful and easy-to-use tool that can 
-    help you improve your HR processes and ensure that important events are 
+    'description': """This module is a powerful and easy-to-use tool that can
+    help you improve your HR processes and ensure that important events are
     never forgotten.""",
     'author': 'Cybrosys Techno solutions,Open HRMS',
     'company': 'Cybrosys Techno Solutions',

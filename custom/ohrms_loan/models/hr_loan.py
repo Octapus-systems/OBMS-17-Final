@@ -86,8 +86,8 @@ class HrLoan(models.Model):
                                 help="The total amount of the loan")
     balance_amount = fields.Float(string="Balance Amount", store=True,
                                   compute='_compute_total_amount',
-                                  help="""The remaining balance amount of the 
-                                  loan after deducting 
+                                  help="""The remaining balance amount of the
+                                  loan after deducting
                                   the total paid amount.""")
     total_paid_amount = fields.Float(string="Total Paid Amount", store=True,
                                      compute='_compute_total_amount',

@@ -426,10 +426,10 @@ class EhDisposalGroup(models.Model):
         # carries its share and the residual funds the standalone move for the
         # remaining (non-asset) members and the liabilities.
         asset_members = self.line_ids.filtered(
-            lambda l: l.asset_id and not l.is_liability)
+            lambda line_item: line_item.asset_id and not line_item.is_liability)
         total_carry = sum(
-            currency.round(l.carrying_amount)
-            for l in self.line_ids.filtered(lambda l: not l.is_liability))
+            currency.round(line_item.carrying_amount)
+            for line_item in self.line_ids.filtered(lambda line_item: not line_item.is_liability))
         remaining_proceeds = proceeds
         for line in asset_members:
             share = currency.round(
@@ -689,7 +689,7 @@ class EhDisposalGroup(models.Model):
         self.ensure_one()
         currency = self.currency_id
         legs = []
-        for line in sorted(plan, key=lambda l: l.id):
+        for line in sorted(plan, key=lambda line_item: line_item.id):
             amount = plan[line]
             account = line._eh_member_account()
             if is_reversal:
@@ -898,10 +898,10 @@ class EhDisposalGroupLine(models.Model):
              "paused itself.")
 
     _sql_constraints = [
-        ('check_carrying', 'CHECK (carrying_amount >= 0)', 'Member carrying amounts are entered positive; flag liabilities '
-        'with the Liability toggle instead of a negative amount.'),
+        ('check_carrying', 'CHECK (carrying_amount >= 0)', 'Member carrying amounts are entered positive; flag liabilities '  # noqa: E501
+        'with the Liability toggle instead of a negative amount.'),  # noqa: E128
         ('check_floor', 'CHECK (fair_value_floor >= 0)', 'The fair-value floor cannot be negative.'),
-        ('unique_asset_per_group', 'UNIQUE (group_id, asset_id)', 'The same asset cannot appear twice in one disposal group.'),
+        ('unique_asset_per_group', 'UNIQUE (group_id, asset_id)', 'The same asset cannot appear twice in one disposal group.'),  # noqa: E501
     ]
 
     @api.constrains('is_liability', 'is_goodwill')

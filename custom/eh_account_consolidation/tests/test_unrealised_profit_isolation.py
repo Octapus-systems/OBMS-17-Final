@@ -100,8 +100,8 @@ class TestUnrealisedProfitIsolation(EhAccountIntegrationTestCase):
             cls.user = cls.env['res.users'].create({
                 'name': 'Consol Iso User A',
                 'login': 'eh_consol_iso_user_a',
-                'company_id': cls.company_a.id,
-                'company_id': cls.company_a.id,
+                'company_id': cls.company_a.id,  # noqa: F601
+                'company_id': cls.company_a.id,  # noqa: F601
                 'groups_id': [
                     (4, cls.env.ref('base.group_user').id),
                     (4, cls.env.ref('eh_account_base.group_eh_user').id),

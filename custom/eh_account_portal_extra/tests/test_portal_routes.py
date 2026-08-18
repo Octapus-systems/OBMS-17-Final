@@ -13,7 +13,7 @@ route resolve, return the right scope, refuse cross-partner access,
 and produce a parseable PDF byte stream.
 """
 
-import base64
+import base64  # noqa: F401
 
 from odoo.tests import HttpCase, tagged
 

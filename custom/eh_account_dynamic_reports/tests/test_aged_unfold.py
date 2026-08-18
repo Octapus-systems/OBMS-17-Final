@@ -237,7 +237,7 @@ class TestAgedUnfold(EhAccountIntegrationTestCase):
             date=fields.Date.from_string('2026-06-20'),
         )
         recv_lines = (inv.line_ids | credit.line_ids).filtered(
-            lambda l: l.account_id == self.account_receivable)
+            lambda line_item: line_item.account_id == self.account_receivable)
         recv_lines.reconcile()
 
         opts_open = dict(self.options, lazy_expand=True,
@@ -300,7 +300,7 @@ class TestAgedUnfold(EhAccountIntegrationTestCase):
     def test_aml_drilldown_opens_move(self):
         move = self._post_receivable(self.partner_a, 100.0, days_overdue=10)
         recv = move.line_ids.filtered(
-            lambda l: l.account_id == self.account_receivable)
+            lambda line_item: line_item.account_id == self.account_receivable)
         action = self.handler.get_drilldown_action(
             self.options, "aml-%s" % recv.id)
         self.assertIsNotNone(action)

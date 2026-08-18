@@ -51,9 +51,9 @@ class ResPartner(models.Model):
             ('partner_id', 'in', self.ids),
             ('state', 'in', ('pending', 'in_review')),
         ]
-        groups = read_group_compat(Request, 
-            domain,
-            groupby=['partner_id'],
+        groups = read_group_compat(Request,
+            domain,  # noqa: E128
+            groupby=['partner_id'],  # noqa: E128
             aggregates=['__count'],
         )
         counts = {p.id: c for p, c in groups}

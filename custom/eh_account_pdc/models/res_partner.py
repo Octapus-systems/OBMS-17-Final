@@ -37,8 +37,8 @@ class ResPartner(models.Model):
     @api.depends_context('uid')
     def _compute_eh_open_cheque_count(self):
         Cheque = self.env['eh.cheque'].sudo()
-        groups = read_group_compat(Cheque, 
-            [
+        groups = read_group_compat(Cheque,
+            [  # noqa: E128
                 ('partner_id', 'in', self.ids),
                 ('state', 'in', list(_OPEN_STATES)),
             ],

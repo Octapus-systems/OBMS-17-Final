@@ -42,7 +42,7 @@ class TestReleaseToPay(EhApTestCase):
         bill = self._bill_from_po(po)
         # Bill the full ordered 10 though only 4 were received.
         bill.invoice_line_ids.filtered(
-            lambda l: l.purchase_line_id).quantity = 10
+            lambda line_item: line_item.purchase_line_id).quantity = 10
         bill.action_post()
         self.assertEqual(bill.eh_release_to_pay, 'exception')
 

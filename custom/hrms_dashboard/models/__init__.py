@@ -20,7 +20,7 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_employee
-from . import hr_employee_base
-from . import hr_leave
-from . import hr_leave_type
+from . import hr_employee  # noqa: F401
+from . import hr_employee_base  # noqa: F401
+from . import hr_leave  # noqa: F401
+from . import hr_leave_type  # noqa: F401

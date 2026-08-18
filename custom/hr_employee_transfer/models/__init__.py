@@ -20,5 +20,5 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import employee_transfer
-from . import hr_contract
+from . import employee_transfer  # noqa: F401
+from . import hr_contract  # noqa: F401

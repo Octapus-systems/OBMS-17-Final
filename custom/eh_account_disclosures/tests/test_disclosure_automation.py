@@ -97,7 +97,7 @@ class TestCreditNoteEclFeed(EhGoldenTestCase):
         # Staging table: one engine row per stage with data.
         self.assertEqual(len(note.stage_line_ids), 2,
                          'stages 1 and 2 carry data, 3 and POCI do not')
-        by_stage = {l.stage: l for l in note.stage_line_ids}
+        by_stage = {line_item.stage: line_item for line_item in note.stage_line_ids}
         s1, s2 = by_stage['1'], by_stage['2']
         self.assertEqual(s1.origin, 'ecl')
         self.assertAlmostEqual(s1.gross_carrying, 100000.0, places=2)
@@ -117,7 +117,7 @@ class TestCreditNoteEclFeed(EhGoldenTestCase):
         # Reconciliation mirror: hand-derived AND equal to the run's rows.
         self.assertEqual(len(note.recon_line_ids), 2,
                          'all-zero stages are not copied')
-        recon = {l.stage: l for l in note.recon_line_ids}
+        recon = {line_item.stage: line_item for line_item in note.recon_line_ids}
         for stage, closing in (('1', 2000.0), ('2', 5000.0)):
             row = recon[stage]
             self.assertAlmostEqual(row.opening, 0.0, places=2)
@@ -132,7 +132,7 @@ class TestCreditNoteEclFeed(EhGoldenTestCase):
 
         # Provision-matrix summary for the simplified run.
         self.assertEqual(len(note.matrix_line_ids), 2)
-        matrix = {l.name: l for l in note.matrix_line_ids}
+        matrix = {line_item.name: line_item for line_item in note.matrix_line_ids}
         self.assertAlmostEqual(
             matrix['Current'].gross_carrying, 100000.0, places=2)
         self.assertAlmostEqual(matrix['Current'].ecl, 2000.0, places=2)
@@ -162,7 +162,7 @@ class TestCreditNoteEclFeed(EhGoldenTestCase):
         })
         note.action_populate()
 
-        by_stage = {l.stage: l for l in note.stage_line_ids}
+        by_stage = {line_item.stage: line_item for line_item in note.stage_line_ids}
         s1 = by_stage['1']
         self.assertEqual(s1.origin, 'manual',
                          'the manual row must survive populate as override')
@@ -233,7 +233,7 @@ class TestMaturityExtraction(EhGoldenTestCase):
         run.action_populate()
 
         rec_rows = run.line_ids.filtered(
-            lambda l: l.item_class == 'receivable')
+            lambda line_item: line_item.item_class == 'receivable')
         self.assertEqual(len(rec_rows), 1,
                          'zero buckets are skipped for extracted classes')
         self.assertEqual(rec_rows.band, 'd31_90',
@@ -252,8 +252,8 @@ class TestMaturityExtraction(EhGoldenTestCase):
         })
         run.action_populate()
         rec_rows = run.line_ids.filtered(
-            lambda l: l.item_class == 'receivable')
-        manual_rows = run.line_ids.filtered(lambda l: l.origin == 'manual')
+            lambda line_item: line_item.item_class == 'receivable')
+        manual_rows = run.line_ids.filtered(lambda line_item: line_item.origin == 'manual')
         self.assertEqual(len(rec_rows), 1, 'repopulate must not duplicate')
         self.assertAlmostEqual(rec_rows.undiscounted_amount, 1000.0,
                                places=2)
@@ -281,7 +281,7 @@ class TestMaturityExtraction(EhGoldenTestCase):
         })
         run.action_populate()
         rec_rows = run.line_ids.filtered(
-            lambda l: l.item_class == 'receivable')
+            lambda line_item: line_item.item_class == 'receivable')
         self.assertEqual(rec_rows.band, 'lt_3m')
         self.assertAlmostEqual(rec_rows.undiscounted_amount, 1000.0,
                                places=2)
@@ -341,8 +341,8 @@ class TestMaturityExtraction(EhGoldenTestCase):
         })
         run.action_populate()
         lease_rows = run.line_ids.filtered(
-            lambda l: l.item_class == 'lease')
-        bands = {l.band: l.undiscounted_amount for l in lease_rows}
+            lambda line_item: line_item.item_class == 'lease')
+        bands = {line_item.band: line_item.undiscounted_amount for line_item in lease_rows}
         self.assertAlmostEqual(bands['lt_3m'], 2000.0, places=2,
                                msg='2 month-end payments before +3m')
         self.assertAlmostEqual(bands['3m_1y'], 9000.0, places=2,
@@ -355,7 +355,7 @@ class TestMaturityExtraction(EhGoldenTestCase):
         # Idempotent repopulate: buckets unchanged, no duplicates.
         run.action_populate()
         lease_rows = run.line_ids.filtered(
-            lambda l: l.item_class == 'lease')
+            lambda line_item: line_item.item_class == 'lease')
         self.assertEqual(len(lease_rows), 3)
         self.assertAlmostEqual(
             sum(lease_rows.mapped('undiscounted_amount')), 24000.0,
@@ -425,7 +425,7 @@ class TestSensitivity(EhGoldenTestCase):
             'fx_shock_pct': 10.0,
         })
         sens.action_compute()
-        fx_rows = sens.line_ids.filtered(lambda l: l.kind == 'fx')
+        fx_rows = sens.line_ids.filtered(lambda line_item: line_item.kind == 'fx')
         self.assertEqual(len(fx_rows), 1, 'one row per open currency')
         row = fx_rows
         self.assertEqual(row.shock_currency_id, eur)
@@ -437,7 +437,7 @@ class TestSensitivity(EhGoldenTestCase):
         self.assertEqual(row.origin, 'computed')
         # Idempotent recompute.
         sens.action_compute()
-        fx_rows = sens.line_ids.filtered(lambda l: l.kind == 'fx')
+        fx_rows = sens.line_ids.filtered(lambda line_item: line_item.kind == 'fx')
         self.assertEqual(len(fx_rows), 1)
         self.assertAlmostEqual(fx_rows.pnl_impact, 1111.11, places=2)
 
@@ -467,9 +467,9 @@ class TestSensitivity(EhGoldenTestCase):
             'ir_shock_bp': 100.0,
         })
         sens.action_compute()
-        ir_rows = sens.line_ids.filtered(lambda l: l.kind == 'interest')
+        ir_rows = sens.line_ids.filtered(lambda line_item: line_item.kind == 'interest')
         self.assertEqual(len(ir_rows), 2)
-        by_exposure = {round(l.exposure, 2): l for l in ir_rows}
+        by_exposure = {round(line_item.exposure, 2): line_item for line_item in ir_rows}
         asset = by_exposure[200000.0]
         self.assertAlmostEqual(asset.pnl_impact, 2000.0, places=2,
                                msg='+100bp on a 200,000 floating asset')
@@ -511,7 +511,7 @@ class TestSensitivity(EhGoldenTestCase):
             'ir_shock_bp': 100.0,
         })
         sens.action_compute()
-        ir_rows = sens.line_ids.filtered(lambda l: l.kind == 'interest')
+        ir_rows = sens.line_ids.filtered(lambda line_item: line_item.kind == 'interest')
         self.assertEqual(len(ir_rows), 1)
         # 50,000 x 100bp = 500, in OCI.
         self.assertAlmostEqual(ir_rows.oci_impact, 500.0, places=2)
@@ -699,7 +699,7 @@ class TestKmpCompensation(EhGoldenTestCase):
         })
         party.action_prefill_share_based()
         sbp_lines = party.compensation_line_ids.filtered(
-            lambda l: l.origin == 'sbp')
+            lambda line_item: line_item.origin == 'sbp')
         self.assertEqual(len(sbp_lines), 1)
         self.assertEqual(sbp_lines.category, 'share_based')
         self.assertAlmostEqual(sbp_lines.amount, 900.0, places=2)
@@ -714,7 +714,7 @@ class TestKmpCompensation(EhGoldenTestCase):
         # Idempotent: prefill updates the engine line in place.
         party.action_prefill_share_based()
         sbp_lines = party.compensation_line_ids.filtered(
-            lambda l: l.origin == 'sbp')
+            lambda line_item: line_item.origin == 'sbp')
         self.assertEqual(len(sbp_lines), 1)
         self.assertAlmostEqual(sbp_lines.amount, 900.0, places=2)
         self.assertAlmostEqual(party.total_compensation, 100900.0, places=2)
@@ -850,7 +850,7 @@ class TestKmpLedgerPopulate(EhGoldenTestCase):
         self._post_kmp_expense(self.acc_untagged, 5000.0, self.partner_a)
 
         party.action_populate_kmp()
-        by_cat = {l.category: l for l in party.compensation_line_ids}
+        by_cat = {line_item.category: line_item for line_item in party.compensation_line_ids}
         self.assertEqual(set(by_cat), {'short_term', 'post_employment'},
                          'only tagged accounts feed a category')
         self.assertEqual(by_cat['short_term'].origin, 'ledger')
@@ -883,7 +883,7 @@ class TestKmpLedgerPopulate(EhGoldenTestCase):
         self.assertIn('manual', origins)
         self.assertIn('ledger', origins)
         ledger = party.compensation_line_ids.filtered(
-            lambda l: l.origin == 'ledger')
+            lambda line_item: line_item.origin == 'ledger')
         self.assertAlmostEqual(ledger.amount, 80000.0, places=2)
         # Total = manual termination 30,000 + ledger short-term 80,000.
         self.assertAlmostEqual(party.total_compensation, 110000.0, places=2)
@@ -964,7 +964,7 @@ class TestEntityInterestConsolidationPopulate(EhGoldenTestCase):
             allowed_company_ids=[self.company.id, parent.id]))
         cta = self._acc(parent, '3900', 'CTA Reserve', 'equity')
         nci = self._acc(parent, '3200', 'NCI', 'equity')
-        re = self._acc(parent, '3100', 'Consolidated RE', 'equity_unaffected')
+        re = self._acc(parent, '3100', 'Consolidated RE', 'equity_unaffected')  # noqa: F841
         entity = self.env['eh.consol.entity'].create({
             'name': 'IFRS12 Group', 'code': 'ifrs12_grp',
             'parent_company_id': parent.id,

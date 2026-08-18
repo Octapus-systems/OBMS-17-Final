@@ -168,7 +168,7 @@ class EhReconciliationExceptionWizard(models.TransientModel):
             if not lines and not self.show_zero_journals:
                 continue
             unmatched = lines.filtered(
-                lambda l: not getattr(l, 'is_reconciled', False),
+                lambda line_item: not getattr(line_item, 'is_reconciled', False),
             )
             audits = audits_by_journal.get(journal.id, Audit)
             reconciled_count = len(lines) - len(unmatched)

@@ -138,7 +138,7 @@ class TestPropertyIas12(EhGoldenTestCase):
         lines = run.line_ids
 
         def net_debit(account):
-            legs = move.line_ids.filtered(lambda l: l.account_id == account)
+            legs = move.line_ids.filtered(lambda line_item: line_item.account_id == account)
             return sum(legs.mapped('debit')) - sum(legs.mapped('credit'))
 
         # The balance-sheet legs carry the same total movement under both
@@ -152,7 +152,7 @@ class TestPropertyIas12(EhGoldenTestCase):
             delta=0.03, msg='balance-sheet legs broken for %s' % label)
         # OCI leg equals the OCI movement; P&L plug equals the negative of
         # everything else.
-        oci_lines = lines.filtered(lambda l: l.through_oci)
+        oci_lines = lines.filtered(lambda line_item: line_item.through_oci)
         self.assertAlmostEqual(
             net_debit(self.oci),
             sum(oci_lines.mapped('movement_dtl'))

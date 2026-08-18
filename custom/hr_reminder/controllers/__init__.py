@@ -20,4 +20,4 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_reminder
+from . import hr_reminder  # noqa: F401

@@ -5,5 +5,5 @@
 # Copyright (C) 2026 (https://www.erpheritage.com.au/)
 #
 ##############################################################################
-from . import crypto
-from . import en16931
+from . import crypto  # noqa: F401
+from . import en16931  # noqa: F401

@@ -34,7 +34,6 @@ Method semantics enforced by the run engine (consol_run.py):
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-
 _METHOD_CHOICES = [
     ('full', "Full consolidation"),
     ('proportional', "Proportional"),
@@ -294,10 +293,9 @@ class EhConsolMember(models.Model):
     notes = fields.Char()
 
     _sql_constraints = [
-        ('check_ownership', 'CHECK (ownership_pct >= 0 AND ownership_pct <= 100)', 'Ownership percentage must be between 0 and 100.'),
-        ('unique_member', 'unique(entity_id, company_id)', 'Each company can appear at most once per consolidation entity.'),
+        ('check_ownership', 'CHECK (ownership_pct >= 0 AND ownership_pct <= 100)', 'Ownership percentage must be between 0 and 100.'),  # noqa: E501
+        ('unique_member', 'unique(entity_id, company_id)', 'Each company can appear at most once per consolidation entity.'),  # noqa: E501
     ]
-
 
     @api.depends('company_id')
     def _compute_functional_currency(self):

@@ -39,8 +39,8 @@ class TestRevenueWorkflowGuard(EhAccountIntegrationTestCase):
             'name': 'Revenue Clerk',
             'login': 'eh_rev_clerk',
             'email': 'eh_rev_clerk@example.com',
-            'company_id': cls.company.id,
-            'company_id': cls.company.id,
+            'company_id': cls.company.id,  # noqa: F601
+            'company_id': cls.company.id,  # noqa: F601
             'groups_id': [
                 (4, cls.env.ref('eh_account_base.group_eh_user').id)],
         })

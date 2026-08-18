@@ -231,8 +231,8 @@ class EhEntityInterest(models.Model):
         self.ensure_one()
         currency = self.currency_id or run.presentation_currency_id
         member_lines = run.line_ids.filtered(
-            lambda l: l.member_id == member
-            and l.kind == 'subsidiary_balance')
+            lambda line_item: line_item.member_id == member
+            and line_item.kind == 'subsidiary_balance')
         assets = liabilities = income = expense = 0.0
         for line in member_lines:
             acc_type = line.account_id.account_type or ''
@@ -249,7 +249,7 @@ class EhEntityInterest(models.Model):
         # is the negated sum of the P&L amounts (income credit-negative,
         # expense debit-positive), positive for a profit.
         nci_lines = run.line_ids.filtered(
-            lambda l: l.member_id == member and l.kind == 'nci')
+            lambda line_item: line_item.member_id == member and line_item.kind == 'nci')
         nci_carrying = -sum(nci_lines.mapped('amount'))
         self.write({
             'consol_run_res_id': run.id,

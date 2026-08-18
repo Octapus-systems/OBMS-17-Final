@@ -117,7 +117,7 @@ class TestSchedule(EhAccountIntegrationTestCase):
             interval=1, interval_unit='month',
             next_run=fields.Datetime.now() - timedelta(minutes=1),
         )
-        before = schedule.next_run
+        before = schedule.next_run  # noqa: F841
         schedule.last_run = fields.Datetime.from_string('2026-06-15 12:00:00')
         schedule._advance_next_run()
         self.assertEqual(

@@ -20,7 +20,7 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import account_move_line
-from . import hr_loan
-from . import hr_payslip
-from . import res_config_settings
+from . import account_move_line  # noqa: F401
+from . import hr_loan  # noqa: F401
+from . import hr_payslip  # noqa: F401
+from . import res_config_settings  # noqa: F401

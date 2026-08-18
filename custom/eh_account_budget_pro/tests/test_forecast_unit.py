@@ -82,7 +82,7 @@ class TestLinearTrend(TransactionCase):
 class TestHoltWintersAdditive(TransactionCase):
 
     def _periodic_series(self, cycles, season_length=4, base=100.0,
-                          slope=1.0, amplitude=10.0):
+                          slope=1.0, amplitude=10.0):  # noqa: E127
         out = []
         for c in range(cycles):
             for s in range(season_length):

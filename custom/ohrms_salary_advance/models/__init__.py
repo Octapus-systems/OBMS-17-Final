@@ -20,6 +20,6 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_payroll_structure
-from . import hr_payslip
-from . import salary_advance
+from . import hr_payroll_structure  # noqa: F401
+from . import hr_payslip  # noqa: F401
+from . import salary_advance  # noqa: F401

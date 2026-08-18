@@ -71,7 +71,7 @@ class HrPayslip(models.Model):
         ('cancel', 'Rejected'),
     ], string='Status', index=True, readonly=True, copy=False, default='draft',
         help="""* When the payslip is created the status is \'Draft\'
-                \n* If the payslip is under verification, 
+                \n* If the payslip is under verification,
                 the status is \'Waiting\'.
                 \n* If the payslip is confirmed then status is set to \'Done\'.
                 \n* When user cancel payslip the status is \'Rejected\'.""")
@@ -215,7 +215,7 @@ class HrPayslip(models.Model):
             # if we don't give the contract, then the rules to apply should be
             # for all current contracts of the employee
             contract_ids = payslip.contract_id.ids or \
-                           self.get_contract(payslip.employee_id,
+                           self.get_contract(payslip.employee_id,  # noqa: E127
                                              payslip.date_from, payslip.date_to)
             lines = [(0, 0, line) for line in
                      self._get_payslip_lines(contract_ids, payslip.id)]
@@ -375,7 +375,7 @@ class HrPayslip(models.Model):
                     SELECT sum(amount) as sum
                     FROM hr_payslip as hp, hr_payslip_input as pi
                     WHERE hp.employee_id = %s AND hp.state = 'done'
-                    AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id = 
+                    AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id =
                     pi.payslip_id AND pi.code = %s""",
                                     (
                                         self.employee_id, from_date, to_date,
@@ -392,11 +392,11 @@ class HrPayslip(models.Model):
                 if to_date is None:
                     to_date = fields.Date.today()
                 self.env.cr.execute("""
-                    SELECT sum(number_of_days) as number_of_days, 
+                    SELECT sum(number_of_days) as number_of_days,
                     sum(number_of_hours) as number_of_hours
                     FROM hr_payslip as hp, hr_payslip_worked_days as pi
                     WHERE hp.employee_id = %s AND hp.state = 'done'
-                    AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id = 
+                    AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id =
                     pi.payslip_id AND pi.code = %s""",
                                     (
                                         self.employee_id, from_date, to_date,
@@ -424,11 +424,11 @@ class HrPayslip(models.Model):
                  from_date,to_date fields"""
                 if to_date is None:
                     to_date = fields.Date.today()
-                self.env.cr.execute("""SELECT sum(case when hp.credit_note = 
+                self.env.cr.execute("""SELECT sum(case when hp.credit_note =
                 False then (pl.total) else (-pl.total) end)
                 FROM hr_payslip as hp, hr_payslip_line as pl
                 WHERE hp.employee_id = %s AND hp.state = 'done'
-                AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id 
+                AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id
                 = pl.slip_id AND pl.code = %s""",
                                     (
                                         self.employee_id, from_date, to_date,

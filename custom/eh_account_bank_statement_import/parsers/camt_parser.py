@@ -81,7 +81,7 @@ class Camt053StatementParser(StatementParser):
             )
 
         ns = self._detect_namespace(root)
-        nsmap = {'ns': ns} if ns else {}
+        nsmap = {'ns': ns} if ns else {}  # noqa: F841
 
         stmt = root.find('.//{%s}Stmt' % ns) if ns else root.find('.//Stmt')
         if stmt is None:

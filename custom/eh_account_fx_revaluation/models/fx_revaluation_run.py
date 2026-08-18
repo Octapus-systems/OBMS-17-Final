@@ -169,8 +169,8 @@ class EhFxRevaluationRun(models.Model):
     @api.depends('line_ids.adjustment')
     def _compute_totals(self):
         for run in self:
-            gains = sum(l.adjustment for l in run.line_ids if l.adjustment > 0)
-            losses = sum(-l.adjustment for l in run.line_ids if l.adjustment < 0)
+            gains = sum(line_item.adjustment for line_item in run.line_ids if line_item.adjustment > 0)
+            losses = sum(-line_item.adjustment for line_item in run.line_ids if line_item.adjustment < 0)
             run.total_gain = gains
             run.total_loss = losses
             run.net_adjustment = gains - losses

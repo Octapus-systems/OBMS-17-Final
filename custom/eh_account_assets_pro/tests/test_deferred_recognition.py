@@ -78,13 +78,13 @@ class TestDeferredRecognition(EhAssetTestCase):
         credit = sum(move.line_ids.mapped('credit'))
         self.assertAlmostEqual(debit, credit, places=2)
         holding_leg = move.line_ids.filtered(
-            lambda l: l.account_id == deferred.asset_account_id,
+            lambda line_item: line_item.account_id == deferred.asset_account_id,
         )
         self.assertEqual(len(holding_leg), 1)
         self.assertGreater(holding_leg.debit, 0)
         self.assertEqual(holding_leg.credit, 0)
         recog_leg = move.line_ids.filtered(
-            lambda l: l.account_id == deferred.depreciation_account_id,
+            lambda line_item: line_item.account_id == deferred.depreciation_account_id,
         )
         self.assertEqual(len(recog_leg), 1)
         self.assertGreater(recog_leg.credit, 0)
@@ -101,12 +101,12 @@ class TestDeferredRecognition(EhAssetTestCase):
         credit = sum(move.line_ids.mapped('credit'))
         self.assertAlmostEqual(debit, credit, places=2)
         recog_leg = move.line_ids.filtered(
-            lambda l: l.account_id == deferred.depreciation_account_id,
+            lambda line_item: line_item.account_id == deferred.depreciation_account_id,
         )
         self.assertEqual(len(recog_leg), 1)
         self.assertGreater(recog_leg.debit, 0)
         holding_leg = move.line_ids.filtered(
-            lambda l: l.account_id == deferred.asset_account_id,
+            lambda line_item: line_item.account_id == deferred.asset_account_id,
         )
         self.assertEqual(len(holding_leg), 1)
         self.assertGreater(holding_leg.credit, 0)
@@ -120,7 +120,7 @@ class TestDeferredRecognition(EhAssetTestCase):
         recognised = 0.0
         for line in deferred.depreciation_line_ids:
             recog_legs = line.move_id.line_ids.filtered(
-                lambda l: l.account_id == deferred.depreciation_account_id,
+                lambda line_item: line_item.account_id == deferred.depreciation_account_id,
             )
             recognised += sum(recog_legs.mapped('debit'))
         self.assertAlmostEqual(recognised, 12000.0, places=2)

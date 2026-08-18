@@ -44,7 +44,6 @@ class TestWorkflowGuard(EhAccountIntegrationTestCase):
                 'login': 'eh_bc_wf_guard_user',
                 'groups_id': [(6, 0, (groups | manager).ids)],
                 'company_id': cls.company.id,
-                'company_id': cls.company.id,
             })
         except Exception:  # noqa: BLE001 - environment may forbid user create
             cls.user = None
@@ -57,7 +56,7 @@ class TestWorkflowGuard(EhAccountIntegrationTestCase):
         self._skip_if_no_user()
         rec = self.env['eh.business.combination'].create({
             'acquiree_name': 'Target Co',
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
         })
         self.assertEqual(rec.state, 'draft')
         with self.assertRaises(AccessError):
@@ -70,7 +69,7 @@ class TestWorkflowGuard(EhAccountIntegrationTestCase):
         self._skip_if_no_user()
         rec = self.env['eh.business.combination'].create({
             'acquiree_name': 'Target Co 2',
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
         })
         with self.assertRaises(AccessError):
             rec.with_user(self.user).write(
@@ -81,7 +80,7 @@ class TestWorkflowGuard(EhAccountIntegrationTestCase):
         rec = self.env['eh.equity.investment'].create({
             'investee_name': 'Associate Co',
             'ownership_pct': 25.0,
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
         })
         self.assertEqual(rec.state, 'draft')
         with self.assertRaises(AccessError):
@@ -91,7 +90,7 @@ class TestWorkflowGuard(EhAccountIntegrationTestCase):
         self._skip_if_no_user()
         combo = self.env['eh.business.combination'].create({
             'acquiree_name': 'Target Co 3',
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
         })
         adj = self.env['eh.bizcombo.adjustment'].create({
             'combination_id': combo.id,
@@ -105,7 +104,7 @@ class TestWorkflowGuard(EhAccountIntegrationTestCase):
         self._skip_if_no_user()
         combo = self.env['eh.business.combination'].create({
             'acquiree_name': 'Target Co 4',
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
             'contingent_classification': 'liability',
         })
         rem = self.env['eh.bizcombo.contingent.remeasure'].create({
@@ -122,7 +121,7 @@ class TestWorkflowGuard(EhAccountIntegrationTestCase):
         self._skip_if_no_user()
         rec = self.env['eh.business.combination'].with_user(self.user).create({
             'acquiree_name': 'Target Co 5',
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
             'state': 'recognised',
         })
         self.assertEqual(rec.state, 'draft')

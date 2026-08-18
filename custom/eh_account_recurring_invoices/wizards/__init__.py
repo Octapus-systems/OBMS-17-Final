@@ -1,1 +1,1 @@
-from . import proration_wizard
+from . import proration_wizard  # noqa: F401

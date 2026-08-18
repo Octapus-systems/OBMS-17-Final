@@ -33,7 +33,6 @@ from odoo.tools.translate import _lt
 from odoo.addons.eh_account_base.tools.sql_builder import MoveLineQuery
 
 
-
 class EhTrialBalanceHandler(models.AbstractModel):
     _name = 'eh.account.dynamic.report.handler.trial_balance'
     _inherit = 'eh.account.dynamic.report.handler'

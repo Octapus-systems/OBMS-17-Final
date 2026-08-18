@@ -19,7 +19,7 @@ through the same audit pipeline as the standard reports, so an
 auditor can trace which run produced which figure on which date.
 """
 
-import json
+import json  # noqa: F401
 import re
 from datetime import date
 
@@ -153,7 +153,7 @@ class EhBasRun(models.Model):
     )
 
     _sql_constraints = [
-        ('unique_period', 'unique(company_id, fy_label, quarter)', 'A BAS run already exists for this company / financial year / quarter.'),
+        ('unique_period', 'unique(company_id, fy_label, quarter)', 'A BAS run already exists for this company / financial year / quarter.'),  # noqa: E501
     ]
 
     @staticmethod
@@ -336,8 +336,8 @@ class EhBasRun(models.Model):
             paid_movement = 0.0
         else:
             AML = self.env['account.move.line'].sudo()
-            collected_rows = read_group_compat(AML, 
-                [
+            collected_rows = read_group_compat(AML,
+                [  # noqa: E128
                     ('account_id', 'in', tax_accounts.ids),
                     ('parent_state', '=', 'posted'),
                     ('company_id', '=', self.company_id.id),

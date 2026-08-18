@@ -14,7 +14,7 @@ button on the partner form. The methods resolve the right report record
 returning a download action the user can click through.
 """
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 from odoo.exceptions import UserError
 
 

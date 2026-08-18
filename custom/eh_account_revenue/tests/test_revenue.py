@@ -178,7 +178,7 @@ class TestRevenue(EhAccountIntegrationTestCase):
         # The correction move debits revenue (reduces recognised revenue).
         correction = c.move_ids.sorted('id')[-1]
         rev_lines = correction.line_ids.filtered(
-            lambda l: l.account_id == self.account_revenue)
+            lambda line_item: line_item.account_id == self.account_revenue)
         self.assertAlmostEqual(sum(rev_lines.mapped('debit')), 200.0, places=2)
 
     def test_downward_correction_requires_manager(self):

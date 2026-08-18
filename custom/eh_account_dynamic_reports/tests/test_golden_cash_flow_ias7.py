@@ -365,7 +365,7 @@ class TestCashFlowDisclosuresGolden(CashFlowIas7Case):
         repartition = (tax.invoice_repartition_line_ids
                        | tax.refund_repartition_line_ids)
         repartition.filtered(
-            lambda l: l.repartition_type == 'tax',
+            lambda line_item: line_item.repartition_type == 'tax',
         ).write({'account_id': authority_payable.id})
         return authority_payable
 
@@ -599,7 +599,7 @@ class TestCashFlowNoncashRegisterGolden(CashFlowIas7Case):
         result = self._compute()
         header = self._line(result, 'section-noncash_register-header')
         self.assertIsNotNone(
-            header, [l['id'] for l in result['lines']])
+            header, [line_item['id'] for line_item in result['lines']])
         self.assertEqual(
             self._amount(result, 'noncash-%s' % lease.id), 5000.00)
         self.assertEqual(
@@ -609,7 +609,7 @@ class TestCashFlowNoncashRegisterGolden(CashFlowIas7Case):
         self.assertEqual(result['totals']['noncash_register'], 7000.00)
         self.assertEqual(result['totals']['net_change_in_cash'], 0.00)
         # Memo section sits after the cash identity block.
-        line_ids = [l['id'] for l in result['lines']]
+        line_ids = [line_item['id'] for line_item in result['lines']]
         self.assertLess(
             line_ids.index('cash_balance_check'),
             line_ids.index('section-noncash_register-header'))

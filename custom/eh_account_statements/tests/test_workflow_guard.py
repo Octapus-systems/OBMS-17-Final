@@ -48,8 +48,8 @@ class TestWorkflowGuard(TransactionCase):
                 # Odoo 19: res.users uses group_ids (not groups_id).
                 'groups_id': [
                     (6, 0, [cls.env.ref(x).id for x in group_xmlids])],
-                'company_id': cls.company.id,
-                'company_id': cls.company.id,
+                'company_id': cls.company.id,  # noqa: F601
+                'company_id': cls.company.id,  # noqa: F601
             })
         except Exception:  # pragma: no cover - environment-dependent
             cls.user = cls.env['res.users']
@@ -62,7 +62,7 @@ class TestWorkflowGuard(TransactionCase):
         """A plain user cannot RPC-write eh.soci.state past action_confirm."""
         self._skip_if_no_user()
         doc = self.env['eh.soci'].create({
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
             'period_start': '2026-01-01',
             'period_end': '2026-12-31',
         })
@@ -79,7 +79,7 @@ class TestWorkflowGuard(TransactionCase):
         """A plain user cannot RPC-write eh.soce.state past action_confirm."""
         self._skip_if_no_user()
         doc = self.env['eh.soce'].create({
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
             'period_start': '2026-01-01',
             'period_end': '2026-12-31',
         })
@@ -94,7 +94,7 @@ class TestWorkflowGuard(TransactionCase):
         action_check."""
         self._skip_if_no_user()
         doc = self.env['eh.statement.tieout'].create({
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
             'date_from': '2026-01-01',
             'date_to': '2026-12-31',
         })
@@ -109,7 +109,7 @@ class TestWorkflowGuard(TransactionCase):
         workflow; the guarded state is stripped so it starts at draft."""
         self._skip_if_no_user()
         doc = self.env['eh.soci'].with_user(self.user).create({
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
             'period_start': '2026-01-01',
             'period_end': '2026-12-31',
             'state': 'confirmed',

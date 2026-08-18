@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
-from . import res_company
-from . import account_move
-from . import tolerance_profile
-from . import res_partner
-from . import ap_intake
-from . import ap_intake_line
+from . import res_company  # noqa: F401
+from . import account_move  # noqa: F401
+from . import tolerance_profile  # noqa: F401
+from . import res_partner  # noqa: F401
+from . import ap_intake  # noqa: F401
+from . import ap_intake_line  # noqa: F401

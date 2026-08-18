@@ -19,7 +19,6 @@ from odoo import models
 from odoo.tools.translate import _lt
 
 
-
 class EhAgedPayableHandler(models.AbstractModel):
     _name = 'eh.account.dynamic.report.handler.aged_payable'
     _inherit = 'eh.account.dynamic.report.handler.aged_base'

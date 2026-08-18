@@ -1,10 +1,10 @@
 import re
 
-from odoo import models, fields, api
+from odoo import models, fields, api  # noqa: F401
 
 
 class ScssEditor(models.AbstractModel):
-    
+
     _inherit = 'web_editor.assets'
 
     # ----------------------------------------------------------
@@ -17,15 +17,15 @@ class ScssEditor(models.AbstractModel):
 
     def _get_color_variables(self, content, variables):
         return {
-            var: self._get_color_variable(content, var) 
+            var: self._get_color_variable(content, var)
             for var in variables
         }
 
     def _replace_color_variables(self, content, variables):
         for variable in variables:
             content = re.sub(
-                fr'{variable["name"]}\:?\s(.*?);', 
-                f'{variable["name"]}: {variable["value"]};', 
+                fr'{variable["name"]}\:?\s(.*?);',
+                f'{variable["name"]}: {variable["value"]};',
                 content
             )
         return content
@@ -42,7 +42,7 @@ class ScssEditor(models.AbstractModel):
         return self._get_color_variables(
             content.decode('utf-8'), variables
         )
-    
+
     def replace_color_variables_values(self, url, bundle, variables):
         original = self._get_content_from_url(url).decode('utf-8')
         content = self._replace_color_variables(original, variables)

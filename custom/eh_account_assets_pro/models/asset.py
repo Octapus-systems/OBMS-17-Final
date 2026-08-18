@@ -561,7 +561,7 @@ class EhAsset(models.Model):
     )
     def _compute_totals(self):
         for asset in self:
-            posted = asset.depreciation_line_ids.filtered(lambda l: l.is_posted)
+            posted = asset.depreciation_line_ids.filtered(lambda line_item: line_item.is_posted)
             asset.total_depreciated = sum(posted.mapped('amount'))
             posted_impairments = asset.impairment_ids.filtered(
                 lambda i: i.state == 'posted'
@@ -587,7 +587,7 @@ class EhAsset(models.Model):
     @api.depends('depreciation_line_ids.is_posted', 'depreciation_line_ids.depreciation_date')
     def _compute_next_post(self):
         for asset in self:
-            unposted = asset.depreciation_line_ids.filtered(lambda l: not l.is_posted)
+            unposted = asset.depreciation_line_ids.filtered(lambda line_item: not line_item.is_posted)
             asset.next_post_date = (
                 min(unposted.mapped('depreciation_date')) if unposted else False
             )
@@ -1100,7 +1100,7 @@ class EhAsset(models.Model):
             if asset.state not in ('running',):
                 continue
             due = asset.depreciation_line_ids.filtered(
-                lambda l: not l.is_posted and l.depreciation_date <= today,
+                lambda line_item: not line_item.is_posted and line_item.depreciation_date <= today,
             ).sorted('depreciation_date')
             for line in due:
                 line.action_post()
@@ -1110,7 +1110,7 @@ class EhAsset(models.Model):
 
     def _wipe_unposted_lines(self):
         self.ensure_one()
-        unposted = self.depreciation_line_ids.filtered(lambda l: not l.is_posted)
+        unposted = self.depreciation_line_ids.filtered(lambda line_item: not line_item.is_posted)
         unposted.unlink()
 
     def _validate_posting_setup(self):
@@ -1335,7 +1335,7 @@ class EhAsset(models.Model):
         if depreciable <= 0 or periods <= 0:
             return
         per_period = depreciable / periods
-        posted = self.depreciation_line_ids.filtered(lambda l: l.is_posted)
+        posted = self.depreciation_line_ids.filtered(lambda line_item: line_item.is_posted)
         last_seq = max(posted.mapped('sequence')) if posted else 0
         last_date = (
             max(posted.mapped('depreciation_date')) if posted
@@ -1372,7 +1372,7 @@ class EhAsset(models.Model):
             if asset.state != 'running':
                 continue
             unposted = asset.depreciation_line_ids.filtered(
-                lambda l: not l.is_posted,
+                lambda line_item: not line_item.is_posted,
             )
             if not unposted and asset.net_book_value <= asset.salvage_value:
                 asset.state = 'fully_depreciated'
@@ -1403,7 +1403,7 @@ class EhAsset(models.Model):
         if self.is_instant_write_off or self.lvp_pool_id:
             return
         unposted = self.depreciation_line_ids.filtered(
-            lambda l: not l.is_posted,
+            lambda line_item: not line_item.is_posted,
         )
         remaining_periods = len(unposted)
         if remaining_periods <= 0:
@@ -1430,7 +1430,7 @@ class EhAsset(models.Model):
         measurement for that fallback (defaults to today).
         """
         self.ensure_one()
-        posted = self.depreciation_line_ids.filtered(lambda l: l.is_posted)
+        posted = self.depreciation_line_ids.filtered(lambda line_item: line_item.is_posted)
         posted_total = sum(posted.mapped('amount'))
         if self.method in ('manual', 'units_of_production'):
             # _generate_schedule_rows returns nothing for manual and
@@ -1510,8 +1510,8 @@ class EhAsset(models.Model):
         # does not poison the cursor and abort the rest of the batch.
         def _post_asset(asset):
             due = asset.depreciation_line_ids.filtered(
-                lambda l: not l.is_posted
-                and l.depreciation_date <= today,
+                lambda line_item: not line_item.is_posted
+                and line_item.depreciation_date <= today,
             ).sorted('depreciation_date')
             for line in due:
                 line.action_post()

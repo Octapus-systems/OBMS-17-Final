@@ -20,7 +20,6 @@ from odoo import models
 from odoo.tools.translate import _lt
 
 
-
 class EhAgedReceivableHandler(models.AbstractModel):
     _name = 'eh.account.dynamic.report.handler.aged_receivable'
     _inherit = 'eh.account.dynamic.report.handler.aged_base'

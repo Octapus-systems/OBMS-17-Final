@@ -108,7 +108,7 @@ class HrEmployee(models.Model):
                 if current_date >= exp_date:
                     mail_content = ("  Hello  " + employee.name +
                                     ",<br>Your Passport " + employee.passport_id
-                                    +" is going to expire on " +
+                                    +" is going to expire on " +  # noqa: E225
                                     str(employee.passport_expiry_date) +
                                     ". Please renew it before expire")
                     main_content = {

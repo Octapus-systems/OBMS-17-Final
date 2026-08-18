@@ -7,7 +7,7 @@
 ##############################################################################
 {
     'name': "Odoo 17 Community Accounting Pro",
-    'summary': "One-click install for the entire ERP Heritage accounting suite. Full IFRS / IAS engine (IFRS 9 ECL and fair value, IFRS 15 revenue, IFRS 16 leases, IAS 12 deferred tax, IAS 37 provisions, IFRS 3 / 10 consolidation, IFRS 2 share-based payment, IAS 19 employee benefits) plus reporting, reconciliation, period close, year-end, FX revaluation, assets, budgets, intercompany, collections, credit limit, recurring invoices, batch payments, PDC, vendor bill automation, approval workflow, eInvoicing, SEPA, standard costing, dashboard, AI agent layer. 51 modules under one installable.",
+    'summary': "One-click install for the entire ERP Heritage accounting suite. Full IFRS / IAS engine (IFRS 9 ECL and fair value, IFRS 15 revenue, IFRS 16 leases, IAS 12 deferred tax, IAS 37 provisions, IFRS 3 / 10 consolidation, IFRS 2 share-based payment, IAS 19 employee benefits) plus reporting, reconciliation, period close, year-end, FX revaluation, assets, budgets, intercompany, collections, credit limit, recurring invoices, batch payments, PDC, vendor bill automation, approval workflow, eInvoicing, SEPA, standard costing, dashboard, AI agent layer. 51 modules under one installable.",  # noqa: E501
     'description': """
 Odoo 17 Community Accounting Pro
 ================================

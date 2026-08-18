@@ -558,5 +558,5 @@ class TestGoldenIas40(EhGoldenTestCase):
                 self.assertEqual(bool(log.remeasure_move_id),
                                  expected_routing == 'pl')
                 target_line = log.move_id.line_ids.filtered(
-                    lambda l: l.account_id == self.ppe)
+                    lambda line_item: line_item.account_id == self.ppe)
                 self.assertAlmostEqual(target_line.debit, deemed, places=2)

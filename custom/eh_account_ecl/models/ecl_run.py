@@ -156,10 +156,10 @@ class EhEclRun(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('unique_company_date', 'unique(company_id, reporting_date)', 'Only one ECL run per company per reporting date.'),
+        ('unique_company_date', 'unique(company_id, reporting_date)', 'Only one ECL run per company per reporting date.'),  # noqa: E501
         ('check_backstops', 'CHECK (backstop_dpd_stage2 > 0 AND '
-        'backstop_dpd_stage3 > backstop_dpd_stage2)', 'DPD backstops must be positive and the Stage 3 backstop must '
-        'exceed the Stage 2 backstop.'),
+        'backstop_dpd_stage3 > backstop_dpd_stage2)', 'DPD backstops must be positive and the Stage 3 backstop must '  # noqa: E128,E501
+        'exceed the Stage 2 backstop.'),  # noqa: E128
         ('check_probation', 'CHECK (probation_runs >= 1)', 'Cure probation must be at least one run.'),
     ]
 

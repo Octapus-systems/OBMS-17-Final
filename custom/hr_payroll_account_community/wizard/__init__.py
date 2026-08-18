@@ -20,4 +20,4 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_payslip_employees
+from . import hr_payslip_employees  # noqa: F401

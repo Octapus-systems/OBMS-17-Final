@@ -1,6 +1,6 @@
-from . import budget
-from . import budget_flex
-from . import budget_commitment
-from . import purchase_order
-from . import account_move
-from . import budget_report
+from . import budget  # noqa: F401
+from . import budget_flex  # noqa: F401
+from . import budget_commitment  # noqa: F401
+from . import purchase_order  # noqa: F401
+from . import account_move  # noqa: F401
+from . import budget_report  # noqa: F401

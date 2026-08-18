@@ -183,7 +183,7 @@ class EhEclBucket(models.Model):
     _sql_constraints = [
         ('check_rate', 'CHECK (loss_rate >= 0 AND loss_rate <= 100)', 'Loss rate must be between 0 and 100.'),
         ('check_days', 'CHECK (days_from >= 0)', 'Days from cannot be negative.'),
-        ('check_discount', 'CHECK (discount_rate >= 0 AND periods_to_recovery >= 0)', 'Discount rate and periods to recovery cannot be negative.'),
+        ('check_discount', 'CHECK (discount_rate >= 0 AND periods_to_recovery >= 0)', 'Discount rate and periods to recovery cannot be negative.'),  # noqa: E501
     ]
 
     def _effective_periods(self):

@@ -20,7 +20,7 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from odoo import api, fields, models, _
+from odoo import api, fields, models, _  # noqa: F401
 
 
 class AccConfig(models.TransientModel):

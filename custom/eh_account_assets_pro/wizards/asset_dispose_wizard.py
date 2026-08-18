@@ -278,7 +278,7 @@ class EhAssetDisposeWizard(models.TransientModel):
         move.action_post()
 
         # Drop unposted schedule lines.
-        unposted = asset.depreciation_line_ids.filtered(lambda l: not l.is_posted)
+        unposted = asset.depreciation_line_ids.filtered(lambda line_item: not line_item.is_posted)
         unposted.unlink()
 
         disposal_vals = {

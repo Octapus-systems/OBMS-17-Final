@@ -116,7 +116,7 @@ class EhNrvRun(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('unique_company_date', 'unique(company_id, reporting_date)', 'Only one inventory NRV run per company per reporting date.'),
+        ('unique_company_date', 'unique(company_id, reporting_date)', 'Only one inventory NRV run per company per reporting date.'),  # noqa: E501
     ]
 
     # Measurement / input fields frozen once the run is posted or reversed. A

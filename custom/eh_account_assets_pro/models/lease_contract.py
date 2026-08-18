@@ -462,12 +462,12 @@ class EhLeaseContract(models.Model):
     )
     def _compute_totals(self):
         for lease in self:
-            posted = lease.schedule_line_ids.filtered(lambda l: l.is_posted)
+            posted = lease.schedule_line_ids.filtered(lambda line_item: line_item.is_posted)
             lease.total_paid = sum(posted.mapped('payment_amount'))
             lease.total_interest = sum(posted.mapped('interest'))
             lease.total_principal = sum(posted.mapped('principal'))
             if posted:
-                last = max(posted, key=lambda l: l.sequence)
+                last = max(posted, key=lambda line_item: line_item.sequence)
                 lease.liability_balance = last.liability_close
             else:
                 lease.liability_balance = lease.liability_initial_value
@@ -777,7 +777,7 @@ class EhLeaseContract(models.Model):
             if lease.state not in ('active', 'modified'):
                 continue
             due = lease.schedule_line_ids.filtered(
-                lambda l: not l.is_posted and l.period_date <= today,
+                lambda line_item: not line_item.is_posted and line_item.period_date <= today,
             ).sorted('sequence')
             for line in due:
                 line.action_post()
@@ -820,7 +820,7 @@ class EhLeaseContract(models.Model):
 
     def _wipe_unposted_schedule(self):
         self.ensure_one()
-        unposted = self.schedule_line_ids.filtered(lambda l: not l.is_posted)
+        unposted = self.schedule_line_ids.filtered(lambda line_item: not line_item.is_posted)
         unposted.unlink()
 
     def _periodic_rate(self):
@@ -1355,7 +1355,7 @@ class EhLeaseContract(models.Model):
             if lease.state not in ('active', 'modified'):
                 continue
             unposted = lease.schedule_line_ids.filtered(
-                lambda l: not l.is_posted,
+                lambda line_item: not line_item.is_posted,
             )
             if not unposted:
                 lease.state = 'ended'
@@ -1364,13 +1364,13 @@ class EhLeaseContract(models.Model):
         """Count unposted schedule lines whose period_date >= anchor_date."""
         self.ensure_one()
         return len(self.schedule_line_ids.filtered(
-            lambda l: not l.is_posted and l.period_date >= anchor_date,
+            lambda line_item: not line_item.is_posted and line_item.period_date >= anchor_date,
         ))
 
     def _liability_balance_after_last_post(self):
         self.ensure_one()
         posted = self.schedule_line_ids.filtered(
-            lambda l: l.is_posted,
+            lambda line_item: line_item.is_posted,
         ).sorted('sequence')
         if posted:
             return posted[-1].liability_close
@@ -1378,7 +1378,7 @@ class EhLeaseContract(models.Model):
 
     def _rou_carrying_amount(self):
         self.ensure_one()
-        posted = self.schedule_line_ids.filtered(lambda l: l.is_posted)
+        posted = self.schedule_line_ids.filtered(lambda line_item: line_item.is_posted)
         accumulated = sum(posted.mapped('rou_amount'))
         return self.rou_initial_value - accumulated
 
@@ -1393,7 +1393,7 @@ class EhLeaseContract(models.Model):
         for lease in leases:
             try:
                 due = lease.schedule_line_ids.filtered(
-                    lambda l: not l.is_posted and l.period_date <= today,
+                    lambda line_item: not line_item.is_posted and line_item.period_date <= today,
                 ).sorted('sequence')
                 for line in due:
                     line.action_post()

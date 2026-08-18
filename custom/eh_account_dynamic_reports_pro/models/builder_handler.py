@@ -54,7 +54,7 @@ class EhBuilderHandler(models.AbstractModel):
         line_values = {}
         rendered_lines = []
 
-        for builder_line in builder.line_ids.sorted(lambda l: l.sequence):
+        for builder_line in builder.line_ids.sorted(lambda line_item: line_item.sequence):
             if builder_line.line_type == 'section_header':
                 rendered_lines.append(self._render_section_header(builder_line))
                 continue

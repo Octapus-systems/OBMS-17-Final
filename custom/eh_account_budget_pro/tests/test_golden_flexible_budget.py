@@ -221,7 +221,7 @@ class TestGoldenFlexibleBudget(EhGoldenTestCase):
             ],
         )
         revenue_line = budget.line_ids.filtered(
-            lambda l: l.account_id == self.account_revenue)
+            lambda line_item: line_item.account_id == self.account_revenue)
         cost_line = budget.line_ids - revenue_line
         cost_line.write({
             'driver': 'revenue_line',
@@ -512,9 +512,9 @@ class TestGoldenReforecast(EhGoldenTestCase):
 
         # -- variance vs revision differs from variance vs baseline --
         jan = budget.line_ids.filtered(
-            lambda l: l.period_from.month == 1)
+            lambda line_item: line_item.period_from.month == 1)
         jul = budget.line_ids.filtered(
-            lambda l: l.period_from.month == 7)
+            lambda line_item: line_item.period_from.month == 7)
         # Jan: actual 1,000 vs baseline 1,250 -> -250; vs revision
         # 1,000 -> 0 (the revision absorbed the actual).
         self.assertAlmostEqual(

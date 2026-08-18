@@ -61,9 +61,9 @@ class TestTrialBalanceHierarchy(EhAccountIntegrationTestCase):
         }
 
     def _line_by_id(self, result, line_id):
-        for l in result['lines']:
-            if l['id'] == line_id:
-                return l
+        for line_item in result['lines']:
+            if line_item['id'] == line_id:
+                return line_item
         return None
 
     def test_groups_emitted_with_parent_chain(self):
@@ -118,7 +118,7 @@ class TestTrialBalanceHierarchy(EhAccountIntegrationTestCase):
     def test_flat_mode_preserves_historical_shape(self):
         flat = dict(self.options, hierarchical_groups=False)
         result = self.handler.compute(flat)
-        ids = [l['id'] for l in result['lines']]
+        ids = [line_item['id'] for line_item in result['lines']]
         self.assertFalse(
             any(i.startswith('section-trial_balance-group-') for i in ids),
             "flat mode should not emit group lines",

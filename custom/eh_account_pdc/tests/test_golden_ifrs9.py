@@ -323,9 +323,9 @@ class TestGoldenPdcIfrs9(EhGoldenTestCase):
 
             present = cheque.present_move_id
             susp = present.line_ids.filtered(
-                lambda l: l.account_id == self.suspense)
+                lambda line_item: line_item.account_id == self.suspense)
             recv = present.line_ids.filtered(
-                lambda l: l.account_id == self.receivable)
+                lambda line_item: line_item.account_id == self.receivable)
             self.assertEqual(len(susp), 1)
             self.assertEqual(len(recv), 1)
             self.assertAlmostEqual(susp.debit, 1250.0, places=2)
@@ -338,9 +338,9 @@ class TestGoldenPdcIfrs9(EhGoldenTestCase):
             cheque.action_clear()
             clear = cheque.clear_move_id
             bank = clear.line_ids.filtered(
-                lambda l: l.account_id == self.bank_account)
+                lambda line_item: line_item.account_id == self.bank_account)
             susp2 = clear.line_ids.filtered(
-                lambda l: l.account_id == self.suspense)
+                lambda line_item: line_item.account_id == self.suspense)
             self.assertAlmostEqual(bank.debit, 1250.0, places=2)
             self.assertAlmostEqual(bank.amount_currency, 1000.0, places=2)
             self.assertAlmostEqual(susp2.credit, 1250.0, places=2)
@@ -359,9 +359,9 @@ class TestGoldenPdcIfrs9(EhGoldenTestCase):
             cheque.action_present()
         present = cheque.present_move_id
         pay = present.line_ids.filtered(
-            lambda l: l.account_id == self.payable)
+            lambda line_item: line_item.account_id == self.payable)
         susp = present.line_ids.filtered(
-            lambda l: l.account_id == self.suspense)
+            lambda line_item: line_item.account_id == self.suspense)
         self.assertEqual(len(pay), 1)
         self.assertEqual(len(susp), 1)
         self.assertAlmostEqual(pay.debit, 1250.0, places=2)
@@ -430,7 +430,7 @@ class TestGoldenPdcIfrs9(EhGoldenTestCase):
                         self.assertAlmostEqual(
                             line.credit, expected_company, places=2)
                 susp_line = move.line_ids.filtered(
-                    lambda l: l.account_id == self.suspense)
+                    lambda line_item: line_item.account_id == self.suspense)
                 self.assertEqual(len(susp_line), 1)
                 side = suspense_side[
                     (case['direction'], case['transition'])]

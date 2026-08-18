@@ -13,7 +13,7 @@ optional sub-fields the generator omits).
 """
 
 import datetime
-import unittest
+import unittest  # noqa: F401
 
 from odoo.tests import TransactionCase, tagged
 
@@ -181,7 +181,7 @@ class PeppolParserErrorTest(TransactionCase):
         )
         # Remove the FIRST cbc:ID (the document-level one); leaves
         # the per-line ones intact.
-        marker = '<cbc:ID xmlns:cbc="%s">' % cbc
+        marker = '<cbc:ID xmlns:cbc="%s">' % cbc  # noqa: F841
         # Actually the generator may use the prefixed cbc element from
         # the document namespace declaration, not a per-element xmlns.
         # Strip the first cbc:ID via a simpler regex on the prefixed

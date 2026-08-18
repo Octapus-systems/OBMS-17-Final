@@ -133,7 +133,7 @@ class TestGeneralLedgerHandler(EhAccountIntegrationTestCase):
         cash_lines = self._lines_for_account(result, self.account_cash.id)
         # Each account contributes header + opening + entry + total => 4 lines
         # at minimum (header counts itself among lines for the account).
-        kinds = [(l.get('meta') or {}).get('kind') for l in cash_lines]
+        kinds = [(line_item.get('meta') or {}).get('kind') for line_item in cash_lines]
         self.assertIn('account_header', kinds)
         self.assertIn('opening_balance', kinds)
         self.assertIn('aml', kinds)
@@ -154,11 +154,11 @@ class TestGeneralLedgerHandler(EhAccountIntegrationTestCase):
         cash_lines = self._lines_for_account(result, self.account_cash.id)
         # Sort by their position in the result for the cash account.
         aml_lines = [
-            l for l in cash_lines
-            if (l.get('meta') or {}).get('kind') == 'aml'
+            line_item for line_item in cash_lines
+            if (line_item.get('meta') or {}).get('kind') == 'aml'
         ]
         self.assertEqual(len(aml_lines), 2)
-        balances = [self._column_value(l, 'balance') for l in aml_lines]
+        balances = [self._column_value(line_item, 'balance') for line_item in aml_lines]
         # Opening = 0 (no prior). After +100 -> 100. After -30 -> 70.
         self.assertAlmostEqual(balances[0], 100.0, places=2)
         self.assertAlmostEqual(balances[1], 70.0, places=2)
@@ -232,8 +232,8 @@ class TestGeneralLedgerHandler(EhAccountIntegrationTestCase):
         result = self.handler.compute(self.options)
         cash_lines = self._lines_for_account(result, self.account_cash.id)
         aml_lines = [
-            l for l in cash_lines
-            if (l.get('meta') or {}).get('kind') == 'aml'
+            line_item for line_item in cash_lines
+            if (line_item.get('meta') or {}).get('kind') == 'aml'
         ]
         # The 2025 entry contributes to opening; 2027 entry is excluded.
         # No aml rows should appear in the period.
@@ -259,8 +259,8 @@ class TestGeneralLedgerHandler(EhAccountIntegrationTestCase):
         result = self.handler.compute(self.options)
         cash_lines = self._lines_for_account(result, self.account_cash.id)
         aml_lines = [
-            l for l in cash_lines
-            if (l.get('meta') or {}).get('kind') == 'aml'
+            line_item for line_item in cash_lines
+            if (line_item.get('meta') or {}).get('kind') == 'aml'
         ]
         self.assertEqual(len(aml_lines), 0)
 
@@ -279,8 +279,8 @@ class TestGeneralLedgerHandler(EhAccountIntegrationTestCase):
         result = self.handler.compute(opts)
         cash_lines = self._lines_for_account(result, self.account_cash.id)
         aml_lines = [
-            l for l in cash_lines
-            if (l.get('meta') or {}).get('kind') == 'aml'
+            line_item for line_item in cash_lines
+            if (line_item.get('meta') or {}).get('kind') == 'aml'
         ]
         self.assertEqual(len(aml_lines), 1)
 
@@ -295,8 +295,8 @@ class TestGeneralLedgerHandler(EhAccountIntegrationTestCase):
         # No entries should be listed for cash; the account header may not
         # appear at all if there is nothing else.
         aml_lines = [
-            l for l in cash_lines
-            if (l.get('meta') or {}).get('kind') == 'aml'
+            line_item for line_item in cash_lines
+            if (line_item.get('meta') or {}).get('kind') == 'aml'
         ]
         self.assertEqual(len(aml_lines), 0)
 
@@ -332,8 +332,8 @@ class TestGeneralLedgerHandler(EhAccountIntegrationTestCase):
         result = self.handler.compute(opts)
         rev_lines = self._lines_for_account(result, self.account_revenue.id)
         aml_lines = [
-            l for l in rev_lines
-            if (l.get('meta') or {}).get('kind') == 'aml'
+            line_item for line_item in rev_lines
+            if (line_item.get('meta') or {}).get('kind') == 'aml'
         ]
         self.assertEqual(len(aml_lines), 1)
 

@@ -130,7 +130,6 @@ from odoo.tools.translate import _lt
 from odoo.addons.eh_account_base.tools.sql_builder import MoveLineQuery
 
 
-
 class EhCashFlowHandler(models.AbstractModel):
     _name = 'eh.account.dynamic.report.handler.cash_flow'
     _inherit = 'eh.account.dynamic.report.handler.sectioned'
@@ -784,7 +783,7 @@ class EhCashFlowHandler(models.AbstractModel):
         total = 0.0
         for counterpart in counterpart_lines:
             activity = counterpart.move_id.line_ids.filtered(
-                lambda l: l.account_id.account_type
+                lambda line_item: line_item.account_id.account_type
                 not in self.NON_OPERATING_COUNTERPART)
             for activity_line in activity:
                 weight = abs(activity_line.balance)

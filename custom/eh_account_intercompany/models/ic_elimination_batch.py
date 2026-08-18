@@ -248,8 +248,8 @@ class EhIcEliminationBatch(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('unique_pair_period', 'unique(company_a_id, company_b_id, period_from, period_to)', "An elimination batch already exists for this company pair and "
-        "period."),
+        ('unique_pair_period', 'unique(company_a_id, company_b_id, period_from, period_to)', "An elimination batch already exists for this company pair and "  # noqa: E501
+        "period."),  # noqa: E128
     ]
 
     # ------------------------------------------------------------------
@@ -1291,7 +1291,7 @@ class EhIcUnrealisedLine(models.Model):
                     "standard cost (%(fields)s cannot be edited). Only "
                     "the remaining fraction is manual.",
                     fields=', '.join(sorted(touched))))
-            posted = self.filtered(lambda l: l.batch_id.state == 'posted')
+            posted = self.filtered(lambda line_item: line_item.batch_id.state == 'posted')
             if posted:
                 raise UserError(_(
                     "The unrealised-profit lines of a posted elimination "

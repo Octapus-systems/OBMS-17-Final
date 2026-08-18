@@ -230,7 +230,7 @@ class EhCheque(models.Model):
     )
 
     _sql_constraints = [
-        ('uniq_book_serial', 'unique(book_id, cheque_number)', 'A cheque serial cannot be reused within the same book.'),
+        ('uniq_book_serial', 'unique(book_id, cheque_number)', 'A cheque serial cannot be reused within the same book.'),  # noqa: E501
     ]
 
     # ---- compute ----
@@ -879,15 +879,15 @@ class EhCheque(models.Model):
         if not partner_acc.reconcile:
             return
         present_leg = self.present_move_id.line_ids.filtered(
-            lambda l: l.account_id == partner_acc)
+            lambda line_item: line_item.account_id == partner_acc)
         # Break the invoice reconciliation (re-opens invoice + present leg).
         present_leg.filtered('reconciled').remove_move_reconcile()
         # Net the cheque's own two receivable legs so the invoice's own line
         # is the only open item left on the partner account.
         rev_leg = reversal.line_ids.filtered(
-            lambda l: l.account_id == partner_acc and not l.reconciled)
+            lambda line_item: line_item.account_id == partner_acc and not line_item.reconciled)
         net = (present_leg | rev_leg).filtered(
-            lambda l: not l.reconciled and l.account_id.reconcile)
+            lambda line_item: not line_item.reconciled and line_item.account_id.reconcile)
         if len(net) >= 2:
             net.reconcile()
 

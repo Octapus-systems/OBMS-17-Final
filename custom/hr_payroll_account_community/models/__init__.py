@@ -20,8 +20,8 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_contract
-from . import hr_payslip
-from . import hr_payslip_line
-from . import hr_payslip_run
-from . import hr_salary_rule
+from . import hr_contract  # noqa: F401
+from . import hr_payslip  # noqa: F401
+from . import hr_payslip_line  # noqa: F401
+from . import hr_payslip_run  # noqa: F401
+from . import hr_salary_rule  # noqa: F401

@@ -20,5 +20,5 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import models
-from . import report
+from . import models  # noqa: F401
+from . import report  # noqa: F401

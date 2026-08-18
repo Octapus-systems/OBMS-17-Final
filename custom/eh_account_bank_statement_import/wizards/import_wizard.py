@@ -26,7 +26,7 @@ import base64
 import hashlib
 import logging
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 from odoo.exceptions import UserError
 
 from odoo.addons.eh_account_bank_statement_import.parsers import registry
@@ -279,7 +279,7 @@ class EhBankStatementImportWizard(models.TransientModel):
         partner_id_by_name = {}
         if unique_partner_names:
             Partner = self.env['res.partner']
-            company_id = self.journal_id.company_id.id
+            company_id = self.journal_id.company_id.id  # noqa: F841
             for name in unique_partner_names:
                 partner = Partner.search([
                     ('name', '=ilike', name),

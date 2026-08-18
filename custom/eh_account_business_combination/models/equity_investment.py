@@ -105,7 +105,7 @@ class EhEquityInvestment(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('check_ownership', 'CHECK (ownership_pct >= 0 AND ownership_pct <= 100)', 'Ownership percentage must be between 0 and 100.'),
+        ('check_ownership', 'CHECK (ownership_pct >= 0 AND ownership_pct <= 100)', 'Ownership percentage must be between 0 and 100.'),  # noqa: E501
     ]
 
     def _compute_move_count(self):
@@ -320,7 +320,7 @@ class EhEquityInvestment(models.Model):
         field_map = {
             'investment': ('investment_account_id', _("investment account")),
             'share_of_profit': ('share_of_profit_account_id',
-                                 _("share of profit account")),
+                                 _("share of profit account")),  # noqa: E127
             'cash': ('cash_account_id', _("cash / receivable account")),
             'impairment': ('impairment_account_id', _("impairment account")),
             'disposal': ('disposal_gain_loss_account_id',

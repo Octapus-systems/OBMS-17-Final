@@ -38,8 +38,8 @@ class ResPartner(models.Model):
     @api.depends_context('uid')
     def _compute_eh_asset_count(self):
         Asset = self.env['eh.asset'].sudo()
-        groups = read_group_compat(Asset, 
-            [('partner_id', 'in', self.ids), ('state', '!=', 'disposed')],
+        groups = read_group_compat(Asset,
+            [('partner_id', 'in', self.ids), ('state', '!=', 'disposed')],  # noqa: E128
             groupby=['partner_id'],
             aggregates=['__count'],
         )
@@ -50,8 +50,8 @@ class ResPartner(models.Model):
     @api.depends_context('uid')
     def _compute_eh_lease_count(self):
         Lease = self.env['eh.lease.contract'].sudo()
-        groups = read_group_compat(Lease, 
-            [('lessor_id', 'in', self.ids)],
+        groups = read_group_compat(Lease,
+            [('lessor_id', 'in', self.ids)],  # noqa: E128
             groupby=['lessor_id'],
             aggregates=['__count'],
         )

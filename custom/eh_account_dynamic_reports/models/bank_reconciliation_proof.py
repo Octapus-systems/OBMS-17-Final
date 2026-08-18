@@ -51,7 +51,6 @@ from odoo.tools.translate import _lt
 from odoo.addons.eh_account_base.tools.sql_builder import MoveLineQuery
 
 
-
 class EhBankReconciliationHandler(models.AbstractModel):
     _name = 'eh.account.dynamic.report.handler.bank_reconciliation'
     _inherit = 'eh.account.dynamic.report.handler'
@@ -218,7 +217,7 @@ class EhBankReconciliationHandler(models.AbstractModel):
             return 0.0
         try:
             in_window = statement.line_ids.filtered(
-                lambda l: l.date and l.date <= date_to)
+                lambda line_item: line_item.date and line_item.date <= date_to)
             total = sum(in_window.mapped('amount'))
             return round(float(statement.balance_start or 0.0)
                          + float(total or 0.0), 2)
@@ -231,7 +230,7 @@ class EhBankReconciliationHandler(models.AbstractModel):
         max line date, else None."""
         if statement.date:
             return statement.date
-        line_dates = [l.date for l in statement.line_ids if l.date]
+        line_dates = [line_item.date for line_item in statement.line_ids if line_item.date]
         return max(line_dates) if line_dates else None
 
     @api.model

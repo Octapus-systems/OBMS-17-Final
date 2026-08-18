@@ -40,7 +40,7 @@ class TestPostedMoveInalterability(EhReconcileIntegrationTestCase):
             'name': move.name,
             'line_accounts': tuple(sorted(move.line_ids.mapped('account_id.id'))),
             'line_balances': tuple(sorted(
-                round(l.balance, 2) for l in move.line_ids)),
+                round(line_item.balance, 2) for line_item in move.line_ids)),
             'write_date': move.write_date,
         }
 

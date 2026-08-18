@@ -7,12 +7,12 @@
 ##############################################################################
 {
     'name': 'Inter-company Sales/Purchase Mirroring',
-    'summary': 'Extend inter-company automation to sales and purchase orders: confirmed SO drafts PO in partner company and vice versa, building on Inter-Company Rules invoice mirroring. Idempotent, no back-mirroring, Odoo 17 Community.',
-    'description': """Extends the ERP Heritage inter-company engine from invoice and move mirroring to sales and purchase orders, completing the multi-company order cycle.
+    'summary': 'Extend inter-company automation to sales and purchase orders: confirmed SO drafts PO in partner company and vice versa, building on Inter-Company Rules invoice mirroring. Idempotent, no back-mirroring, Odoo 17 Community.',  # noqa: E501
+    'description': """Extends the ERP Heritage inter-company engine from invoice and move mirroring to sales and purchase orders, completing the multi-company order cycle.  # noqa: E501
 
-When a sales order is confirmed to a customer that represents another company (per inter-company configuration), a draft purchase order is created in that company with the source company as the vendor. Confirming a purchase order to such a supplier creates the matching draft sales order. Order lines map product, quantity, unit price, and name to the mirror. Mirrors are created in draft for the receiving company to review, never mirrored back (no back-mirror when the draft PO is confirmed), and created with the configured inter-company user when one is set, or sudo() otherwise.
+When a sales order is confirmed to a customer that represents another company (per inter-company configuration), a draft purchase order is created in that company with the source company as the vendor. Confirming a purchase order to such a supplier creates the matching draft sales order. Order lines map product, quantity, unit price, and name to the mirror. Mirrors are created in draft for the receiving company to review, never mirrored back (no back-mirror when the draft PO is confirmed), and created with the configured inter-company user when one is set, or sudo() otherwise.  # noqa: E501
 
-Reuses the inter-company configuration and destination-company resolution from eh_account_intercompany (Represented Company field on partner), so a single setup drives both invoice and order mirroring.""",
+Reuses the inter-company configuration and destination-company resolution from eh_account_intercompany (Represented Company field on partner), so a single setup drives both invoice and order mirroring.""",  # noqa: E501
     'author': 'ERP Heritage',
     'website': 'https://www.erpheritage.com.au/',
     'license': 'LGPL-3',

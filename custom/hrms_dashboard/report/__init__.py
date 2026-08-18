@@ -20,4 +20,4 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import broadfactor
+from . import broadfactor  # noqa: F401

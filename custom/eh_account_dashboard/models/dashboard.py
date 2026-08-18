@@ -30,7 +30,7 @@ Design notes:
 import logging
 from datetime import date, timedelta
 
-from dateutil.relativedelta import relativedelta
+from dateutil.relativedelta import relativedelta  # noqa: F401
 
 from odoo import _, api, fields, models
 from odoo.tools import SQL
@@ -318,8 +318,8 @@ class EhAccountDashboard(models.Model):
             AML = self.env['account.move.line']
             # One SQL pass for the total via _read_group; no Python
             # materialisation of every open AR line.
-            total_rows = read_group_compat(AML, 
-                base_domain, [], ['amount_residual:sum'],
+            total_rows = read_group_compat(AML,
+                base_domain, [], ['amount_residual:sum'],  # noqa: E128
             )
             rec.receivable_total = total_rows[0][0] if total_rows else 0.0
             # One SQL pass for overdue: domain narrows by date.
@@ -327,8 +327,8 @@ class EhAccountDashboard(models.Model):
                 ('date_maturity', '<', today),
                 ('date_maturity', '!=', False),
             ]
-            overdue_rows = read_group_compat(AML, 
-                overdue_domain, [], ['amount_residual:sum', 'date_maturity:min'],
+            overdue_rows = read_group_compat(AML,
+                overdue_domain, [], ['amount_residual:sum', 'date_maturity:min'],  # noqa: E128
             )
             if overdue_rows and overdue_rows[0][0]:
                 rec.receivable_overdue = overdue_rows[0][0]
@@ -350,8 +350,8 @@ class EhAccountDashboard(models.Model):
             if rec.posted_only:
                 base_domain.append(('parent_state', '=', 'posted'))
             AML = self.env['account.move.line']
-            total_rows = read_group_compat(AML, 
-                base_domain, [], ['amount_residual:sum'],
+            total_rows = read_group_compat(AML,
+                base_domain, [], ['amount_residual:sum'],  # noqa: E128
             )
             # Payable balances are stored signed (credit-side negative);
             # absolute value is what the user expects to see.
@@ -360,8 +360,8 @@ class EhAccountDashboard(models.Model):
                 ('date_maturity', '<', today),
                 ('date_maturity', '!=', False),
             ]
-            overdue_rows = read_group_compat(AML, 
-                overdue_domain, [], ['amount_residual:sum'],
+            overdue_rows = read_group_compat(AML,
+                overdue_domain, [], ['amount_residual:sum'],  # noqa: E128
             )
             rec.payable_overdue = abs(overdue_rows[0][0] if overdue_rows and overdue_rows[0][0] else 0.0)
 
@@ -480,8 +480,8 @@ class EhAccountDashboard(models.Model):
         Journal = self.env['account.journal']
         for rec in self:
             company = rec.company_id
-            groups = read_group_compat(Move, 
-                [('company_id', '=', company.id),
+            groups = read_group_compat(Move,
+                [('company_id', '=', company.id),  # noqa: E128
                  ('state', '=', 'posted'),
                  ('sequence_prefix', '!=', False)],
                 groupby=['journal_id', 'sequence_prefix'],
@@ -529,8 +529,8 @@ class EhAccountDashboard(models.Model):
             # One SQL aggregation (count + sum) instead of loading every
             # open case into a recordset to count and sum in Python, which
             # is wasteful for a company with a large collections backlog.
-            rows = read_group_compat(self.env['eh.collections.case'], 
-                [
+            rows = read_group_compat(self.env['eh.collections.case'],
+                [  # noqa: E128
                     ('is_resolved', '=', False),
                     ('company_id', '=', rec.company_id.id),
                 ],

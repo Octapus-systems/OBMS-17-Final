@@ -86,7 +86,7 @@ class EhLeaseTerminateWizard(models.TransientModel):
                 w.current_rou = w.lease_id._rou_carrying_amount()
                 w.rou_accumulated = sum(
                     w.lease_id.schedule_line_ids.filtered(
-                        lambda l: l.is_posted,
+                        lambda line_item: line_item.is_posted,
                     ).mapped('rou_amount'),
                 )
                 # Gain / loss = liability released - ROU given up
@@ -168,8 +168,8 @@ class EhLeaseTerminateWizard(models.TransientModel):
             }))
 
         # Compute the balancing amount.
-        debit_total = sum(l[2]['debit'] for l in lines)
-        credit_total = sum(l[2]['credit'] for l in lines)
+        debit_total = sum(line_item[2]['debit'] for line_item in lines)
+        credit_total = sum(line_item[2]['credit'] for line_item in lines)
         diff = credit_total - debit_total
         if diff > 0:
             # Net credit position: post a debit to P/L (loss).
@@ -202,7 +202,7 @@ class EhLeaseTerminateWizard(models.TransientModel):
         })
         move.action_post()
 
-        unposted = lease.schedule_line_ids.filtered(lambda l: not l.is_posted)
+        unposted = lease.schedule_line_ids.filtered(lambda line_item: not line_item.is_posted)
         unposted.unlink()
         lease._eh_workflow_write({
             'state': 'terminated',

@@ -248,8 +248,8 @@ class EhYearEndRun(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('unique_company_year', 'unique(company_id, fiscal_year_end)', 'Only one year-end run per company per fiscal year end date.'),
-        ('check_year_dates', 'CHECK (fiscal_year_start <= fiscal_year_end)', 'fiscal_year_start must be on or before fiscal_year_end.'),
+        ('unique_company_year', 'unique(company_id, fiscal_year_end)', 'Only one year-end run per company per fiscal year end date.'),  # noqa: E501
+        ('check_year_dates', 'CHECK (fiscal_year_start <= fiscal_year_end)', 'fiscal_year_start must be on or before fiscal_year_end.'),  # noqa: E501
     ]
 
     @api.depends(
@@ -268,7 +268,7 @@ class EhYearEndRun(models.Model):
             # oci_balance is ledger-signed (debit positive); an OCI gain
             # accumulates as a credit, so negate to report gain-positive.
             oci_lines = rec.line_ids.filtered(
-                lambda l: l.line_kind == 'oci')
+                lambda line_item: line_item.line_kind == 'oci')
             rec.total_oci_reclass = -sum(oci_lines.mapped('oci_balance'))
 
     # ---- onchange (live form feedback) ----
@@ -739,8 +739,8 @@ class EhYearEndRun(models.Model):
         """
         self.ensure_one()
         line_vals = []
-        pl_lines = self.line_ids.filtered(lambda l: l.line_kind != 'oci')
-        oci_lines = self.line_ids.filtered(lambda l: l.line_kind == 'oci')
+        pl_lines = self.line_ids.filtered(lambda line_item: line_item.line_kind != 'oci')
+        oci_lines = self.line_ids.filtered(lambda line_item: line_item.line_kind == 'oci')
         for line in pl_lines:
             account = line.account_id
             if line.income_balance:

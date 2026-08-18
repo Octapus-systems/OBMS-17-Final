@@ -25,7 +25,7 @@
     'version': '17.0.1.0.0',
     'category': 'Human Resources',
     'summary': 'Manages the resignation process of the employees',
-    'description': """This module helps to create and 
+    'description': """This module helps to create and
      approve/reject employee resignation requests""",
     'author': 'Cybrosys Techno solutions,Open HRMS',
     'company': 'Cybrosys Techno Solutions',

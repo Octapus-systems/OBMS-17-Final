@@ -30,8 +30,8 @@ class AccountMove(models.Model):
     @api.depends_context('uid')
     def _compute_eh_cheque_count(self):
         Cheque = self.env['eh.cheque'].sudo()
-        groups = read_group_compat(Cheque, 
-            [('invoice_id', 'in', self.ids)],
+        groups = read_group_compat(Cheque,
+            [('invoice_id', 'in', self.ids)],  # noqa: E128
             groupby=['invoice_id'],
             aggregates=['__count'],
         )
@@ -62,8 +62,8 @@ class AccountPayment(models.Model):
     @api.depends_context('uid')
     def _compute_eh_payment_cheque_count(self):
         Cheque = self.env['eh.cheque'].sudo()
-        groups = read_group_compat(Cheque, 
-            [('payment_id', 'in', self.ids)],
+        groups = read_group_compat(Cheque,
+            [('payment_id', 'in', self.ids)],  # noqa: E128
             groupby=['payment_id'],
             aggregates=['__count'],
         )

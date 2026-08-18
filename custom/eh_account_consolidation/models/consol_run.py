@@ -278,11 +278,11 @@ class EhConsolRun(models.Model):
     def _compute_totals(self):
         for rec in self:
             cta = sum(
-                rec.line_ids.filtered(lambda l: l.kind == 'cta')
+                rec.line_ids.filtered(lambda line_item: line_item.kind == 'cta')
                 .mapped('amount'),
             )
             nci = sum(
-                rec.line_ids.filtered(lambda l: l.kind == 'nci')
+                rec.line_ids.filtered(lambda line_item: line_item.kind == 'nci')
                 .mapped('amount'),
             )
             rec.cta_amount = cta
@@ -600,7 +600,7 @@ class EhConsolRun(models.Model):
             return 0.0
         total = sum(
             self.line_ids.filtered(
-                lambda l: l.account_id in goodwill_accounts
+                lambda line_item: line_item.account_id in goodwill_accounts
             ).mapped('amount')
         )
         return self.presentation_currency_id.round(total)
@@ -671,7 +671,7 @@ class EhConsolRun(models.Model):
                 ))
             # Drop any prior impairment lines so the test is idempotent and the
             # recognised-goodwill base is measured before the charge.
-            prior = run.line_ids.filtered(lambda l: l.kind == 'impairment')
+            prior = run.line_ids.filtered(lambda line_item: line_item.kind == 'impairment')
             if prior:
                 prior.sudo().with_context(
                     **{CONSOL_ENGINE_CTX: True}).unlink()
@@ -754,7 +754,7 @@ class EhConsolRun(models.Model):
         for account in goodwill_accounts:
             bal = sum(
                 self.line_ids.filtered(
-                    lambda l: l.account_id == account
+                    lambda line_item: line_item.account_id == account
                 ).mapped('amount')
             )
             if best_bal is None or bal > best_bal:
@@ -773,11 +773,11 @@ class EhConsolRun(models.Model):
         """
         self.ensure_one()
         cta_lines = self.line_ids.filtered(
-            lambda l: l.kind == 'cta' and l.member_id == member)
+            lambda line_item: line_item.kind == 'cta' and line_item.member_id == member)
         cta_accounts = cta_lines.mapped('account_id')
         recycle_reserve_legs = self.line_ids.filtered(
-            lambda l: l.kind == 'cta_recycle' and l.member_id == member
-            and l.account_id in cta_accounts)
+            lambda line_item: line_item.kind == 'cta_recycle' and line_item.member_id == member
+            and line_item.account_id in cta_accounts)
         return self.presentation_currency_id.round(
             sum(cta_lines.mapped('amount'))
             + sum(recycle_reserve_legs.mapped('amount')))
@@ -857,7 +857,7 @@ class EhConsolRun(models.Model):
                 member=member.company_id.display_name,
             ))
         cta_lines = self.line_ids.filtered(
-            lambda l: l.kind == 'cta' and l.member_id == member)
+            lambda line_item: line_item.kind == 'cta' and line_item.member_id == member)
         reserve_account = cta_lines.mapped('account_id')[:1]
         if not reserve_account:
             raise UserError(_(
@@ -1332,8 +1332,8 @@ class EhConsolRun(models.Model):
         for member in self.entity_id.member_ids:
             member_total = sum(
                 self.line_ids.filtered(
-                    lambda l: l.member_id == member
-                    and l.kind in _CTA_BASE_KINDS
+                    lambda line_item: line_item.member_id == member
+                    and line_item.kind in _CTA_BASE_KINDS
                 ).mapped('amount'),
             )
             member_plug = -currency.round(member_total)
@@ -1817,9 +1817,9 @@ class EhConsolRun(models.Model):
         currency = self.presentation_currency_id
         o = member.ownership_pct / 100.0
         A = self._eh_acquisition_equity_pres(member)
-        I = member.investment_amount or 0.0
+        index_val = member.investment_amount or 0.0  # noqa: F841
         equity_leg = currency.round(A)
-        investment_leg = currency.round(-I)
+        investment_leg = currency.round(-index_val)
         if member.nci_basis == 'fair_value':
             nci_leg = currency.round(-(member.nci_fair_value or 0.0))
         else:
@@ -2289,7 +2289,7 @@ class EhConsolRun(models.Model):
         self.ensure_one()
         total = sum(
             self.line_ids.filtered(
-                lambda l: l.kind in _CTA_BASE_KINDS,
+                lambda line_item: line_item.kind in _CTA_BASE_KINDS,
             ).mapped('amount'),
         )
         # CTA balances the books -> negate. Round in the presentation

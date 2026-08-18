@@ -54,5 +54,3 @@ class HrEmployee(models.Model):
             'limit': 80,
             'context': "{'default_employee_id': %s}" % self.id
         }
-
-

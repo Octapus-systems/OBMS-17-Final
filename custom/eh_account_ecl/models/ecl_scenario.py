@@ -56,7 +56,7 @@ class EhEclScenario(models.Model):
 
     _sql_constraints = [
         ('check_weight', 'CHECK (weight >= 0 AND weight <= 1)', 'A scenario weight must be between 0 and 1.'),
-        ('check_factors', 'CHECK (pd_factor >= 0 AND lgd_factor >= 0)', 'Scenario PD and LGD factors cannot be negative.'),
+        ('check_factors', 'CHECK (pd_factor >= 0 AND lgd_factor >= 0)', 'Scenario PD and LGD factors cannot be negative.'),  # noqa: E501
     ]
 
     @api.constrains('weight', 'run_id')

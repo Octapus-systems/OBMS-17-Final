@@ -67,7 +67,7 @@ All other element names and structural rules carry over unchanged.
 """
 
 from decimal import Decimal, ROUND_HALF_UP
-from xml.etree.ElementTree import Element, SubElement, tostring
+from xml.etree.ElementTree import Element, SubElement, tostring  # noqa: F401
 
 
 _SUPPORTED_VERSIONS = ('03', '09')

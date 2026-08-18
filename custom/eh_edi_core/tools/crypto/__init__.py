@@ -5,4 +5,4 @@
 # Copyright (C) 2026 (https://www.erpheritage.com.au/)
 #
 ##############################################################################
-from . import credential_vault
+from . import credential_vault  # noqa: F401

@@ -69,9 +69,9 @@ class TestGoldenPresentation(EhAccountIntegrationTestCase):
             ],
         })
         cta_line = soci.line_ids.filtered(
-            lambda l: l.account_id == acc_cta)
+            lambda line_item: line_item.account_id == acc_cta)
         eq_line = soci.line_ids.filtered(
-            lambda l: l.account_id == acc_fvoci_eq)
+            lambda line_item: line_item.account_id == acc_fvoci_eq)
         self.assertTrue(
             cta_line.will_reclassify,
             "CTA line must land in the recyclable section: its source "
@@ -122,9 +122,9 @@ class TestGoldenPresentation(EhAccountIntegrationTestCase):
                         'account_id': acc_reval.id, 'amount': 7000.0}),
             ],
         })
-        cta_line = soci.line_ids.filtered(lambda l: l.account_id == acc_cta)
+        cta_line = soci.line_ids.filtered(lambda line_item: line_item.account_id == acc_cta)
         reval_line = soci.line_ids.filtered(
-            lambda l: l.account_id == acc_reval)
+            lambda line_item: line_item.account_id == acc_reval)
         # Section placement is tag-derived, not from any manual input.
         self.assertEqual(cta_line.tag_reclassify, 'recyclable')
         self.assertEqual(reval_line.tag_reclassify, 'non_recyclable')
@@ -491,7 +491,7 @@ class TestGoldenPresentation(EhAccountIntegrationTestCase):
             'period_start': '2026-01-01', 'period_end': '2026-12-31',
         })
         soce.action_prefill_nci_from_consolidation()
-        nci_line = soce.line_ids.filtered(lambda l: l.component == 'nci')
+        nci_line = soce.line_ids.filtered(lambda line_item: line_item.component == 'nci')
         self.assertEqual(
             len(nci_line), 1,
             "Prefill must create the missing NCI component line.")

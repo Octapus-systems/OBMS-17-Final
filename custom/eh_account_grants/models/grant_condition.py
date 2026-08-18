@@ -18,7 +18,7 @@ unamortised deferred income first, excess to profit or loss, liability
 until the cash is repaid).
 """
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 from odoo.exceptions import UserError
 
 

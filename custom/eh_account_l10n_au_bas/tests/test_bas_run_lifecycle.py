@@ -8,7 +8,7 @@ BAS run lifecycle: draft -> computed -> lodged. Lodged is read-only.
 
 from datetime import date
 
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError  # noqa: F401
 
 from odoo.addons.eh_account_base.tests.common import (
     EhAccountIntegrationTestCase,

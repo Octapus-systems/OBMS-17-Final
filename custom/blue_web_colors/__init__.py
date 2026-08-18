@@ -1,4 +1,4 @@
-from . import models
+from . import models  # noqa: F401
 
 
 def _uninstall_cleanup(env):

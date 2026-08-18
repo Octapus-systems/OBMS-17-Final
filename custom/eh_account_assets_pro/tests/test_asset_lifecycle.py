@@ -102,7 +102,7 @@ class TestAssetLifecycle(EhAssetTestCase):
         )
         asset.action_activate()
         asset.action_post_due_lines()
-        posted = asset.depreciation_line_ids.filtered(lambda l: l.is_posted)
+        posted = asset.depreciation_line_ids.filtered(lambda line_item: line_item.is_posted)
         self.assertGreater(len(posted), 0)
         for line in posted:
             self.assertTrue(line.move_id)

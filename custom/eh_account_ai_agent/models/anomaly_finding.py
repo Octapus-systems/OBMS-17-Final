@@ -22,7 +22,7 @@ can change. Re-scanning a move never duplicates a finding: the unique
 idempotent.
 """
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 from odoo.exceptions import UserError
 
 _EVIDENCE_FIELDS = frozenset(

@@ -233,7 +233,7 @@ class EhReconciliationSession(models.Model):
         # absorb more reconciliation; Odoo's reconcile() would silently
         # skip it, but the audit row would still record a match. Reject
         # the call instead so the caller gets a clear error.
-        already_reconciled = aml_records.filtered(lambda l: l.reconciled)
+        already_reconciled = aml_records.filtered(lambda line_item: line_item.reconciled)
         if already_reconciled:
             raise UserError(_(
                 "These journal items are already reconciled and cannot be "
@@ -572,7 +572,7 @@ class EhReconciliationSession(models.Model):
         # write-off helper.
         move = statement_line.move_id
         suspense_lines = move.line_ids.filtered(
-            lambda l: l.account_id.reconcile and not l.reconciled,
+            lambda line_item: line_item.account_id.reconcile and not line_item.reconciled,
         )
         if not suspense_lines:
             raise UserError(_(
@@ -778,11 +778,11 @@ class EhReconciliationSession(models.Model):
         statement line's journal move, or an empty recordset."""
         move = statement_line.move_id
         liquidity, suspense, other = statement_line._seek_for_lines()
-        open_suspense = suspense.filtered(lambda l: not l.reconciled)
+        open_suspense = suspense.filtered(lambda line_item: not line_item.reconciled)
         if not open_suspense:
             open_suspense = move.line_ids.filtered(
-                lambda l: l.account_id.reconcile and not l.reconciled
-                and l.account_id != statement_line.journal_id.default_account_id
+                lambda line_item: line_item.account_id.reconcile and not line_item.reconciled
+                and line_item.account_id != statement_line.journal_id.default_account_id
             )
         return open_suspense
 
@@ -857,7 +857,7 @@ class EhReconciliationSession(models.Model):
         })
         adjusting.action_post()
         counter_suspense = adjusting.line_ids.filtered(
-            lambda l: l.account_id == suspense_account and not l.reconciled
+            lambda line_item: line_item.account_id == suspense_account and not line_item.reconciled
         )
         (open_suspense + counter_suspense).reconcile()
         return adjusting
@@ -867,7 +867,7 @@ class EhReconciliationSession(models.Model):
         sits on ``target_account`` (the leg that clears against candidate
         AMLs during a match)."""
         return adjusting.line_ids.filtered(
-            lambda l: l.account_id == target_account and not l.reconciled
+            lambda line_item: line_item.account_id == target_account and not line_item.reconciled
         )
 
     def _perform_reconciliation(self, statement_line, aml_records):
@@ -895,7 +895,7 @@ class EhReconciliationSession(models.Model):
         target_account = aml_records[0].account_id
         move = statement_line.move_id
         with self.env.cr.savepoint():
-            if any(l.account_id != target_account for l in open_suspense):
+            if any(line_item.account_id != target_account for line_item in open_suspense):
                 label = _("Reconciliation reclass %s", move.name or '')
                 adjusting = self._post_reclassification_entry(
                     open_suspense, target_account, label)
@@ -909,7 +909,7 @@ class EhReconciliationSession(models.Model):
                 # to zero drives the statement line to reconciled without
                 # touching the posted move's account distribution.
                 to_reconcile = open_suspense.filtered(
-                    lambda l: not l.reconciled)
+                    lambda line_item: not line_item.reconciled)
             if to_reconcile:
                 # Defense in depth against a silent no-op. _post_reclassifi-
                 # cation_entry already cleared the suspense against its

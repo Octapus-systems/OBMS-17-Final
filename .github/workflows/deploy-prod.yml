@@ -51,7 +51,7 @@ jobs:
           echo ">>> Extracting source..."
           rm -rf src.new
           mkdir -p src.new
-          tar -xzf obms.tar.gz -C src.new
+          tar -xzf obms.tar.gz -C src.new --strip-components=1
           rm -f obms.tar.gz
           
           # Swap atomically

@@ -40,8 +40,8 @@ class TestProvisionWorkflowGuard(EhAccountIntegrationTestCase):
         cls.plain_user = cls.env['res.users'].create({
             'name': 'Provision Operator',
             'login': 'eh_provision_operator',
-            'company_id': cls.env.company.id,
-            'company_id': cls.env.company.id,
+            'company_id': cls.env.company.id,  # noqa: F601
+            'company_id': cls.env.company.id,  # noqa: F601
             'groups_id': [(6, 0, [
                 cls.env.ref('eh_account_base.group_eh_user').id,
             ])],

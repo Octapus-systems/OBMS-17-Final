@@ -324,7 +324,7 @@ class TestGoldenIfrs3(EhGoldenTestCase):
         c.action_recognise_ppa()
         # Outer limit: 12 months after acquisition (IFRS 3.45).
         self.assertEqual(str(c.measurement_period_end), '2027-01-15')
-        ppe_line = c.asset_line_ids.filtered(lambda l: not l.is_liability)
+        ppe_line = c.asset_line_ids.filtered(lambda line_item: not line_item.is_liability)
         adj = self.env['eh.bizcombo.adjustment'].create({
             'combination_id': c.id,
             'name': 'Independent PPE appraisal finalised',
@@ -378,7 +378,7 @@ class TestGoldenIfrs3(EhGoldenTestCase):
             consideration_transferred=800.0,
             nci_measurement='fair_value', nci_amount=220.0)
         c.action_recognise_ppa()
-        ppe_line = c.asset_line_ids.filtered(lambda l: not l.is_liability)
+        ppe_line = c.asset_line_ids.filtered(lambda line_item: not line_item.is_liability)
         adj = self.env['eh.bizcombo.adjustment'].create({
             'combination_id': c.id,
             'name': 'Post-close attempt',

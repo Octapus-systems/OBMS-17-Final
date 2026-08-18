@@ -468,11 +468,11 @@ class EhBudget(models.Model):
         # Per-budget savepoint via the shared batch mixin so a single
         # bad budget rolls back only its own slice and never aborts the
         # rest of the queue.
-        def _roll(budget):
+        def _roll(budget):  # noqa: E306
             # Find the latest monthly slice on this budget; copy those
             # lines forward, shifted by one month.
             last_lines = budget.line_ids.filtered(
-                lambda l: l.period_to == budget.date_to,
+                lambda line_item: line_item.period_to == budget.date_to,
             )
             if not last_lines:
                 return
@@ -525,7 +525,7 @@ class EhBudget(models.Model):
         line records the algorithm used in `notes` so the auditor can
         verify the projection's basis.
         """
-        from calendar import monthrange
+        from calendar import monthrange  # noqa: F401
         from datetime import timedelta as _td
         from odoo.addons.eh_account_budget_pro.tools.forecast import (
             ForecastError, holt_winters_additive, linear_trend,
@@ -1160,11 +1160,11 @@ class EhBudgetLine(models.Model):
 
     _sql_constraints = [
         ('period_range', 'check(period_from <= period_to)', 'Line period_from must be before or equal to period_to.'),
-        ('amount_non_negative', 'check(budgeted_amount >= 0)', 'Budgeted amount must be zero or positive. Reductions to a '
-        'budget should lower the existing line, not be entered as a '
-        'negative figure.'),
+        ('amount_non_negative', 'check(budgeted_amount >= 0)', 'Budgeted amount must be zero or positive. Reductions to a '  # noqa: E501
+        'budget should lower the existing line, not be entered as a '  # noqa: E128
+        'negative figure.'),  # noqa: E128
         ('qty_data_non_negative', 'check(budgeted_qty >= 0 AND actual_qty >= 0 AND '
-        'budgeted_unit_price >= 0 AND actual_unit_price >= 0)', 'Quantities and unit prices must be zero or positive.'),
+        'budgeted_unit_price >= 0 AND actual_unit_price >= 0)', 'Quantities and unit prices must be zero or positive.'),  # noqa: E128,E501
     ]
     # Budget figures are entered as positive magnitudes regardless of the
     # underlying account's natural sign (an income budget of 10k means
@@ -1506,14 +1506,14 @@ class EhBudgetLine(models.Model):
         """
         if not lines:
             return {}
-        account_ids = list({l.account_id.id for l in lines if l.account_id})
+        account_ids = list({line_item.account_id.id for line_item in lines if line_item.account_id})
         if not account_ids:
             return {}
-        period_from = min(l.period_from for l in lines)
-        period_to = max(l.period_to for l in lines)
+        period_from = min(line_item.period_from for line_item in lines)
+        period_to = max(line_item.period_to for line_item in lines)
 
-        non_analytic_lines = [l for l in lines if not l.analytic_account_id]
-        analytic_lines = [l for l in lines if l.analytic_account_id]
+        non_analytic_lines = [line_item for line_item in lines if not line_item.analytic_account_id]
+        analytic_lines = [line_item for line_item in lines if line_item.analytic_account_id]
 
         result = {}
 
@@ -1553,11 +1553,11 @@ class EhBudgetLine(models.Model):
                     company_ids=[budget.company_id.id],
                 )
                 query.where_date_range(
-                    date_from=min(l.period_from for l in alines),
-                    date_to=max(l.period_to for l in alines),
+                    date_from=min(line_item.period_from for line_item in alines),
+                    date_to=max(line_item.period_to for line_item in alines),
                 )
                 query.where_accounts(
-                    list({l.account_id.id for l in alines}),
+                    list({line_item.account_id.id for line_item in alines}),
                 )
                 query.where_posted_only()
                 query.where_analytic_accounts([analytic_id])

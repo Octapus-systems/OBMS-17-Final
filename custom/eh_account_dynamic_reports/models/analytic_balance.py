@@ -59,7 +59,6 @@ def _readable(records, operation='read'):
     return records.filtered(_ok)
 
 
-
 class EhAnalyticBalanceHandler(models.AbstractModel):
     _name = 'eh.account.dynamic.report.handler.analytic_balance'
     _inherit = 'eh.account.dynamic.report.handler'

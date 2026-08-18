@@ -296,12 +296,12 @@ class EhBenefitValuation(models.Model):
     _sql_constraints = [
         ('unique_period', 'UNIQUE (plan_id, period_end)', 'A plan can only have one valuation per period end date.'),
         ('check_opening', 'CHECK (opening_dbo >= 0 AND opening_assets >= 0 '
-        'AND opening_ceiling_effect >= 0)', 'Opening figures cannot be negative.'),
+        'AND opening_ceiling_effect >= 0)', 'Opening figures cannot be negative.'),  # noqa: E128
         ('check_nonneg_inputs', 'CHECK (current_service_cost >= 0 AND benefits_paid >= 0 '
-        'AND contributions_employer >= 0 AND settlement_payment >= 0 '
-        'AND settlement_dbo_released >= 0 AND asset_ceiling >= 0)', 'Service cost, benefits, contributions, settlement amounts and the '
-        'asset ceiling cannot be negative (actuarial gains/losses and past '
-        'service cost carry their own signs).'),
+        'AND contributions_employer >= 0 AND settlement_payment >= 0 '  # noqa: E128
+        'AND settlement_dbo_released >= 0 AND asset_ceiling >= 0)', 'Service cost, benefits, contributions, settlement amounts and the '  # noqa: E501,E128
+        'asset ceiling cannot be negative (actuarial gains/losses and past '  # noqa: E128
+        'service cost carry their own signs).'),  # noqa: E128
         ('check_rate', 'CHECK (discount_rate >= 0)', 'The discount rate cannot be negative.'),
     ]
 
@@ -733,7 +733,7 @@ class EhBenefitValuation(models.Model):
             raise UserError(_(
                 "Nothing to post on %s: every movement in the period is "
                 "nil.", self.display_name))
-        total = sum(l[1] - l[2] for l in legs)
+        total = sum(line_item[1] - line_item[2] for line_item in legs)
         if abs(total) > 0.005:
             # Defensive: the identity in the class docstring makes this
             # unreachable; if it ever fires the inputs breached an

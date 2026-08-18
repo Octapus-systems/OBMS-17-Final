@@ -97,7 +97,7 @@ class EhAociReserveMap(models.Model):
     )
 
     _sql_constraints = [
-        ('unique_company_kind', 'unique(company_id, kind)', 'One AOCI sub-reserve mapping per company per component kind.'),
+        ('unique_company_kind', 'unique(company_id, kind)', 'One AOCI sub-reserve mapping per company per component kind.'),  # noqa: E501
     ]
 
     @api.depends('reserve_account_id', 'source_account_ids')

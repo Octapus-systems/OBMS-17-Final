@@ -43,7 +43,6 @@ from odoo.tools.translate import _lt
 from odoo.addons.eh_account_base.tools.sql_builder import MoveLineQuery
 
 
-
 # Absolute ceiling on rows materialised in a single render. The JSON
 # payload bloats past this scale and the OWL viewer struggles with
 # virtual scrolling. The default soft cap lives on the company record

@@ -13,7 +13,7 @@ completion, the 36-month dormancy expiry both at consume time and
 via the cron, validation guards, and atomic counter increment.
 """
 
-from datetime import date, timedelta
+from datetime import date, timedelta  # noqa: F401
 from dateutil.relativedelta import relativedelta
 
 from odoo.exceptions import UserError, ValidationError

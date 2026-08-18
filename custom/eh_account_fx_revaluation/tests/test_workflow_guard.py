@@ -55,8 +55,8 @@ class TestWorkflowGuard(EhAccountIntegrationTestCase):
             'name': 'FX Workflow Plain User',
             'login': 'fx_workflow_guard_plain',
             'email': 'fx_workflow_guard_plain@example.com',
-            'company_id': cls.company.id,
-            'company_id': cls.company.id,
+            'company_id': cls.company.id,  # noqa: F601
+            'company_id': cls.company.id,  # noqa: F601
             'groups_id': [
                 (6, 0, [cls.env.ref('eh_account_base.group_eh_user').id]),
             ],

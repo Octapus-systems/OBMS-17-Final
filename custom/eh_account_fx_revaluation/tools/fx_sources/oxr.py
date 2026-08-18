@@ -30,7 +30,7 @@ the upstream reason (a bad key, an exhausted plan) rather than a generic
 parse failure.
 """
 
-from decimal import Decimal
+from decimal import Decimal  # noqa: F401
 
 from ..rate_providers import (
     BaseHttpProvider,

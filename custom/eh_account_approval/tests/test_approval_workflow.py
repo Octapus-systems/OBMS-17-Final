@@ -232,7 +232,7 @@ class TestApprovalWorkflow(EhAccountIntegrationTestCase):
         self.assertEqual(policy, self.policy)
 
     def test_find_matching_rule_above_threshold(self):
-        bill = self._make_bill(2000.0)
+        bill = self._make_bill(2000.0)  # noqa: F841
         rule = self.policy.find_matching_rule(2000.0)
         self.assertTrue(rule)
         self.assertEqual(rule.policy_id, self.policy)
@@ -376,7 +376,7 @@ class TestApprovalWorkflow(EhAccountIntegrationTestCase):
             raised_msg = str(exc)
         self.assertIn('re-sign', raised_msg.lower())
         request.invalidate_recordset()
-        reset_logs = request.log_ids.filtered(lambda l: l.action == 'reset')
+        reset_logs = request.log_ids.filtered(lambda line_item: line_item.action == 'reset')
         self.assertTrue(reset_logs, "Reset must be recorded in audit log")
 
     def test_immaterial_change_does_not_reset(self):
@@ -415,7 +415,7 @@ class TestApprovalWorkflow(EhAccountIntegrationTestCase):
         )
         self.assertEqual(request.current_step, 0)
         reset_logs = request.log_ids.filtered(
-            lambda l: l.action == 'reset',
+            lambda line_item: line_item.action == 'reset',
         )
         self.assertTrue(
             reset_logs, "Routing-change reset must be recorded in the log.",
@@ -519,7 +519,7 @@ class TestApprovalWorkflow(EhAccountIntegrationTestCase):
         self.assertEqual(request.state, 'approved')
 
         total_before = entry.amount_total
-        debit_line = entry.line_ids.filtered(lambda l: l.debit)
+        debit_line = entry.line_ids.filtered(lambda line_item: line_item.debit)
         # Pure account redirection: same debit amount, different account,
         # written through the move via a line_ids command (the vector the
         # routing trigger must cover).
@@ -540,7 +540,7 @@ class TestApprovalWorkflow(EhAccountIntegrationTestCase):
         )
         self.assertEqual(request.current_step, 0)
         reset_logs = request.log_ids.filtered(
-            lambda l: l.action == 'reset',
+            lambda line_item: line_item.action == 'reset',
         )
         self.assertTrue(
             reset_logs,

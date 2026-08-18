@@ -92,7 +92,7 @@ class TestCashFlowHandler(EhAccountIntegrationTestCase):
              'partner': self.partner_a},
         ], date_str='2026-06-20')
         ar = (inv.line_ids + pay.line_ids).filtered(
-            lambda l: l.account_id == self.account_receivable)
+            lambda line_item: line_item.account_id == self.account_receivable)
         ar.reconcile()
 
         # Coarse direct method: cash receipt lands in Receivables.
@@ -133,7 +133,7 @@ class TestCashFlowHandler(EhAccountIntegrationTestCase):
              'partner': self.partner_a},
         ], date_str='2026-06-20')
         ar = (inv.line_ids + pay.line_ids).filtered(
-            lambda l: l.account_id == self.account_receivable)
+            lambda line_item: line_item.account_id == self.account_receivable)
         ar.reconcile()
 
         coarse = self.handler.compute(self.options)
@@ -388,7 +388,7 @@ class TestCashFlowHandler(EhAccountIntegrationTestCase):
             result['totals']['balance_check'], 0.0, places=2,
         )
         # The FX line sits after Net Change and before the cash balances.
-        line_ids = [l['id'] for l in result['lines']]
+        line_ids = [line_item['id'] for line_item in result['lines']]
         self.assertLess(
             line_ids.index('net_change_in_cash'),
             line_ids.index('fx_effect_on_cash'),
@@ -655,7 +655,7 @@ class TestCashFlowHandler(EhAccountIntegrationTestCase):
         # No FX line, no FX totals key: payload shape unchanged.
         self.assertIsNone(self._line_by_id(result, 'fx_effect_on_cash'))
         self.assertNotIn('fx_effect_on_cash', result['totals'])
-        line_ids = [l['id'] for l in result['lines']]
+        line_ids = [line_item['id'] for line_item in result['lines']]
         self.assertEqual(line_ids[-4:], [
             'net_change_in_cash', 'opening_cash_balance',
             'closing_cash_balance', 'cash_balance_check',
@@ -726,8 +726,8 @@ class TestCashFlowHandler(EhAccountIntegrationTestCase):
         ])
         result = self.handler.compute(self.options)
         kinds = [
-            (l.get('meta') or {}).get('kind')
-            for l in result['lines']
+            (line_item.get('meta') or {}).get('kind')
+            for line_item in result['lines']
         ]
         self.assertEqual(kinds.count('section_header'), 3)
         self.assertEqual(kinds.count('section_total'), 3)
@@ -745,8 +745,8 @@ class TestCashFlowHandler(EhAccountIntegrationTestCase):
         ])
         result = self.handler.compute(self.options)
         section_lines = [
-            l for l in result['lines']
-            if (l.get('meta') or {}).get('kind') == 'section_line'
+            line_item for line_item in result['lines']
+            if (line_item.get('meta') or {}).get('kind') == 'section_line'
         ]
         # Only the income line should appear.
         self.assertEqual(len(section_lines), 1)

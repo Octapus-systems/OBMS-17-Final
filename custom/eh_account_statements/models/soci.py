@@ -220,8 +220,8 @@ class EhSoci(models.Model):
                  'attributable_to_owners', 'attributable_to_nci')
     def _compute_totals(self):
         for s in self:
-            reclass = s.line_ids.filtered(lambda l: l.will_reclassify)
-            no_reclass = s.line_ids.filtered(lambda l: not l.will_reclassify)
+            reclass = s.line_ids.filtered(lambda line_item: line_item.will_reclassify)
+            no_reclass = s.line_ids.filtered(lambda line_item: not line_item.will_reclassify)
             s.oci_will_reclassify = sum(reclass.mapped('amount'))
             s.oci_no_reclassify = sum(no_reclass.mapped('amount'))
             s.total_oci = s.oci_will_reclassify + s.oci_no_reclassify
@@ -630,7 +630,7 @@ class EhSociLine(models.Model):
                 line.will_reclassify != (verdict == 'recyclable'))
 
     def _check_parent_not_confirmed(self):
-        confirmed = self.filtered(lambda l: l.soci_id.state == 'confirmed')
+        confirmed = self.filtered(lambda line_item: line_item.soci_id.state == 'confirmed')
         if confirmed:
             raise UserError(_(
                 "OCI lines on a confirmed statement of comprehensive income "

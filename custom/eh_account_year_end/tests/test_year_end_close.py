@@ -208,7 +208,7 @@ class TestYearEndClose(EhAccountIntegrationTestCase):
         run.action_post()
         move = run.move_id
         re_legs = move.line_ids.filtered(
-            lambda l: l.account_id == self.retained_earnings,
+            lambda line_item: line_item.account_id == self.retained_earnings,
         )
         # Net profit 4500 -> retained earnings credited 4500.
         self.assertEqual(len(re_legs), 1)
@@ -229,7 +229,7 @@ class TestYearEndClose(EhAccountIntegrationTestCase):
         self.assertAlmostEqual(run.net_profit, -5500.0)
         run.action_post()
         re_legs = run.move_id.line_ids.filtered(
-            lambda l: l.account_id == self.retained_earnings,
+            lambda line_item: line_item.account_id == self.retained_earnings,
         )
         # Net loss 5500 -> retained earnings debited 5500.
         self.assertAlmostEqual(re_legs.debit, 5500.0)

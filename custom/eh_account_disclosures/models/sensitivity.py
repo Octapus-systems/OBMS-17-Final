@@ -135,7 +135,7 @@ class EhFinSensitivity(models.Model):
                     "recomputed. Ask a manager to reopen it first.",
                     run.name))
             run.line_ids.filtered(
-                lambda l: l.origin == 'computed').unlink()
+                lambda line_item: line_item.origin == 'computed').unlink()
             vals_list = run._fx_line_vals() + run._ir_line_vals()
             for vals in vals_list:
                 vals['run_id'] = run.id

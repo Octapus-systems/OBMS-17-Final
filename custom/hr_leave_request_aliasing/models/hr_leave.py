@@ -78,10 +78,10 @@ class HrLeave(models.Model):
                             date_list[1], '%d/%m/%Y')
                     elif date_format == 'yyyy/mm/dd':
                         date_to = datetime.strptime(
-                            date_list[1],'%Y/%m/%d')
+                            date_list[1],'%Y/%m/%d')  # noqa: E231
                     elif date_format == 'mm/dd/yyyy':
                         date_to = datetime.strptime(
-                            date_list[1],'%m/%d/%Y')
+                            date_list[1],'%m/%d/%Y')  # noqa: E231
                 no_of_days_temp = (
                         datetime.strptime(str(date_to),
                                           "%Y-%m-%d %H:%M:%S") -

@@ -44,7 +44,7 @@ class ResPartner(models.Model):
         allowed_company_ids = self.env.companies.ids
         Case = self.env['eh.collections.case'].sudo()
         groups = read_group_compat(Case,
-            [
+            [  # noqa: E128
                 ('partner_id', 'in', self.ids),
                 ('is_resolved', '=', False),
                 ('company_id', 'in', allowed_company_ids),

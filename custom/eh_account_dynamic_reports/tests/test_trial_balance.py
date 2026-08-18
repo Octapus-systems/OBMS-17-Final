@@ -287,7 +287,7 @@ class TestTrialBalanceHandler(EhAccountIntegrationTestCase):
         self.assertEqual(first['totals'], second['totals'])
 
     def test_orchestrator_invalidates_cache_on_new_post(self):
-        first = self.report.render(self.options)
+        first = self.report.render(self.options)  # noqa: F841
         self._post_in_period([
             {'account': self.account_revenue, 'credit': 50.0},
             {'account': self.account_cash, 'debit': 50.0},
@@ -300,7 +300,7 @@ class TestTrialBalanceHandler(EhAccountIntegrationTestCase):
         self.assertIn('4000', idx)
 
     def test_drilldown_action_returns_filtered_journal_items(self):
-        move = self._post_in_period([
+        move = self._post_in_period([  # noqa: F841
             {'account': self.account_revenue, 'credit': 75.0},
             {'account': self.account_cash, 'debit': 75.0},
         ])
@@ -443,8 +443,8 @@ class TestTrialBalanceFiscalYearWS4(EhAccountIntegrationTestCase):
              {'account': self.account_cash, 'debit': 500.0}],
             date=fields.Date.from_string('2025-12-15'))
         result = self.handler.compute(self._opts())
-        idx = {l['meta'].get('account_code'): l
-               for l in result['lines'] if l.get('meta')}
+        idx = {line_item['meta'].get('account_code'): line_item
+               for line_item in result['lines'] if line_item.get('meta')}
         # Revenue account (4000) opens at zero on both sides at FY start.
         if '4000' in idx:
             self.assertAlmostEqual(
@@ -469,8 +469,8 @@ class TestTrialBalanceFiscalYearWS4(EhAccountIntegrationTestCase):
             date=fields.Date.from_string('2026-03-15'))
         result = self.handler.compute(
             self._opts(date_from='2026-07-01', date_to='2026-12-31'))
-        idx = {l['meta'].get('account_code'): l
-               for l in result['lines'] if l.get('meta')}
+        idx = {line_item['meta'].get('account_code'): line_item
+               for line_item in result['lines'] if line_item.get('meta')}
         # Revenue opening = only the current-FY-to-date 250 credit, NOT 650.
         self.assertIn('4000', idx)
         self.assertAlmostEqual(
@@ -502,7 +502,7 @@ class TestTrialBalanceFiscalYearWS4(EhAccountIntegrationTestCase):
              {'account': self.account_cash, 'debit': 100.0}],
             date=fields.Date.from_string('2026-06-15'))
         result = self.handler.compute(self._opts())
-        ids = {l['id'] for l in result['lines']}
+        ids = {line_item['id'] for line_item in result['lines']}
         self.assertNotIn('account-unaffected-earnings', ids)
 
     def test_hierarchical_unaffected_line_and_footing(self):
@@ -512,7 +512,7 @@ class TestTrialBalanceFiscalYearWS4(EhAccountIntegrationTestCase):
              {'account': self.account_cash, 'debit': 800.0}],
             date=fields.Date.from_string('2025-06-15'))
         result = self.handler.compute(self._opts(hierarchical_groups=True))
-        ids = {l['id'] for l in result['lines']}
+        ids = {line_item['id'] for line_item in result['lines']}
         self.assertIn('account-unaffected-earnings', ids)
         totals = result['totals']
         self.assertAlmostEqual(
@@ -536,13 +536,13 @@ class TestTrialBalanceFiscalYearWS4(EhAccountIntegrationTestCase):
             date=fields.Date.from_string('2026-07-10'))
         result = self.handler.compute(
             self._opts(date_from='2026-08-01', date_to='2027-06-30'))
-        idx = {l['meta'].get('account_code'): l
-               for l in result['lines'] if l.get('meta')}
+        idx = {line_item['meta'].get('account_code'): line_item
+               for line_item in result['lines'] if line_item.get('meta')}
         self.assertIn('4000', idx)
         # Only the current-FY 150 is in revenue's opening; the June 600 rolled.
         self.assertAlmostEqual(
             self._col(idx['4000'], 'opening_credit'), 150.0, places=2)
-        ue = {l['id']: l for l in result['lines']}.get(
+        ue = {line_item['id']: line_item for line_item in result['lines']}.get(
             'account-unaffected-earnings')
         self.assertIsNotNone(ue)
         self.assertAlmostEqual(self._col(ue, 'opening_credit'), 600.0, places=2)

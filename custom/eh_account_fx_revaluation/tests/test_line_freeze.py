@@ -67,8 +67,8 @@ class TestFxLineFreeze(EhAccountIntegrationTestCase):
                 'name': 'FX Line Freeze Plain User',
                 'login': 'fx_line_freeze_plain',
                 'email': 'fx_line_freeze_plain@example.com',
-                'company_id': cls.company.id,
-                'company_id': cls.company.id,
+                'company_id': cls.company.id,  # noqa: F601
+                'company_id': cls.company.id,  # noqa: F601
                 'groups_id': [
                     (6, 0, [cls.env.ref('eh_account_base.group_eh_user').id]),
                 ],

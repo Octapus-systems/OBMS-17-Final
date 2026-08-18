@@ -253,7 +253,7 @@ class TestGoldenIas36(EhGoldenTestCase, EhAssetTestCase):
         # IAS 36.63: the 96 remaining periods re-amortise the lower base,
         # 72,000 / 96 = 750 per month.
         unposted = asset.depreciation_line_ids.filtered(
-            lambda l: not l.is_posted,
+            lambda line_item: not line_item.is_posted,
         ).sorted('sequence')
         self.assertEqual(len(unposted), 96)
         self.assertAlmostEqual(unposted[0].amount, 750.00, places=2)
@@ -307,7 +307,7 @@ class TestGoldenIas36(EhGoldenTestCase, EhAssetTestCase):
         # IAS 36.63 again: the 72 remaining periods re-amortise 72,000,
         # i.e. 1,000/month, back on the historical-cost trajectory.
         unposted = asset.depreciation_line_ids.filtered(
-            lambda l: not l.is_posted,
+            lambda line_item: not line_item.is_posted,
         ).sorted('sequence')
         self.assertEqual(len(unposted), 72)
         self.assertAlmostEqual(unposted[0].amount, 1_000.00, places=2)

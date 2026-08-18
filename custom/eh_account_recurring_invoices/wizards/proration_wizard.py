@@ -26,10 +26,10 @@ convention every subscription-billing platform uses; the alternative
 diverges from the contract on every February.
 """
 
-from datetime import timedelta
+from datetime import timedelta  # noqa: F401
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError  # noqa: F401
 from dateutil.relativedelta import relativedelta
 
 
@@ -129,8 +129,8 @@ class EhRecurringInvoiceProrationWizard(models.TransientModel):
             # per-seat quantity>1 lines and under-credits the unused old-plan
             # portion by the quantity factor.
             old_unit = sum(
-                (l.quantity or 0.0) * (l.price_unit or 0.0)
-                for l in tpl.line_ids
+                (line_item.quantity or 0.0) * (line_item.price_unit or 0.0)
+                for line_item in tpl.line_ids
             ) or 0.0
             total_qty = sum(tpl.line_ids.mapped('quantity')) or 0.0
             wiz.old_amount = old_unit

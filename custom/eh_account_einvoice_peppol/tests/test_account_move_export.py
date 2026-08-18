@@ -95,7 +95,7 @@ class PeppolMoveExportTest(EhAccountIntegrationTestCase):
         lines = []
         tax_buckets = {}
         for i, line in enumerate(move.invoice_line_ids.filtered(
-            lambda l: l.display_type not in ('line_section', 'line_note'),
+            lambda line_item: line_item.display_type not in ('line_section', 'line_note'),
         ), start=1):
             tax = line.tax_ids[:1]
             rate_pct = float(tax.amount) if tax else 0.0
@@ -243,7 +243,7 @@ class PeppolMoveExportTest(EhAccountIntegrationTestCase):
         move.action_post()
 
         lines, tax_cats = move._eh_build_peppol_lines_and_tax()
-        by_desc = {l['description']: l['tax_category_code'] for l in lines}
+        by_desc = {line_item['description']: line_item['tax_category_code'] for line_item in lines}
         self.assertEqual(by_desc['Standard'], 'S')
         self.assertEqual(by_desc['Zero'], 'Z')
         self.assertEqual(by_desc['Exempt'], 'E')
@@ -374,9 +374,9 @@ class PeppolMoveExportTest(EhAccountIntegrationTestCase):
                          currency.round(200.0))
         # Each bucket's tax ties to the booked ledger tax for that tax.
         booked_10 = abs(sum(move.line_ids.filtered(
-            lambda l: l.tax_line_id == ten).mapped('amount_currency')))
+            lambda line_item: line_item.tax_line_id == ten).mapped('amount_currency')))
         booked_5 = abs(sum(move.line_ids.filtered(
-            lambda l: l.tax_line_id == five).mapped('amount_currency')))
+            lambda line_item: line_item.tax_line_id == five).mapped('amount_currency')))
         self.assertEqual(currency.round(by_rate[10.0]['tax_amount']),
                          currency.round(booked_10))
         self.assertEqual(currency.round(by_rate[5.0]['tax_amount']),

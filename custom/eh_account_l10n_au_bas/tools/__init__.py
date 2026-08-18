@@ -1,2 +1,2 @@
 # -*- encoding: utf-8 -*-
-from . import abn_validator
+from . import abn_validator  # noqa: F401

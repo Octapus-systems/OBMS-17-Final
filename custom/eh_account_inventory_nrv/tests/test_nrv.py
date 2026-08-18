@@ -34,7 +34,7 @@ class TestNrv(EhAccountIntegrationTestCase):
             'writedown_expense_account_id': self.writedown_expense.id,
             'allowance_account_id': self.allowance.id,
             'journal_id': self.journal_misc.id,
-            'line_ids': [(0, 0, l) for l in (lines or [])],
+            'line_ids': [(0, 0, line_item) for line_item in (lines or [])],
         })
 
     def _bal(self, account):

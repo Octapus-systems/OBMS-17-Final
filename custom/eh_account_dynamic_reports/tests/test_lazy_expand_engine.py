@@ -187,13 +187,13 @@ class TestLazyExpandEngine(EhAccountIntegrationTestCase):
         opts = dict(self.options, lazy_expand=True)
         payload = self.gl_handler.compute(opts)
         # No aml rows in the lazy payload.
-        kinds = [(l.get('meta') or {}).get('kind') for l in payload['lines']]
+        kinds = [(line_item.get('meta') or {}).get('kind') for line_item in payload['lines']]
         self.assertNotIn('aml', kinds)
         header = self._leaf_for(payload, self.account_cash.id)
         self.assertTrue(header.get('lazy'))
         total_line = next(
-            l for l in payload['lines']
-            if l['id'] == 'account-%s-total' % self.account_cash.id)
+            line_item for line_item in payload['lines']
+            if line_item['id'] == 'account-%s-total' % self.account_cash.id)
         closing_cell = self._col(total_line, 'balance')
 
         # Page through two-at-a-time and check continuity.
@@ -220,13 +220,13 @@ class TestLazyExpandEngine(EhAccountIntegrationTestCase):
         # Default compute() (no lazy_expand) is eager: aml rows present.
         eager = self.gl_handler.compute(self.options)
         eager_kinds = [
-            (l.get('meta') or {}).get('kind') for l in eager['lines']]
+            (line_item.get('meta') or {}).get('kind') for line_item in eager['lines']]
         self.assertIn('aml', eager_kinds)
         # eager_expand overrides lazy_expand (export over a screen snapshot).
         forced = self.gl_handler.compute(
             dict(self.options, lazy_expand=True, eager_expand=True))
         self.assertIn(
-            'aml', [(l.get('meta') or {}).get('kind') for l in forced['lines']])
+            'aml', [(line_item.get('meta') or {}).get('kind') for line_item in forced['lines']])
 
     # ---- reconciliation: P&L and Balance Sheet ----
 

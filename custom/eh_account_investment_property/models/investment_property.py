@@ -163,8 +163,8 @@ class EhInvestmentProperty(models.Model):
     # database rule rather than an honour-system convention.
     _sql_constraints = [
         ('check_fv_basis_no_accum_dep', "CHECK (model_basis != 'fair_value' "
-        "OR COALESCE(accumulated_depreciation, 0) = 0)", 'A fair value model investment property cannot carry accumulated '
-        'depreciation; it is remeasured, never depreciated (IAS 40.33-35).'),
+        "OR COALESCE(accumulated_depreciation, 0) = 0)", 'A fair value model investment property cannot carry accumulated '  # noqa: E501,E128
+        'depreciation; it is remeasured, never depreciated (IAS 40.33-35).'),  # noqa: E128
     ]
 
     @api.depends('fair_value', 'carrying_amount')

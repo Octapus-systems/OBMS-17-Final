@@ -143,7 +143,7 @@ class TestGoldenYearEndAoci(EhGoldenTestCase):
         # Snapshot: P&L result excludes OCI; OCI total is gain-positive.
         self.assertAlmostEqual(run.net_profit, 50000.0, places=2)
         self.assertAlmostEqual(run.total_oci_reclass, 14000.0, places=2)
-        oci_lines = run.line_ids.filtered(lambda l: l.line_kind == 'oci')
+        oci_lines = run.line_ids.filtered(lambda line_item: line_item.line_kind == 'oci')
         self.assertEqual(len(oci_lines), 2)
         self.assertFalse(run.has_unmapped_oci)
 
@@ -206,7 +206,7 @@ class TestGoldenYearEndAoci(EhGoldenTestCase):
         self.assertAlmostEqual(run.net_profit, 14000.0, places=2)
         # Net CTA movement is zero: no OCI reclassification row at all.
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.line_kind == 'oci'))
+            run.line_ids.filtered(lambda line_item: line_item.line_kind == 'oci'))
         self.assertAlmostEqual(run.total_oci_reclass, 0.0, places=2)
 
         run.action_post()
@@ -243,7 +243,7 @@ class TestGoldenYearEndAoci(EhGoldenTestCase):
         self.assertIn('3902', run.unmapped_oci_note)
         # Incomplete row produces no reclassification rows either.
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.line_kind == 'oci'))
+            run.line_ids.filtered(lambda line_item: line_item.line_kind == 'oci'))
 
         # Blocked without override.
         with self.assertRaises(UserError):
@@ -392,7 +392,7 @@ class TestGoldenYearEndAoci(EhGoldenTestCase):
         ])
         # RE purity: exactly one RE leg, equal to the P&L result.
         re_legs = run.move_id.line_ids.filtered(
-            lambda l: l.account_id == self.retained_earnings)
+            lambda line_item: line_item.account_id == self.retained_earnings)
         self.assertEqual(len(re_legs), 1)
         self.assertAlmostEqual(re_legs.debit, 6000.0, places=2)
         self.assertAlmostEqual(re_legs.credit, 0.0, places=2)
@@ -432,7 +432,7 @@ class TestGoldenYearEndAoci(EhGoldenTestCase):
             (self.res_cta, 1000.0, 0.0),
         ])
         re_legs = run.move_id.line_ids.filtered(
-            lambda l: l.account_id == self.retained_earnings)
+            lambda line_item: line_item.account_id == self.retained_earnings)
         self.assertEqual(len(re_legs), 1)
         self.assertAlmostEqual(re_legs.credit, 12000.0, places=2)
 
@@ -486,7 +486,7 @@ class TestGoldenYearEndAoci(EhGoldenTestCase):
         run = self._run()
         run.action_compute()
         self.assertEqual(
-            len(run.line_ids.filtered(lambda l: l.line_kind == 'oci')),
+            len(run.line_ids.filtered(lambda line_item: line_item.line_kind == 'oci')),
             len(AOCI_KINDS))
         run.action_post()
         self.assertMoveLines(run.move_id, expected)
@@ -511,7 +511,7 @@ class TestGoldenYearEndAoci(EhGoldenTestCase):
         run.action_compute()
         self.assertFalse(run.has_unmapped_oci)
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.line_kind == 'oci'))
+            run.line_ids.filtered(lambda line_item: line_item.line_kind == 'oci'))
         run.action_post()
         self.assertMoveLines(run.move_id, [
             (self.account_revenue, 5000.0, 0.0),

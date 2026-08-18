@@ -565,7 +565,7 @@ class TestGoldenRealizedUnrealizedSplit(EhGoldenTestCase):
         })
         move.action_post()
         return move.line_ids.filtered(
-            lambda l: l.account_id == self.account_receivable)
+            lambda line_item: line_item.account_id == self.account_receivable)
 
     def _settle(self, receivable_line, date):
         """Settle the receivable in full at the SAME company amount so
@@ -595,7 +595,7 @@ class TestGoldenRealizedUnrealizedSplit(EhGoldenTestCase):
         })
         move.action_post()
         pay_line = move.line_ids.filtered(
-            lambda l: l.account_id == self.account_receivable)
+            lambda line_item: line_item.account_id == self.account_receivable)
         (receivable_line + pay_line).reconcile()
         self.assertTrue(receivable_line.reconciled)
 
@@ -613,16 +613,16 @@ class TestGoldenRealizedUnrealizedSplit(EhGoldenTestCase):
         return run
 
     def test_golden_split_one_open_one_settled(self):
-        line_a = self._receivable(self.partner_a, '2026-01-15')
+        line_a = self._receivable(self.partner_a, '2026-01-15')  # noqa: F841
         line_b = self._receivable(self.partner_b, '2026-01-15')
         # B settles after the revaluation date; A stays open.
         self._settle(line_b, '2026-04-10')
         run = self._run()
         self.assertEqual(run.line_count, 2)
         reval_a = run.line_ids.filtered(
-            lambda l: l.partner_id == self.partner_a)
+            lambda line_item: line_item.partner_id == self.partner_a)
         reval_b = run.line_ids.filtered(
-            lambda l: l.partner_id == self.partner_b)
+            lambda line_item: line_item.partner_id == self.partner_b)
         # Both were open AS OF 2026-03-31, so both revalue:
         # 1,000 EUR x 1.10 = 1,100 USD restated, adjustment +100 each.
         self.assertAlmostEqual(reval_a.adjustment, 100.0, places=2)

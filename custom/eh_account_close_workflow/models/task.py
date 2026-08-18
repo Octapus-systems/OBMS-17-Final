@@ -15,7 +15,7 @@ fields (completed_by, completed_at) so the close history shows who
 finished what and when.
 """
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 from odoo.exceptions import UserError
 
 

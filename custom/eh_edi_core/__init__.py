@@ -5,7 +5,7 @@
 # Copyright (C) 2026 (https://www.erpheritage.com.au/)
 #
 ##############################################################################
-from . import tools
+from . import tools  # noqa: F401
 
 
 def post_init_hook(cr_or_env, registry=None):

@@ -89,7 +89,7 @@ class TestPartnerLedgerLazy(EhAccountIntegrationTestCase):
             {'account': self.account_revenue, 'credit': 1000.0},
         ])
         result = self.handler.compute(self.lazy_options)
-        kinds = [(l.get('meta') or {}).get('kind') for l in result['lines']]
+        kinds = [(line_item.get('meta') or {}).get('kind') for line_item in result['lines']]
         self.assertNotIn('aml', kinds,
                          "lazy initial payload must not materialise aml rows")
         self.assertIn('partner_header', kinds)
@@ -119,7 +119,7 @@ class TestPartnerLedgerLazy(EhAccountIntegrationTestCase):
             {'account': self.account_revenue, 'credit': 1000.0},
         ])
         result = self.handler.compute(self.options)
-        kinds = [(l.get('meta') or {}).get('kind') for l in result['lines']]
+        kinds = [(line_item.get('meta') or {}).get('kind') for line_item in result['lines']]
         self.assertIn('aml', kinds)
         header = self._by_kind(
             self._lines_for_partner(result, self.partner_a.id),
@@ -136,7 +136,7 @@ class TestPartnerLedgerLazy(EhAccountIntegrationTestCase):
         ])
         opts = dict(self.lazy_options, eager_expand=True)
         result = self.handler.compute(opts)
-        kinds = [(l.get('meta') or {}).get('kind') for l in result['lines']]
+        kinds = [(line_item.get('meta') or {}).get('kind') for line_item in result['lines']]
         self.assertIn('aml', kinds)
 
     # ---- expand reconciles to the partner total ----

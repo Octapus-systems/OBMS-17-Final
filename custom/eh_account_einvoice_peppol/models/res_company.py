@@ -14,7 +14,7 @@ submission (when the deployment moves beyond file generation to live
 transmission) reads the same field.
 """
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 
 from odoo.addons.eh_account_einvoice_peppol.tools import (
     access_point_registry,

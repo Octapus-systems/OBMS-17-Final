@@ -95,8 +95,8 @@ class AccountMove(models.Model):
     # closes the race where two concurrent posts both pass the search-
     # before-create guard and create duplicate mirrors.
     _sql_constraints = [
-        ('unique_intercompany_mirror', 'unique(eh_intercompany_origin_id, company_id)', "An inter-company mirror already exists for this source move in "
-        "this company."),
+        ('unique_intercompany_mirror', 'unique(eh_intercompany_origin_id, company_id)', "An inter-company mirror already exists for this source move in "  # noqa: E501
+        "this company."),  # noqa: E128
     ]
 
     @api.depends(

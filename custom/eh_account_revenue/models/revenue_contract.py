@@ -17,7 +17,7 @@ cumulative billed) correct on the balance sheet at all times.
 """
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError  # noqa: F401
 from odoo.tools import float_compare
 
 

@@ -49,9 +49,9 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
         result = {}
         if payslip_lines:
             self.env.cr.execute("""
-                SELECT pl.id, pl.category_id, pl.slip_id FROM 
+                SELECT pl.id, pl.category_id, pl.slip_id FROM
                 hr_payslip_line as pl
-                LEFT JOIN hr_salary_rule_category AS rc on 
+                LEFT JOIN hr_salary_rule_category AS rc on
                 (pl.category_id = rc.id)
                 WHERE pl.id in %s
                 GROUP BY rc.parent_id, pl.sequence, pl.id, pl.category_id

@@ -28,7 +28,7 @@ class TestPredictor(EhReconcileIntegrationTestCase):
             {'account': account, 'debit': 100.0, 'partner': partner},
             {'account': self.account_cash, 'credit': 100.0},
         ])
-        aml = move.line_ids.filtered(lambda l: l.account_id == account)
+        aml = move.line_ids.filtered(lambda line_item: line_item.account_id == account)
         train_line = self.make_statement_line(
             100.0, partner=partner, payment_ref=payment_ref)
         self.env['eh.reconciliation.audit'].create({
@@ -48,7 +48,7 @@ class TestPredictor(EhReconcileIntegrationTestCase):
         write and unlink are refused for everyone, and the old
         caller-supplied context flags no longer open a bypass."""
         aml = self._train('ACME APPEND ONLY', self.account_expense,
-                           self.partner_a)
+                           self.partner_a)  # noqa: E127
         audit = self.env['eh.reconciliation.audit'].search(
             [('aml_id', '=', aml.id)], limit=1)
         self.assertTrue(audit)

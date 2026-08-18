@@ -184,7 +184,6 @@ class AccountMoveLine(models.Model):
                 "source record to change them.",
                 ', '.join(sealed.mapped('move_id.name') or ['/'])))
 
-
     def write(self, vals):
         # Editing a financially-material field on a line of a SEALED posted
         # move would desync the sub-ledger figure from its GL entry; refuse it.

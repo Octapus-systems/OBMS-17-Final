@@ -89,7 +89,7 @@ class TestGoldenIfrs5Groups(EhGoldenTestCase):
         return self.env['eh.disposal.group'].create(base)
 
     def _line(self, group, name):
-        line = group.line_ids.filtered(lambda l: l.name == name)
+        line = group.line_ids.filtered(lambda line_item: line_item.name == name)
         self.assertEqual(len(line), 1, 'expected one line named %s' % name)
         return line
 
@@ -314,12 +314,12 @@ class TestGoldenIfrs5Groups(EhGoldenTestCase):
         self.assertEqual(asset1.state, 'paused')
         self.assertEqual(asset2.state, 'paused')
         posted_before = [
-            len(a.depreciation_line_ids.filtered(lambda l: l.is_posted))
+            len(a.depreciation_line_ids.filtered(lambda line_item: line_item.is_posted))
             for a in (asset1, asset2)]
         self.env['eh.asset'].with_context(
             allowed_company_ids=self.company.ids)._cron_post_due()
         posted_after = [
-            len(a.depreciation_line_ids.filtered(lambda l: l.is_posted))
+            len(a.depreciation_line_ids.filtered(lambda line_item: line_item.is_posted))
             for a in (asset1, asset2)]
         self.assertEqual(posted_after, posted_before,
                          "The cron must not post depreciation for paused "
@@ -524,11 +524,11 @@ class TestGoldenIfrs5Groups(EhGoldenTestCase):
         # The search filter finds exactly the overdue one.
         found = self.env['eh.disposal.group'].search(
             [('overdue_12m', '=', True), ('id', 'in',
-              (overdue | fresh).ids)])
+              (overdue | fresh).ids)])  # noqa: E128
         self.assertEqual(found, overdue)
         not_overdue = self.env['eh.disposal.group'].search(
             [('overdue_12m', '=', False), ('id', 'in',
-              (overdue | fresh).ids)])
+              (overdue | fresh).ids)])  # noqa: E128
         self.assertEqual(not_overdue, fresh)
         # The IFRS 5.9 extension suppresses the flag.
         overdue.extension_12m = True

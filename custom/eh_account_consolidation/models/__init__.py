@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
-from . import consol_entity
-from . import consol_member
-from . import consol_run
-from . import consol_run_line
-from . import consol_elimination
-from . import consol_unrealised_profit
+from . import consol_entity  # noqa: F401
+from . import consol_member  # noqa: F401
+from . import consol_run  # noqa: F401
+from . import consol_run_line  # noqa: F401
+from . import consol_elimination  # noqa: F401
+from . import consol_unrealised_profit  # noqa: F401

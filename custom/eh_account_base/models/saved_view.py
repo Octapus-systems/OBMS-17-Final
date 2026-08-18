@@ -63,7 +63,7 @@ class EhReportSavedView(models.Model):
     notes = fields.Char()
 
     _sql_constraints = [
-        ('unique_per_user_code', 'unique(user_id, report_code, name)', 'A user cannot save two views with the same name on the same report.'),
+        ('unique_per_user_code', 'unique(user_id, report_code, name)', 'A user cannot save two views with the same name on the same report.'),  # noqa: E501
     ]
 
     @api.constrains('options_json')

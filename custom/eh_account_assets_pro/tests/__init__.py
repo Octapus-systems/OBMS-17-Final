@@ -1,24 +1,23 @@
 # -*- encoding: utf-8 -*-
-from . import test_asset_lifecycle
-from . import test_asset_revalue_dispose
-from . import test_deferred_recognition
-from . import test_lease_lifecycle
-from . import test_lease_modify_terminate
-from . import test_performance
-from . import test_multi_book
-from . import test_components_impairment_lvp
-from . import test_ias36_cgu
-from . import test_auc
-from . import test_asset_autocreate
-from . import test_prorata_mode
-from . import test_freeze_after_post
-from . import test_asset_reports
-from . import test_golden_ias36
-from . import test_golden_ias38
-from . import test_golden_ifrs16
-from . import test_golden_ifrs16_remeasure
-from . import test_property_ifrs16
-from . import test_workflow_guard
-from . import test_double_post_guard
-from . import test_tour
-
+from . import test_asset_lifecycle  # noqa: F401
+from . import test_asset_revalue_dispose  # noqa: F401
+from . import test_deferred_recognition  # noqa: F401
+from . import test_lease_lifecycle  # noqa: F401
+from . import test_lease_modify_terminate  # noqa: F401
+from . import test_performance  # noqa: F401
+from . import test_multi_book  # noqa: F401
+from . import test_components_impairment_lvp  # noqa: F401
+from . import test_ias36_cgu  # noqa: F401
+from . import test_auc  # noqa: F401
+from . import test_asset_autocreate  # noqa: F401
+from . import test_prorata_mode  # noqa: F401
+from . import test_freeze_after_post  # noqa: F401
+from . import test_asset_reports  # noqa: F401
+from . import test_golden_ias36  # noqa: F401
+from . import test_golden_ias38  # noqa: F401
+from . import test_golden_ifrs16  # noqa: F401
+from . import test_golden_ifrs16_remeasure  # noqa: F401
+from . import test_property_ifrs16  # noqa: F401
+from . import test_workflow_guard  # noqa: F401
+from . import test_double_post_guard  # noqa: F401
+from . import test_tour  # noqa: F401

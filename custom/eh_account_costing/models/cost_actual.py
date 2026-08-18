@@ -184,7 +184,7 @@ class EhCostActualLine(models.Model):
         # Cache-based sibling check (no search): safe on the create path.
         for line in self:
             siblings = line.actual_id.line_ids.filtered(
-                lambda l: l.element == line.element)
+                lambda line_item: line_item.element == line.element)
             if len(siblings) > 1:
                 raise ValidationError(_(
                     "%(actual)s already has a %(element)s line; one line "

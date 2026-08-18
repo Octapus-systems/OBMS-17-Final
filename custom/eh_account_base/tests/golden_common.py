@@ -63,10 +63,10 @@ class EhGoldenTestCase(EhAccountIntegrationTestCase):
             detail.append('missing lines: %s' % misses)
         if remaining:
             detail.append('unexpected lines: %s' % [
-                (l.account_id.code, l.debit, l.credit) for l in remaining])
+                (line_item.account_id.code, line_item.debit, line_item.credit) for line_item in remaining])
         if detail:
-            got = [(l.account_id.code, l.debit, l.credit)
-                   for l in move.line_ids]
+            got = [(line_item.account_id.code, line_item.debit, line_item.credit)
+                   for line_item in move.line_ids]
             self.fail('%s\nmove %s lines %s\n%s' % (
                 msg or 'journal entry mismatch', move.display_name, got,
                 '; '.join(detail)))

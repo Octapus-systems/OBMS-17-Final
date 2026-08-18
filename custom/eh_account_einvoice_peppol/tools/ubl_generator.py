@@ -96,7 +96,7 @@ def _money(value):
 
 def _qty(value):
     return format(Decimal(str(value)).quantize(Decimal("0.0001"),
-                                                 rounding=ROUND_HALF_UP), 'f')
+                                                 rounding=ROUND_HALF_UP), 'f')  # noqa: E127
 
 
 def _ensure(value, field):
@@ -329,7 +329,7 @@ def _render_tax_total(root, categories, currency):
 
 
 def _render_legal_monetary_total(root, payload):
-    line_total = sum(_q(l['line_total']) for l in payload['lines'])
+    line_total = sum(_q(line_item['line_total']) for line_item in payload['lines'])
     tax_total = sum(_q(c['tax_amount']) for c in payload['tax_categories'])
     payable = line_total + tax_total
     block = cac(root, "LegalMonetaryTotal")

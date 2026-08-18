@@ -282,8 +282,8 @@ class EhCostVarianceRun(models.Model):
         for actual in self.actual_ids:
             card = actual.card_id
             units = actual.units_produced or 0.0
-            card_lines = {l.element: l for l in card.line_ids}
-            act_lines = {l.element: l for l in actual.line_ids}
+            card_lines = {line_item.element: line_item for line_item in card.line_ids}
+            act_lines = {line_item.element: line_item for line_item in actual.line_ids}
             for element in ELEMENT_ORDER:
                 if element not in card_lines and element not in act_lines:
                     continue

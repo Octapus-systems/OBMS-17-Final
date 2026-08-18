@@ -44,11 +44,11 @@ class TestAssetRevalueDispose(EhAssetTestCase):
         self.assertTrue(asset.disposal_move_id)
         # No remaining unposted lines.
         self.assertFalse(asset.depreciation_line_ids.filtered(
-            lambda l: not l.is_posted,
+            lambda line_item: not line_item.is_posted,
         ))
         # Disposal move references the loss account because proceeds < NBV.
         loss_lines = asset.disposal_move_id.line_ids.filtered(
-            lambda l: l.account_id == self.account_disposal_loss,
+            lambda line_item: line_item.account_id == self.account_disposal_loss,
         )
         if nbv_before > 0:
             self.assertEqual(len(loss_lines), 1)
@@ -74,7 +74,7 @@ class TestAssetRevalueDispose(EhAssetTestCase):
         # Gain leg present if proceeds > NBV.
         if asset.disposal_proceeds > asset.acquisition_cost - asset.total_depreciated:
             gain = asset.disposal_move_id.line_ids.filtered(
-                lambda l: l.account_id == self.account_disposal_gain,
+                lambda line_item: line_item.account_id == self.account_disposal_gain,
             )
             self.assertEqual(len(gain), 1)
 
@@ -119,7 +119,7 @@ class TestAssetRevalueDispose(EhAssetTestCase):
             asset.net_book_value, nbv_before + 3000.0, places=2)
         # Schedule should still have remaining unposted lines.
         unposted = asset.depreciation_line_ids.filtered(
-            lambda l: not l.is_posted,
+            lambda line_item: not line_item.is_posted,
         )
         self.assertGreater(len(unposted), 0)
         # Label honesty: the uplift path books a LIVE, posted journal entry;
@@ -145,7 +145,7 @@ class TestAssetRevalueDispose(EhAssetTestCase):
             sum(posted.line_ids.mapped('debit')),
             sum(posted.line_ids.mapped('credit')), places=2)
         reserve_cr = sum(posted.line_ids.filtered(
-            lambda l: l.account_id == self.account_reval_reserve,
+            lambda line_item: line_item.account_id == self.account_reval_reserve,
         ).mapped('credit'))
         self.assertAlmostEqual(reserve_cr, 3000.0, places=2)
 
@@ -220,12 +220,12 @@ class TestAssetRevalueDispose(EhAssetTestCase):
         # The contra account is debited for accumulated depreciation PLUS the
         # 1500 accumulated impairment, so nothing is stranded on it.
         contra_debit = sum(move.line_ids.filtered(
-            lambda l: l.account_id == self.account_accum_dep,
+            lambda line_item: line_item.account_id == self.account_accum_dep,
         ).mapped('debit'))
         self.assertAlmostEqual(contra_debit, dep_before + 1500.0, places=2)
         # Proceeds == carrying => no gain and no loss line.
         gl = move.line_ids.filtered(
-            lambda l: l.account_id in (
+            lambda line_item: line_item.account_id in (
                 self.account_disposal_gain, self.account_disposal_loss,
             ),
         )
@@ -307,12 +307,12 @@ class TestAssetRevalueDispose(EhAssetTestCase):
             sum(move.line_ids.mapped('credit')), places=2)
         # 2000 debited to the revaluation reserve (surplus reversal).
         reserve_dr = sum(move.line_ids.filtered(
-            lambda l: l.account_id == self.account_reval_reserve,
+            lambda line_item: line_item.account_id == self.account_reval_reserve,
         ).mapped('debit'))
         self.assertAlmostEqual(reserve_dr, 2000.0, places=2)
         # 1000 debited to the P&L impairment account (the excess).
         pl_dr = sum(move.line_ids.filtered(
-            lambda l: l.account_id == self.account_impairment,
+            lambda line_item: line_item.account_id == self.account_impairment,
         ).mapped('debit'))
         self.assertAlmostEqual(pl_dr, 1000.0, places=2)
 
@@ -361,18 +361,18 @@ class TestAssetRevalueDispose(EhAssetTestCase):
             sum(move.line_ids.mapped('credit')), places=2)
         # 4000 debited to the revaluation reserve.
         reserve_dr = sum(move.line_ids.filtered(
-            lambda l: l.account_id == self.account_reval_reserve,
+            lambda line_item: line_item.account_id == self.account_reval_reserve,
         ).mapped('debit'))
         self.assertAlmostEqual(reserve_dr, 4000.0, places=2)
         # 4000 credited to retained earnings (recycled within equity).
         re_cr = sum(move.line_ids.filtered(
-            lambda l: l.account_id == self.account_retained_earnings,
+            lambda line_item: line_item.account_id == self.account_retained_earnings,
         ).mapped('credit'))
         self.assertAlmostEqual(re_cr, 4000.0, places=2)
         # The recycle did NOT touch the P&L: no gain/loss line, since proceeds
         # equal the carrying amount.
         gl = move.line_ids.filtered(
-            lambda l: l.account_id in (
+            lambda line_item: line_item.account_id in (
                 self.account_disposal_gain, self.account_disposal_loss,
             ),
         )
@@ -458,13 +458,13 @@ class TestAssetRevalueDispose(EhAssetTestCase):
         # 2000 credited to the P&L (income) account: the reversal of the prior
         # decrease.
         pl_cr = sum(move.line_ids.filtered(
-            lambda l: l.account_id == self.account_impairment,
+            lambda line_item: line_item.account_id == self.account_impairment,
         ).mapped('credit'))
         self.assertAlmostEqual(pl_cr, 2000.0, places=2)
         # 1000 credited to the revaluation reserve: the excess above the
         # reversed decrease.
         reserve_cr = sum(move.line_ids.filtered(
-            lambda l: l.account_id == self.account_reval_reserve,
+            lambda line_item: line_item.account_id == self.account_reval_reserve,
         ).mapped('credit'))
         self.assertAlmostEqual(reserve_cr, 1000.0, places=2)
 

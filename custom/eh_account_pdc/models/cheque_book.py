@@ -72,8 +72,8 @@ class EhChequeBook(models.Model):
     )
 
     _sql_constraints = [
-        ('check_range', 'CHECK (end_number >= start_number)', 'End number must be greater than or equal to start number.'),
-        ('check_next_in_range', 'CHECK (next_number >= start_number AND next_number <= end_number + 1)', 'Next number must be within the book range or just past the end.'),
+        ('check_range', 'CHECK (end_number >= start_number)', 'End number must be greater than or equal to start number.'),  # noqa: E501
+        ('check_next_in_range', 'CHECK (next_number >= start_number AND next_number <= end_number + 1)', 'Next number must be within the book range or just past the end.'),  # noqa: E501
     ]
 
     @api.depends('cheque_ids')

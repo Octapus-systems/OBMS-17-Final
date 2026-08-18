@@ -125,7 +125,7 @@ class TestCommitmentBasics(EhAccountIntegrationTestCase):
 
     def test_resolve_skips_draft_budgets(self):
         # Draft (unconfirmed) budget should not be reachable.
-        budget = self.Budget.create({
+        budget = self.Budget.create({  # noqa: F841
             'code': 'draft_budget',
             'name': 'Draft',
             'date_from': '2026-01-01',
@@ -143,7 +143,7 @@ class TestCommitmentBasics(EhAccountIntegrationTestCase):
             self.company,
         )
         self.assertFalse(match,
-                        "Draft budgets should not be reachable for commitments")
+                        "Draft budgets should not be reachable for commitments")  # noqa: E128
 
     def test_amount_must_be_non_negative(self):
         line = self._make_budget_line()
@@ -229,7 +229,7 @@ class TestCommitmentPoLineKey(EhAccountIntegrationTestCase):
     def test_reconfirm_does_not_duplicate_commitments(self):
         # Re-running creation for the same PO lines updates the existing
         # rows rather than adding new ones.
-        line = self._make_budget(budgeted=20000.0, code='po_key_reconfirm')
+        line = self._make_budget(budgeted=20000.0, code='po_key_reconfirm')  # noqa: F841
         po = self._make_po([3000.0, 4000.0])
         po.button_confirm()
         po._eh_create_commitments()

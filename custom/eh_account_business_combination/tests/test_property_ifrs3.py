@@ -112,7 +112,7 @@ class TestPropertyIfrs3(EhGoldenTestCase):
                 delta = 50.0 if case['direction'] == 'up' else -50.0
                 is_liability_target = case['target'] == 'liability'
                 target = c.asset_line_ids.filtered(
-                    lambda l: l.is_liability == is_liability_target)
+                    lambda line_item: line_item.is_liability == is_liability_target)
                 revised = target.fair_value + delta
                 adj = self.env['eh.bizcombo.adjustment'].create({
                     'combination_id': c.id,
@@ -153,7 +153,7 @@ class TestPropertyIfrs3(EhGoldenTestCase):
                 # on the correct side (Dr an asset up / Cr an asset down;
                 # mirrored for a liability).
                 target_lines = adj.move_id.line_ids.filtered(
-                    lambda l: l.account_id == target.account_id)
+                    lambda line_item: line_item.account_id == target.account_id)
                 self.assertEqual(len(target_lines), 1)
                 debit_side = (delta > 0) != is_liability_target
                 self.assertAlmostEqual(
@@ -222,7 +222,7 @@ class TestPropertyIfrs3(EhGoldenTestCase):
         # Restating net assets up by 250 would drive goodwill to
         # 800 + 220 - 1150 = -130: below nil is blocked explicitly.
         c = self._recognised_combination()
-        ppe_line = c.asset_line_ids.filtered(lambda l: not l.is_liability)
+        ppe_line = c.asset_line_ids.filtered(lambda line_item: not line_item.is_liability)
         adj = self.env['eh.bizcombo.adjustment'].create({
             'combination_id': c.id, 'name': 'Bargain flip',
             'line_ids': [(0, 0, {
@@ -246,7 +246,7 @@ class TestPropertyIfrs3(EhGoldenTestCase):
     def test_mp_adjustment_line_must_match_combination(self):
         c1 = self._recognised_combination()
         c2 = self._recognised_combination()
-        foreign_line = c2.asset_line_ids.filtered(lambda l: not l.is_liability)
+        foreign_line = c2.asset_line_ids.filtered(lambda line_item: not line_item.is_liability)
         with self.assertRaises(UserError):
             self.env['eh.bizcombo.adjustment'].create({
                 'combination_id': c1.id, 'name': 'Cross wiring',
@@ -258,7 +258,7 @@ class TestPropertyIfrs3(EhGoldenTestCase):
 
     def test_mp_adjustment_duplicate_line_blocked(self):
         c = self._recognised_combination()
-        ppe_line = c.asset_line_ids.filtered(lambda l: not l.is_liability)
+        ppe_line = c.asset_line_ids.filtered(lambda line_item: not line_item.is_liability)
         with self.assertRaises(UserError):
             self.env['eh.bizcombo.adjustment'].create({
                 'combination_id': c.id, 'name': 'Duplicate target',

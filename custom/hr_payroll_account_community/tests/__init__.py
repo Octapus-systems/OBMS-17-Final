@@ -20,4 +20,4 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import test_hr_payroll_account
+from . import test_hr_payroll_account  # noqa: F401

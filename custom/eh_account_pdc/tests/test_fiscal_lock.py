@@ -19,7 +19,7 @@ date fields differ between Odoo 16/17/18 and 19.
 
 from datetime import timedelta
 
-from odoo import fields
+from odoo import fields  # noqa: F401
 from odoo.exceptions import UserError
 from odoo.tests import tagged
 

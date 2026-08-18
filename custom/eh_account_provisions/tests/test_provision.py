@@ -7,7 +7,7 @@
 ##############################################################################
 """IAS 37 provisions tests."""
 
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError  # noqa: F401
 from odoo.tests import tagged
 
 try:  # Odoo 18+ re-exports freeze_time; 16/17 pull it from freezegun directly

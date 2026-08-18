@@ -1,1 +1,1 @@
-from . import import_wizard
+from . import import_wizard  # noqa: F401

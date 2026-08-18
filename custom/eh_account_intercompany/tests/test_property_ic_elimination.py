@@ -247,7 +247,7 @@ class TestPropertyIcElimination(EhGoldenTestCase):
                 len(batch.mismatch_ids), 1,
                 'mismatch rows: %s; legs: %s' % (
                     [(m.kind, m.reason) for m in batch.mismatch_ids],
-                    [(l.kind, l.debit, l.credit) for l in batch.line_ids]))
+                    [(line_item.kind, line_item.debit, line_item.credit) for line_item in batch.line_ids]))
             row = batch.mismatch_ids
             self.assertEqual(row.kind, 'amount')
             self.assertAlmostEqual(row.difference, 100.00, places=2)

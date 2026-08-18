@@ -209,16 +209,16 @@ class TestGoldenIas21Consol(EhGoldenTestCase):
         self._seed_capital_and_revenue()
         run = self._computed_run()
         sub_lines = run.line_ids.filtered(
-            lambda l: l.kind == 'subsidiary_balance')
+            lambda line_item: line_item.kind == 'subsidiary_balance')
         self.assertEqual(
             len(sub_lines), 3,
             "exactly one translated line per seeded account expected")
         cash_line = sub_lines.filtered(
-            lambda l: l.account_id == self.account_cash)
+            lambda line_item: line_item.account_id == self.account_cash)
         equity_line = sub_lines.filtered(
-            lambda l: l.account_id == self.account_equity)
+            lambda line_item: line_item.account_id == self.account_equity)
         revenue_line = sub_lines.filtered(
-            lambda l: l.account_id == self.account_revenue)
+            lambda line_item: line_item.account_id == self.account_revenue)
         self.assertAlmostEqual(cash_line.amount, 135000.00, places=2)
         self.assertAlmostEqual(equity_line.amount, -90000.00, places=2)
         self.assertAlmostEqual(revenue_line.amount, -42500.00, places=2)
@@ -246,12 +246,12 @@ class TestGoldenIas21Consol(EhGoldenTestCase):
         self._member(100.0)
         self._seed_capital_and_revenue()
         run = self._computed_run()
-        cta_lines = run.line_ids.filtered(lambda l: l.kind == 'cta')
+        cta_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'cta')
         self.assertEqual(len(cta_lines), 1, "exactly one CTA line expected")
         self.assertEqual(cta_lines.account_id, self.cta_account)
         self.assertAlmostEqual(cta_lines.amount, -2500.00, places=2)
         total = sum(run.line_ids.filtered(
-            lambda l: l.kind in (
+            lambda line_item: line_item.kind in (
                 'subsidiary_balance', 'parent_balance', 'elimination',
                 'equity_pickup', 'nci', 'cta',
             )).mapped('amount'))
@@ -293,25 +293,25 @@ class TestGoldenIas21Consol(EhGoldenTestCase):
             date=fields.Date.from_string(self.BOOK_DATE),
         )
         run = self._computed_run()
-        nci_lines = run.line_ids.filtered(lambda l: l.kind == 'nci')
+        nci_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'nci')
         self.assertEqual(len(nci_lines), 1, "exactly one NCI line expected")
         self.assertEqual(nci_lines.account_id, self.nci_account)
         self.assertAlmostEqual(nci_lines.amount, -18000.00, places=2)
         reclass_lines = run.line_ids.filtered(
-            lambda l: l.kind == 'elimination')
+            lambda line_item: line_item.kind == 'elimination')
         self.assertEqual(
             len(reclass_lines), 1,
             "exactly one reclass leg for the NCI carve expected")
         self.assertEqual(reclass_lines.account_id, self.re_account)
         self.assertAlmostEqual(reclass_lines.amount, 18000.00, places=2)
         equity_line = run.line_ids.filtered(
-            lambda l: l.kind == 'subsidiary_balance'
-            and l.account_id == self.account_equity)
+            lambda line_item: line_item.kind == 'subsidiary_balance'
+            and line_item.account_id == self.account_equity)
         self.assertAlmostEqual(
             equity_line.amount + reclass_lines.amount, -72000.00, places=2,
             msg="parent share must be 0.80 x the translated equity")
         # Everything translated at the one closing rate and the NCI pair
         # nets to zero, so no CTA line may be booked.
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.kind == 'cta'),
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'cta'),
             "no CTA when the whole trial balance translates at one rate")

@@ -119,7 +119,7 @@ class TestPropertyIas19(EhGoldenTestCase):
     @staticmethod
     def _net(move, account):
         lines = move.line_ids.filtered(
-            lambda l: l.account_id == account)
+            lambda line_item: line_item.account_id == account)
         return sum(lines.mapped('debit')) - sum(lines.mapped('credit'))
 
     # ------------------------------------------------------------------

@@ -1,1 +1,1 @@
-from . import test_batch_payment
+from . import test_batch_payment  # noqa: F401

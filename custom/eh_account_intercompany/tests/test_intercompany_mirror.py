@@ -15,7 +15,7 @@ and origin pointer. Covers the duplicate guard and the journal
 configuration error path.
 """
 
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError  # noqa: F401
 from odoo.tests import tagged
 from odoo.addons.eh_account_base.tests.common import (
     EhAccountIntegrationTestCase,

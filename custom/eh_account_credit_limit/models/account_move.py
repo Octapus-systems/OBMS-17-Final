@@ -251,8 +251,8 @@ class AccountMove(models.Model):
 
         if policy.include_drafts:
             Move = self.env['account.move'].sudo()
-            draft_rows = read_group_compat(Move, 
-                [
+            draft_rows = read_group_compat(Move,
+                [  # noqa: E128
                     ('partner_id', '=', partner.id),
                     ('move_type', 'in', ('out_invoice', 'out_refund')),
                     ('state', '=', 'draft'),

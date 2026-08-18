@@ -220,7 +220,7 @@ class EhBorrowingCost(models.Model):
         self.ensure_one()
         if self._has_capitalisation_window():
             return self._windowed_base()
-        lines = self.expenditure_line_ids.filtered(lambda l: l.date)
+        lines = self.expenditure_line_ids.filtered(lambda line_item: line_item.date)
         if not lines:
             return self.general_expenditure
         period_end = self.period_end
@@ -257,7 +257,7 @@ class EhBorrowingCost(models.Model):
         period.
         """
         self.ensure_one()
-        lines = self.expenditure_line_ids.filtered(lambda l: l.date)
+        lines = self.expenditure_line_ids.filtered(lambda line_item: line_item.date)
         starts = [line.date for line in lines]
         earliest = min(starts) if starts else None
         period_start = self.commencement_date or self.period_start or earliest
@@ -440,7 +440,7 @@ class EhBorrowingCostLine(models.Model):
         frozen = [f for f in self._FROZEN_AFTER_CAPITALISED if f in vals]
         if frozen:
             posted = self.filtered(
-                lambda l: l.borrowing_cost_id.state == 'capitalised')
+                lambda line_item: line_item.borrowing_cost_id.state == 'capitalised')
             if posted:
                 raise self._frozen_error(frozen)
         # Re-parenting a line into or out of a capitalised period is equally a
@@ -449,14 +449,14 @@ class EhBorrowingCostLine(models.Model):
             target = self.env['eh.borrowing.cost'].browse(
                 vals['borrowing_cost_id'])
             if self.filtered(
-                    lambda l: l.borrowing_cost_id.state == 'capitalised') \
+                    lambda line_item: line_item.borrowing_cost_id.state == 'capitalised') \
                     or target.state == 'capitalised':
                 raise self._frozen_error(('borrowing_cost_id',))
         return super().write(vals)
 
     def unlink(self):
         posted = self.filtered(
-            lambda l: l.borrowing_cost_id.state == 'capitalised')
+            lambda line_item: line_item.borrowing_cost_id.state == 'capitalised')
         if posted:
             raise self._frozen_error(('date', 'amount'))
         return super().unlink()

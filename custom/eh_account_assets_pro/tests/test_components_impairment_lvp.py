@@ -271,7 +271,7 @@ class TestImpairment(EhAssetTestCase):
 
         self.assertAlmostEqual(asset.net_book_value, 44_000.0, places=2)
         unposted = asset.depreciation_line_ids.filtered(
-            lambda l: not l.is_posted,
+            lambda line_item: not line_item.is_posted,
         )
         # Remaining schedule now re-amortises only the impaired NBV.
         self.assertAlmostEqual(
@@ -303,7 +303,7 @@ class TestImpairment(EhAssetTestCase):
         # on the impaired base.
         for line in (
             asset.depreciation_line_ids
-            .filtered(lambda l: not l.is_posted)
+            .filtered(lambda line_item: not line_item.is_posted)
             .sorted('sequence')[:3]
         ):
             line.action_post()
@@ -331,7 +331,7 @@ class TestImpairment(EhAssetTestCase):
         }).action_post()
         for line in (
             asset.depreciation_line_ids
-            .filtered(lambda l: not l.is_posted)
+            .filtered(lambda line_item: not line_item.is_posted)
             .sorted('sequence')[:3]
         ):
             line.action_post()
@@ -445,7 +445,7 @@ class TestLowValuePool(EhAssetTestCase):
         self.assertAlmostEqual(total_debit, total_credit, places=2)
         # Net book value lands in the pool asset account on the debit side.
         pool_line = move.line_ids.filtered(
-            lambda l: l.account_id == self.pool.pool_account_id,
+            lambda line_item: line_item.account_id == self.pool.pool_account_id,
         )
         self.assertAlmostEqual(sum(pool_line.mapped('debit')), nbv, places=2)
 

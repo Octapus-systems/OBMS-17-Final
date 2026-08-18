@@ -209,7 +209,7 @@ class EhRelatedParty(models.Model):
             existing = {
                 line.category: line
                 for line in party.compensation_line_ids.filtered(
-                    lambda l: l.origin == 'ledger')}
+                    lambda line_item: line_item.origin == 'ledger')}
             for category in _IAS24_CATEGORY_CODES:
                 amount = currency.round(totals[category])
                 line = existing.get(category)
@@ -267,7 +267,7 @@ class EhRelatedParty(models.Model):
             currency = party.currency_id or party.company_id.currency_id
             amount = currency.round(sum(runs.mapped('period_charge')))
             line = party.compensation_line_ids.filtered(
-                lambda l: l.origin == 'sbp')[:1]
+                lambda line_item: line_item.origin == 'sbp')[:1]
             if line:
                 line.write({'amount': amount})
             else:

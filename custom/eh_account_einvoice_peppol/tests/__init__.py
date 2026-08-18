@@ -1,13 +1,13 @@
-from . import test_ubl_generator_unit
-from . import test_account_move_export
-from . import test_peppol_send
-from . import test_peppol_id_validator
-from . import test_ubl_structural_validator
-from . import test_ubl_parser
-from . import test_anz_profile
-from . import test_my_profile
-from . import test_de_profile
-from . import test_fr_profile
-from . import test_golden_ubl
-from . import test_workflow_guard
-from . import test_peppol_hardening
+from . import test_ubl_generator_unit  # noqa: F401
+from . import test_account_move_export  # noqa: F401
+from . import test_peppol_send  # noqa: F401
+from . import test_peppol_id_validator  # noqa: F401
+from . import test_ubl_structural_validator  # noqa: F401
+from . import test_ubl_parser  # noqa: F401
+from . import test_anz_profile  # noqa: F401
+from . import test_my_profile  # noqa: F401
+from . import test_de_profile  # noqa: F401
+from . import test_fr_profile  # noqa: F401
+from . import test_golden_ubl  # noqa: F401
+from . import test_workflow_guard  # noqa: F401
+from . import test_peppol_hardening  # noqa: F401

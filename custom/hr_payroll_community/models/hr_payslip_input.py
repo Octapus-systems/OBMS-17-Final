@@ -49,9 +49,9 @@ class HrPayslipInput(models.Model):
                               datetime.now() + relativedelta.relativedelta(
                                   months=+1, day=1, days=-1))[:10])
     amount = fields.Float(string="Amount",
-                          help="It is used in computation." 
+                          help="It is used in computation."
                                "For e.g. A rule for sales having "
-                               "1% commission of basic salary for" 
+                               "1% commission of basic salary for"
                                "per product can defined in "
                                "expression like result = "
                                "inputs.SALEURO.amount * contract.wage*0.01.")

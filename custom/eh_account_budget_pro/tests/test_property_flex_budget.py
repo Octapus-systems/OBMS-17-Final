@@ -29,7 +29,7 @@ actuals never bleed between cases.
 from calendar import monthrange
 from datetime import date
 
-from odoo import fields
+from odoo import fields  # noqa: F401
 from odoo.tests import tagged
 
 from odoo.addons.eh_account_base.tests.golden_common import EhGoldenTestCase
