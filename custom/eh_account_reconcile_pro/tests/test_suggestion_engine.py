@@ -128,7 +128,7 @@ class TestPartnerScore(EhReconcileIntegrationTestCase):
             {'account': self.account_receivable, 'debit': 100.0},
         ])
         aml = move.line_ids.filtered(
-            lambda l: l.account_id == self.account_receivable,
+            lambda line_item: line_item.account_id == self.account_receivable,
         )
         self.assertEqual(self.engine._score_partner(sl, aml), 0.0)
 

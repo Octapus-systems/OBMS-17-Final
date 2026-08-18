@@ -23,7 +23,7 @@ Cases:
 * exclude_id parameter prevents self-match.
 """
 
-from datetime import date, timedelta
+from datetime import date, timedelta  # noqa: F401
 
 from odoo.tests import tagged
 from odoo.addons.eh_account_base.tests.common import (

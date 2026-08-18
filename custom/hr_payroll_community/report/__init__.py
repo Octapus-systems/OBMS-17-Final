@@ -20,5 +20,5 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import report_hr_payroll_community_report_payslip_details
-from . import report_hr_payroll_community_report_contribution_register
+from . import report_hr_payroll_community_report_payslip_details  # noqa: F401
+from . import report_hr_payroll_community_report_contribution_register  # noqa: F401

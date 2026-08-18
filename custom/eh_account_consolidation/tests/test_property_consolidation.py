@@ -230,23 +230,23 @@ class TestConsolScenarioMatrix(EhGoldenTestCase):
                 # Invariant 2: NCI lines appear exactly when a full-method
                 # member carries a genuine minority.
                 nci_lines = run.line_ids.filtered(
-                    lambda l: l.kind == 'nci' and not float_is_zero(
-                        l.amount, precision_rounding=pres_ccy.rounding))
+                    lambda line_item: line_item.kind == 'nci' and not float_is_zero(
+                        line_item.amount, precision_rounding=pres_ccy.rounding))
                 self.assertEqual(
                     bool(nci_lines), exp['expect_nci'],
                     "case %r: NCI presence mismatch" % (case,))
                 # Invariant 3: goodwill-kind lines appear exactly for the
                 # configured fair-value acquisitions.
                 goodwill_lines = run.line_ids.filtered(
-                    lambda l: l.kind == 'goodwill')
+                    lambda line_item: line_item.kind == 'goodwill')
                 self.assertEqual(
                     bool(goodwill_lines), exp['expect_goodwill'],
                     "case %r: goodwill presence mismatch" % (case,))
                 # Invariant 4: method shape.
                 sub_lines = run.line_ids.filtered(
-                    lambda l: l.kind == 'subsidiary_balance')
+                    lambda line_item: line_item.kind == 'subsidiary_balance')
                 pickup_lines = run.line_ids.filtered(
-                    lambda l: l.kind == 'equity_pickup')
+                    lambda line_item: line_item.kind == 'equity_pickup')
                 if exp['method'] == 'equity':
                     self.assertFalse(
                         sub_lines,

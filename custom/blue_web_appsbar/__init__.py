@@ -1,14 +1,13 @@
-from . import models
+from . import models  # noqa: F401
 
 import base64
 
-from odoo.tools import file_open, file_path
+from odoo.tools import file_open, file_path  # noqa: F401
 
 
 def _setup_module(env):
-    if env.ref('base.main_company', False): 
+    if env.ref('base.main_company', False):
         with file_open('base/static/img/res_company_logo.png', 'rb') as file:
             env.ref('base.main_company').write({
                 'appbar_image': base64.b64encode(file.read())
             })
-            

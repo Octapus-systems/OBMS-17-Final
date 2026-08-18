@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-from . import bounce_reason
-from . import cheque_book
-from . import cheque
-from . import res_partner
-from . import account_move
-from . import account_journal
-from . import res_company
-from . import res_config_settings
+from . import bounce_reason  # noqa: F401
+from . import cheque_book  # noqa: F401
+from . import cheque  # noqa: F401
+from . import res_partner  # noqa: F401
+from . import account_move  # noqa: F401
+from . import account_journal  # noqa: F401
+from . import res_company  # noqa: F401
+from . import res_config_settings  # noqa: F401

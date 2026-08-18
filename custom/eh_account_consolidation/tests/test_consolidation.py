@@ -152,12 +152,12 @@ class TestConsolRun(EhAccountIntegrationTestCase):
         run = self._make_run()
         run.action_compute()
         parent_lines = run.line_ids.filtered(
-            lambda l: l.kind == 'parent_balance',
+            lambda line_item: line_item.kind == 'parent_balance',
         )
         self.assertGreater(len(parent_lines), 0)
         # Cash account parent line should equal 1000 (debit positive).
         cash_line = parent_lines.filtered(
-            lambda l: l.account_id == self.account_cash,
+            lambda line_item: line_item.account_id == self.account_cash,
         )
         self.assertAlmostEqual(cash_line.amount, 1000.0, places=2)
 
@@ -376,8 +376,8 @@ class TestConsolClosedRunFreeze(EhAccountIntegrationTestCase):
         run.action_compute()
         self.assertEqual(run.state, 'computed')
         cash_line = run.line_ids.filtered(
-            lambda l: l.kind == 'parent_balance'
-            and l.account_id == self.account_cash,
+            lambda line_item: line_item.kind == 'parent_balance'
+            and line_item.account_id == self.account_cash,
         )
         self.assertAlmostEqual(cash_line.amount, 1000.0, places=2)
 
@@ -481,8 +481,8 @@ class TestConsolElimination(EhAccountIntegrationTestCase):
                 }),
             ],
         })
-        debits = elim.line_ids.filtered(lambda l: l.debit > 0)
-        credits = elim.line_ids.filtered(lambda l: l.credit > 0)
+        debits = elim.line_ids.filtered(lambda line_item: line_item.debit > 0)
+        credits = elim.line_ids.filtered(lambda line_item: line_item.credit > 0)
         self.assertAlmostEqual(debits.amount, 100.0, places=2)
         self.assertAlmostEqual(credits.amount, -100.0, places=2)
 
@@ -590,7 +590,7 @@ class TestConsolTranslation(EhAccountIntegrationTestCase):
         )
         run = self._make_run()
         run.action_compute()
-        cta_lines = run.line_ids.filtered(lambda l: l.kind == 'cta')
+        cta_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'cta')
         self.assertTrue(cta_lines, "a CTA line must be produced")
         cta_total = sum(cta_lines.mapped('amount'))
         self.assertGreater(
@@ -627,7 +627,7 @@ class TestConsolTranslation(EhAccountIntegrationTestCase):
         run = self._make_run()
         run.action_compute()
         cta_total = sum(
-            run.line_ids.filtered(lambda l: l.kind == 'cta').mapped('amount')
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'cta').mapped('amount')
         )
         self.assertAlmostEqual(cta_total, 0.0, places=2)
 
@@ -649,7 +649,7 @@ class TestConsolTranslation(EhAccountIntegrationTestCase):
         )
         run = self._make_run()
         run.action_compute()
-        nci_lines = run.line_ids.filtered(lambda l: l.kind == 'nci')
+        nci_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'nci')
         self.assertEqual(len(nci_lines), 1, "one NCI line for the 80% sub")
         # The equity account balance is -5000 (credit). NCI share is 20%.
         expected = (-5000.0 * self._closing_rate()) * (1.0 - 0.80)
@@ -711,7 +711,7 @@ class TestConsolTranslation(EhAccountIntegrationTestCase):
         })
         ref_run.action_compute()
         genuine_cta = sum(
-            ref_run.line_ids.filtered(lambda l: l.kind == 'cta')
+            ref_run.line_ids.filtered(lambda line_item: line_item.kind == 'cta')
             .mapped('amount')
         )
         self.assertGreater(
@@ -719,7 +719,7 @@ class TestConsolTranslation(EhAccountIntegrationTestCase):
             "the reference run must produce a materially non-zero genuine CTA",
         )
         self.assertFalse(
-            ref_run.line_ids.filtered(lambda l: l.kind == 'nci'),
+            ref_run.line_ids.filtered(lambda line_item: line_item.kind == 'nci'),
             "the 100% reference run must carve no NCI",
         )
 
@@ -732,7 +732,7 @@ class TestConsolTranslation(EhAccountIntegrationTestCase):
         })
         run = self._make_run()
         run.action_compute()
-        nci_lines = run.line_ids.filtered(lambda l: l.kind == 'nci')
+        nci_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'nci')
         self.assertEqual(len(nci_lines), 1, "one NCI carve-out line expected")
         nci_credit = sum(nci_lines.mapped('amount'))
         self.assertFalse(
@@ -741,7 +741,7 @@ class TestConsolTranslation(EhAccountIntegrationTestCase):
             "prove the CTA is no longer contaminated",
         )
         cta = sum(
-            run.line_ids.filtered(lambda l: l.kind == 'cta').mapped('amount')
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'cta').mapped('amount')
         )
         # The NCI run's CTA must equal the genuine translation adjustment, NOT
         # the genuine CTA plus the NCI carve-out (the pre-fix contaminated
@@ -761,7 +761,7 @@ class TestConsolTranslation(EhAccountIntegrationTestCase):
         # journal amount nets to zero once the CTA plug is included.
         run_total = sum(
             run.line_ids.filtered(
-                lambda l: l.kind in (
+                lambda line_item: line_item.kind in (
                     'subsidiary_balance', 'parent_balance', 'elimination',
                     'equity_pickup', 'nci', 'cta',
                 ),
@@ -789,7 +789,7 @@ class TestConsolTranslation(EhAccountIntegrationTestCase):
         run = self._make_run()
         run.action_compute()
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.kind == 'nci'),
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'nci'),
             "100% ownership carves no NCI",
         )
 
@@ -822,15 +822,15 @@ class TestConsolTranslation(EhAccountIntegrationTestCase):
         run = self._make_run()
         run.action_compute()
         sub_lines = run.line_ids.filtered(
-            lambda l: l.kind == 'subsidiary_balance'
-            and l.member_id == member,
+            lambda line_item: line_item.kind == 'subsidiary_balance'
+            and line_item.member_id == member,
         )
         self.assertFalse(
             sub_lines,
             "equity-method members must not roll up line by line",
         )
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.kind == 'nci'),
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'nci'),
             "equity-method members produce no NCI",
         )
 
@@ -916,7 +916,7 @@ class TestConsolAcquisitionElimination(EhAccountIntegrationTestCase):
         """A fully-configured full member auto-generates elimination legs
         that net to zero, and no separate NCI line is booked."""
         A = 5000.0   # subsidiary pre-acquisition equity (presentation ccy)
-        I = 4500.0   # parent's investment cost
+        index_val = 4500.0   # parent's investment cost  # noqa: F841
         o = 0.80
         self.env['eh.consol.member'].create({
             'entity_id': self.entity.id,
@@ -924,7 +924,7 @@ class TestConsolAcquisitionElimination(EhAccountIntegrationTestCase):
             'ownership_pct': o * 100.0,
             'method': 'full',
             'investment_account_id': self.parent_investment.id,
-            'investment_amount': I,
+            'investment_amount': index_val,
             'acquisition_equity': A,
             'equity_elimination_account_id': self.parent_equity_elim.id,
             'goodwill_account_id': self.parent_goodwill.id,
@@ -945,8 +945,8 @@ class TestConsolAcquisitionElimination(EhAccountIntegrationTestCase):
         # recognised goodwill is queryable by kind); the other two legs stay
         # 'elimination'.
         acq_lines = run.line_ids.filtered(
-            lambda l: l.kind in ('elimination', 'nci', 'goodwill')
-            and l.member_id)
+            lambda line_item: line_item.kind in ('elimination', 'nci', 'goodwill')
+            and line_item.member_id)
         self.assertEqual(
             len(acq_lines), 4,
             "four IFRS 3 acquisition-elimination legs expected",
@@ -956,23 +956,23 @@ class TestConsolAcquisitionElimination(EhAccountIntegrationTestCase):
             sum(acq_lines.mapped('amount')), 0.0, places=2)
         # Individual legs.
         equity_leg = acq_lines.filtered(
-            lambda l: l.account_id == self.parent_equity_elim)
+            lambda line_item: line_item.account_id == self.parent_equity_elim)
         inv_leg = acq_lines.filtered(
-            lambda l: l.account_id == self.parent_investment)
+            lambda line_item: line_item.account_id == self.parent_investment)
         nci_leg = acq_lines.filtered(
-            lambda l: l.account_id == self.parent_nci)
+            lambda line_item: line_item.account_id == self.parent_nci)
         gw_leg = acq_lines.filtered(
-            lambda l: l.account_id == self.parent_goodwill)
+            lambda line_item: line_item.account_id == self.parent_goodwill)
         self.assertAlmostEqual(equity_leg.amount, A, places=2)
-        self.assertAlmostEqual(inv_leg.amount, -I, places=2)
+        self.assertAlmostEqual(inv_leg.amount, -index_val, places=2)
         self.assertAlmostEqual(nci_leg.amount, -(1.0 - o) * A, places=2)
-        self.assertAlmostEqual(gw_leg.amount, I - o * A, places=2)
+        self.assertAlmostEqual(gw_leg.amount, index_val - o * A, places=2)
         # The acquisition-date minority leg carries kind='nci'.
         self.assertEqual(nci_leg.kind, 'nci')
         # No post-acquisition NCI carve-out here (no post-acq movement), so
         # the only 'nci' line is the acquisition-date one.
         self.assertEqual(
-            run.line_ids.filtered(lambda l: l.kind == 'nci'), nci_leg,
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'nci'), nci_leg,
             "acquisition NCI is the sole nci-tagged line for this member",
         )
 
@@ -981,15 +981,15 @@ class TestConsolAcquisitionElimination(EhAccountIntegrationTestCase):
         pre-acquisition equity are both removed, so consolidated equity is
         not double-counted."""
         A = 5000.0
-        I = 5000.0   # goodwill-free acquisition at 100% for a clean net
-        o = 1.0
+        index_val = 5000.0   # goodwill-free acquisition at 100% for a clean net  # noqa: F841
+        o = 1.0  # noqa: F841
         self.env['eh.consol.member'].create({
             'entity_id': self.entity.id,
             'company_id': self.company.id,
             'ownership_pct': 100.0,
             'method': 'full',
             'investment_account_id': self.parent_investment.id,
-            'investment_amount': I,
+            'investment_amount': index_val,
             'acquisition_equity': A,
             'equity_elimination_account_id': self.parent_equity_elim.id,
             'goodwill_account_id': self.parent_goodwill.id,
@@ -1029,7 +1029,7 @@ class TestConsolAcquisitionElimination(EhAccountIntegrationTestCase):
         # (-5000), so consolidated investment nets to zero.
         inv_total = sum(
             run.line_ids.filtered(
-                lambda l: l.account_id == self.parent_investment,
+                lambda line_item: line_item.account_id == self.parent_investment,
             ).mapped('amount'),
         )
         self.assertAlmostEqual(inv_total, 0.0, places=2)
@@ -1039,14 +1039,14 @@ class TestConsolAcquisitionElimination(EhAccountIntegrationTestCase):
         # pre-acquisition equity is removed and not double-counted.
         equity_elim_total = sum(
             run.line_ids.filtered(
-                lambda l: l.account_id == self.parent_equity_elim,
+                lambda line_item: line_item.account_id == self.parent_equity_elim,
             ).mapped('amount'),
         )
         self.assertAlmostEqual(equity_elim_total, A, places=2)
         sub_equity_total = sum(
             run.line_ids.filtered(
-                lambda l: l.account_id == self.account_equity
-                and l.kind == 'subsidiary_balance',
+                lambda line_item: line_item.account_id == self.account_equity
+                and line_item.kind == 'subsidiary_balance',
             ).mapped('amount'),
         )
         # sub equity (-5000) + elimination of pre-acq equity (+5000) == 0.
@@ -1090,7 +1090,7 @@ class TestConsolAcquisitionElimination(EhAccountIntegrationTestCase):
         run = self._make_run()
         run.action_compute()
         pickup_lines = run.line_ids.filtered(
-            lambda l: l.kind == 'equity_pickup')
+            lambda line_item: line_item.kind == 'equity_pickup')
         self.assertEqual(
             len(pickup_lines), 2,
             "two balanced equity pick-up legs expected",
@@ -1099,9 +1099,9 @@ class TestConsolAcquisitionElimination(EhAccountIntegrationTestCase):
             sum(pickup_lines.mapped('amount')), 0.0, places=2)
         expected_share = o * 1000.0 * self.rate
         inv_leg = pickup_lines.filtered(
-            lambda l: l.account_id == self.parent_investment)
+            lambda line_item: line_item.account_id == self.parent_investment)
         sop_leg = pickup_lines.filtered(
-            lambda l: l.account_id == self.parent_sop)
+            lambda line_item: line_item.account_id == self.parent_sop)
         # Investment carrying value increased by the share (debit, +).
         self.assertAlmostEqual(inv_leg.amount, expected_share, places=2)
         # Share-of-profit income recognised (credit, -).
@@ -1110,7 +1110,7 @@ class TestConsolAcquisitionElimination(EhAccountIntegrationTestCase):
         self.assertFalse(run.consolidation_warning)
         # And it still does not roll up line by line.
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.kind == 'subsidiary_balance'),
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'subsidiary_balance'),
             "equity-method members must not roll up line by line",
         )
 
@@ -1209,8 +1209,8 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
         })
         run.action_compute()
         up_lines = run.line_ids.filtered(
-            lambda l: l.kind == 'elimination'
-            and l.account_id in (self.parent_inventory | self.parent_cogs)
+            lambda line_item: line_item.kind == 'elimination'
+            and line_item.account_id in (self.parent_inventory | self.parent_cogs)
         )
         self.assertEqual(
             len(up_lines), 2,
@@ -1219,9 +1219,9 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
         # Net to zero (balanced by construction).
         self.assertAlmostEqual(sum(up_lines.mapped('amount')), 0.0, places=2)
         cogs_leg = up_lines.filtered(
-            lambda l: l.account_id == self.parent_cogs)
+            lambda line_item: line_item.account_id == self.parent_cogs)
         inv_leg = up_lines.filtered(
-            lambda l: l.account_id == self.parent_inventory)
+            lambda line_item: line_item.account_id == self.parent_inventory)
         # Dr COGS/RE +margin, Cr inventory -margin.
         self.assertAlmostEqual(cogs_leg.amount, margin, places=2)
         self.assertAlmostEqual(inv_leg.amount, -margin, places=2)
@@ -1232,7 +1232,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
         run = self._make_run()
         run.action_compute()
         up_lines = run.line_ids.filtered(
-            lambda l: l.account_id in (self.parent_inventory | self.parent_cogs)
+            lambda line_item: line_item.account_id in (self.parent_inventory | self.parent_cogs)
         )
         self.assertFalse(up_lines, "no unrealised-profit legs without records")
 
@@ -1241,7 +1241,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
         produces a post-acq NCI line, so total NCI exceeds the acquisition
         NCI booked by the elimination."""
         A = 5000.0   # acquisition-date equity
-        I = 4500.0   # investment cost
+        index_val = 4500.0   # investment cost  # noqa: F841
         o = 0.80
         self.env['eh.consol.member'].create({
             'entity_id': self.entity.id,
@@ -1249,7 +1249,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
             'ownership_pct': o * 100.0,
             'method': 'full',
             'investment_account_id': self.parent_investment.id,
-            'investment_amount': I,
+            'investment_amount': index_val,
             'acquisition_equity': A,
             'equity_elimination_account_id': self.parent_equity_elim.id,
             'goodwill_account_id': self.parent_goodwill.id,
@@ -1277,7 +1277,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
         # Acquisition-date NCI (booked by the elimination) and the post-acq NCI
         # line are BOTH tagged 'nci', so the KPI sees the full minority share.
         acq_nci = -(1.0 - o) * A
-        nci_lines = run.line_ids.filtered(lambda l: l.kind == 'nci')
+        nci_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'nci')
         self.assertEqual(
             len(nci_lines), 2,
             "acquisition-date NCI and post-acq NCI lines both expected",
@@ -1285,7 +1285,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
         # Post-acq NCI = (1-o) * post-acq movement (1000), credit-negative.
         expected_post_acq = -(1.0 - o) * 1000.0 * self.rate
         post_acq_line = nci_lines.filtered(
-            lambda l: abs(l.amount - expected_post_acq) < 0.5)
+            lambda line_item: abs(line_item.amount - expected_post_acq) < 0.5)
         self.assertTrue(post_acq_line, "post-acq NCI line present")
         post_acq_nci = sum(post_acq_line.mapped('amount'))
         self.assertAlmostEqual(post_acq_nci, expected_post_acq, places=1)
@@ -1304,7 +1304,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
         post-acquisition movement), no post-acq NCI line is booked, so the
         acquisition-only behaviour is preserved."""
         A = 5000.0
-        I = 4500.0
+        index_val = 4500.0  # noqa: F841
         o = 0.80
         self.env['eh.consol.member'].create({
             'entity_id': self.entity.id,
@@ -1312,7 +1312,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
             'ownership_pct': o * 100.0,
             'method': 'full',
             'investment_account_id': self.parent_investment.id,
-            'investment_amount': I,
+            'investment_amount': index_val,
             'acquisition_equity': A,
             'equity_elimination_account_id': self.parent_equity_elim.id,
             'goodwill_account_id': self.parent_goodwill.id,
@@ -1330,7 +1330,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
         run.action_compute()
         # Only the acquisition-date NCI leg is present (now tagged 'nci'); no
         # post-acq NCI line when reporting equity equals acquisition equity.
-        nci_lines = run.line_ids.filtered(lambda l: l.kind == 'nci')
+        nci_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'nci')
         self.assertEqual(
             len(nci_lines), 1,
             "only the acquisition-date NCI line when there is no "
@@ -1349,7 +1349,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
         and contradicted the field's help text.
         """
         A = 5000.0
-        I = 4500.0
+        index_val = 4500.0  # noqa: F841
         o = 0.80
         self.env['eh.consol.member'].create({
             'entity_id': self.entity.id,
@@ -1357,7 +1357,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
             'ownership_pct': o * 100.0,
             'method': 'full',
             'investment_account_id': self.parent_investment.id,
-            'investment_amount': I,
+            'investment_amount': index_val,
             'acquisition_equity': A,
             'equity_elimination_account_id': self.parent_equity_elim.id,
             'goodwill_account_id': self.parent_goodwill.id,
@@ -1447,7 +1447,7 @@ class TestConsolIntragroupProfitAndPostAcqNci(EhAccountIntegrationTestCase):
             'period_to': '2026-12-31',
         })
         run.action_compute()
-        cta_lines = run.line_ids.filtered(lambda l: l.kind == 'cta')
+        cta_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'cta')
         self.assertTrue(cta_lines, "a CTA line must be produced")
         # The CTA plug must carry 3-dp precision: it equals the negated total
         # rounded in the presentation currency.
@@ -1582,8 +1582,8 @@ class TestConsolSettledRunControls(EhAccountIntegrationTestCase):
         run.action_compute()
         self.assertEqual(run.state, 'computed')
         cash_line = run.line_ids.filtered(
-            lambda l: l.kind == 'parent_balance'
-            and l.account_id == self.account_cash,
+            lambda line_item: line_item.kind == 'parent_balance'
+            and line_item.account_id == self.account_cash,
         )
         self.assertAlmostEqual(cash_line.amount, 1000.0, places=2)
 
@@ -1968,17 +1968,17 @@ class TestConsolAutoIntragroup(EhAccountIntegrationTestCase):
         # AR account nets to zero at group level (subsidiary_balance +1000 plus
         # auto-elimination -1000).
         ar_total = sum(run.line_ids.filtered(
-            lambda l: l.account_id == self.ar_a).mapped('amount'))
+            lambda line_item: line_item.account_id == self.ar_a).mapped('amount'))
         self.assertAlmostEqual(ar_total, 0.0, places=2)
         # AP account nets to zero at group level (subsidiary_balance -1000 plus
         # auto-elimination +1000).
         ap_total = sum(run.line_ids.filtered(
-            lambda l: l.account_id == self.ap_b).mapped('amount'))
+            lambda line_item: line_item.account_id == self.ap_b).mapped('amount'))
         self.assertAlmostEqual(ap_total, 0.0, places=2)
         # Auto-elimination legs present and net to zero.
         auto = run.line_ids.filtered(
-            lambda l: l.kind == 'elimination'
-            and l.account_id in (self.ar_a | self.ap_b))
+            lambda line_item: line_item.kind == 'elimination'
+            and line_item.account_id in (self.ar_a | self.ap_b))
         self.assertEqual(len(auto), 2, "one balanced AR/AP elimination pair")
         self.assertAlmostEqual(sum(auto.mapped('amount')), 0.0, places=2)
         # Whole run still balances (CTA unaffected).
@@ -2005,15 +2005,15 @@ class TestConsolAutoIntragroup(EhAccountIntegrationTestCase):
         run.action_compute()
         # Sales income nets to zero at group level.
         rev_total = sum(run.line_ids.filtered(
-            lambda l: l.account_id == self.rev_a).mapped('amount'))
+            lambda line_item: line_item.account_id == self.rev_a).mapped('amount'))
         self.assertAlmostEqual(rev_total, 0.0, places=2)
         # Purchase / COGS nets to zero at group level.
         exp_total = sum(run.line_ids.filtered(
-            lambda l: l.account_id == self.exp_b).mapped('amount'))
+            lambda line_item: line_item.account_id == self.exp_b).mapped('amount'))
         self.assertAlmostEqual(exp_total, 0.0, places=2)
         sales_elim = run.line_ids.filtered(
-            lambda l: l.kind == 'elimination'
-            and l.account_id in (self.rev_a | self.exp_b))
+            lambda line_item: line_item.kind == 'elimination'
+            and line_item.account_id in (self.rev_a | self.exp_b))
         self.assertEqual(len(sales_elim), 2)
         self.assertAlmostEqual(sum(sales_elim.mapped('amount')), 0.0, places=2)
 
@@ -2057,12 +2057,12 @@ class TestConsolAutoIntragroup(EhAccountIntegrationTestCase):
         run.action_compute()
         # AR is NOT eliminated: it stays at its gross subsidiary balance.
         ar_total = sum(run.line_ids.filtered(
-            lambda l: l.account_id == self.ar_a).mapped('amount'))
+            lambda line_item: line_item.account_id == self.ar_a).mapped('amount'))
         self.assertAlmostEqual(ar_total, 1000.0, places=2)
         # No auto elimination legs.
         auto = run.line_ids.filtered(
-            lambda l: l.kind == 'elimination' and l.member_id is False
-            and l.elimination_id is False)
+            lambda line_item: line_item.kind == 'elimination' and line_item.member_id is False
+            and line_item.elimination_id is False)
         self.assertFalse(auto, "no auto elimination when the flag is off")
 
 
@@ -2156,7 +2156,7 @@ class TestConsolUnresolvedAccountRaises(EhAccountIntegrationTestCase):
         )
         run = self._make_run()
         run.action_compute()
-        cta_lines = run.line_ids.filtered(lambda l: l.kind == 'cta')
+        cta_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'cta')
         self.assertTrue(cta_lines, "a CTA line must be produced")
         for line in cta_lines:
             self.assertEqual(
@@ -2243,7 +2243,7 @@ class TestConsolGoodwillImpairment(EhAccountIntegrationTestCase):
             self.env, self.parent_company, '5900',
             'Goodwill Impairment Loss', 'expense')
 
-    def _make_member(self, A=5000.0, I=6000.0, o=1.0):
+    def _make_member(self, A=5000.0, index_val=6000.0, o=1.0):
         """Full member whose IFRS 3 acquisition elimination books goodwill of
         I - o*A. At A=5000, I=6000, o=1.0 the goodwill is 1000."""
         return self.env['eh.consol.member'].create({
@@ -2252,7 +2252,7 @@ class TestConsolGoodwillImpairment(EhAccountIntegrationTestCase):
             'ownership_pct': o * 100.0,
             'method': 'full',
             'investment_account_id': self.parent_investment.id,
-            'investment_amount': I,
+            'investment_amount': index_val,
             'acquisition_equity': A,
             'equity_elimination_account_id': self.parent_equity_elim.id,
             'goodwill_account_id': self.parent_goodwill.id,
@@ -2293,15 +2293,15 @@ class TestConsolGoodwillImpairment(EhAccountIntegrationTestCase):
         self.assertAlmostEqual(
             run.goodwill_impairment_amount, 400.0, places=2)
         # Two balanced impairment legs that net to zero.
-        imp_lines = run.line_ids.filtered(lambda l: l.kind == 'impairment')
+        imp_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'impairment')
         self.assertEqual(len(imp_lines), 2, "two impairment legs expected")
         self.assertAlmostEqual(
             sum(imp_lines.mapped('amount')), 0.0, places=2)
         # Dr impairment expense +400, Cr goodwill -400.
         exp_leg = imp_lines.filtered(
-            lambda l: l.account_id == self.parent_impairment)
+            lambda line_item: line_item.account_id == self.parent_impairment)
         gw_leg = imp_lines.filtered(
-            lambda l: l.account_id == self.parent_goodwill)
+            lambda line_item: line_item.account_id == self.parent_goodwill)
         self.assertAlmostEqual(exp_leg.amount, 400.0, places=2)
         self.assertAlmostEqual(gw_leg.amount, -400.0, places=2)
         # Net recognised goodwill after the charge is 1000 - 400 = 600, exactly
@@ -2323,7 +2323,7 @@ class TestConsolGoodwillImpairment(EhAccountIntegrationTestCase):
         run.action_impair_goodwill()
         self.assertAlmostEqual(run.goodwill_impairment_amount, 0.0, places=2)
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.kind == 'impairment'),
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'impairment'),
             "no impairment line when goodwill is within recoverable amount")
 
     def test_impairment_is_idempotent_on_rerun(self):
@@ -2335,7 +2335,7 @@ class TestConsolGoodwillImpairment(EhAccountIntegrationTestCase):
         run.goodwill_impairment_account_id = self.parent_impairment.id
         run.action_impair_goodwill()
         run.action_impair_goodwill()
-        imp_lines = run.line_ids.filtered(lambda l: l.kind == 'impairment')
+        imp_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'impairment')
         self.assertEqual(
             len(imp_lines), 2,
             "re-running must not double-book the impairment legs")

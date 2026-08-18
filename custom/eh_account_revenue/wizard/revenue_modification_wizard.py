@@ -13,7 +13,7 @@ distinct goods or services, and the wizard delegates the balanced posting to
 the contract.
 """
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 from odoo.exceptions import UserError
 
 

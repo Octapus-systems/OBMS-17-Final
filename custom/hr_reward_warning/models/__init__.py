@@ -20,5 +20,5 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_employee
-from . import hr_announcement
+from . import hr_employee  # noqa: F401
+from . import hr_announcement  # noqa: F401

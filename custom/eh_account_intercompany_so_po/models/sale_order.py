@@ -32,8 +32,8 @@ class SaleOrder(models.Model):
     # closes the race where two concurrent confirms both pass the search-
     # before-create guard and create duplicate mirror sales orders.
     _sql_constraints = [
-        ('unique_ic_mirror_so', 'unique(eh_ic_origin_po_id, company_id)', "An inter-company mirror sales order already exists for this "
-        "source purchase order in this company."),
+        ('unique_ic_mirror_so', 'unique(eh_ic_origin_po_id, company_id)', "An inter-company mirror sales order already exists for this "  # noqa: E501
+        "source purchase order in this company."),  # noqa: E128
     ]
 
     def action_confirm(self):

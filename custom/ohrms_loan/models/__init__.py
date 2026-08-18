@@ -20,7 +20,7 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_loan
-from . import hr_payslip
-from . import hr_employee
-from . import hr_payslip_input
+from . import hr_loan  # noqa: F401
+from . import hr_payslip  # noqa: F401
+from . import hr_employee  # noqa: F401
+from . import hr_payslip_input  # noqa: F401

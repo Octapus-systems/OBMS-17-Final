@@ -123,7 +123,6 @@ class EhAssetTestCase(EhAccountIntegrationTestCase):
             'name': 'Assets Clerk',
             'login': 'assets_clerk_%s' % self.env.cr.dbname,
             'company_id': self.company.id,
-            'company_id': self.company.id,
             'groups_id': [(6, 0, [group_user.id])],
         })
         self.assertFalse(user.has_group('eh_account_base.group_eh_manager'))

@@ -269,9 +269,9 @@ class TestBankReconciliationHandler(EhAccountIntegrationTestCase):
                     journal_ids=[self.bank_journal.id, bank2.id])
         result = self.handler.compute(opts)
         headers = [
-            l for l in result['lines']
-            if l['id'].endswith('-header')
-            and (l.get('meta') or {}).get('kind') == 'section_header']
+            line_item for line_item in result['lines']
+            if line_item['id'].endswith('-header')
+            and (line_item.get('meta') or {}).get('kind') == 'section_header']
         # One section header per journal.
         journal_headers = [
             h for h in headers
@@ -292,8 +292,8 @@ class TestBankReconciliationHandler(EhAccountIntegrationTestCase):
         self._make_outstanding(self.account_inbound, 250.0, debit=True)
         result = self.handler.compute(self.options)
         outstanding = [
-            l for l in result['lines']
-            if l['id'].startswith('outstanding-')]
+            line_item for line_item in result['lines']
+            if line_item['id'].startswith('outstanding-')]
         self.assertTrue(outstanding)
         action = self.handler.get_drilldown_action(
             self.options, outstanding[0]['id'])

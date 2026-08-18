@@ -209,7 +209,7 @@ class EhContributionReport(models.Model):
                 "Reset %s to draft before refetching ledger revenue.",
                 self.display_name))
         ledger_lines = self.line_ids.filtered(
-            lambda l: l.revenue_source == 'ledger')
+            lambda line_item: line_item.revenue_source == 'ledger')
         if not ledger_lines:
             raise UserError(_(
                 "No line uses the posted-invoice revenue source."))

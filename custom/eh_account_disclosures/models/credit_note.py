@@ -204,7 +204,7 @@ class EhFinCreditNote(models.Model):
                 allowance[self._bucket_stage_key(bucket)] += \
                     bucket.ecl_effective
         Stage = self.env['eh.fin.credit.stage.line']
-        self.stage_line_ids.filtered(lambda l: l.origin == 'ecl').unlink()
+        self.stage_line_ids.filtered(lambda line_item: line_item.origin == 'ecl').unlink()
         manual_by_stage = {}
         for line in self.stage_line_ids:
             manual_by_stage.setdefault(line.stage, line)

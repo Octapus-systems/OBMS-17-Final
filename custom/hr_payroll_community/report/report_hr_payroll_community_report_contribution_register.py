@@ -63,7 +63,7 @@ class ReportHrPayrollCommunityReportContributionRegister(models.AbstractModel):
                                    str(datetime.now() + relativedelta(months=+1,
                                                                       day=1,
                                                                       days=-1))[
-                                   :10])
+                                   :10])  # noqa: E122
         lines_data = self._get_payslip_lines(register_ids, date_from, date_to)
         lines_total = {}
         for register in contrib_registers:

@@ -40,7 +40,6 @@ from odoo.exceptions import UserError
 from odoo.tools.translate import _lt
 
 
-
 class EhExecutiveSummaryHandler(models.AbstractModel):
     _name = 'eh.account.dynamic.report.handler.executive_summary'
     _inherit = 'eh.account.dynamic.report.handler.sectioned'

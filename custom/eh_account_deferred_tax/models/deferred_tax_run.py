@@ -297,8 +297,8 @@ class EhDeferredTaxRun(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('unique_company_period', 'unique(company_id, period_end)', 'Only one deferred tax run per company per reporting date.'),
-        ('check_rate', 'CHECK (statutory_rate >= 0 AND statutory_rate <= 100)', 'Statutory rate must be between 0 and 100.'),
+        ('unique_company_period', 'unique(company_id, period_end)', 'Only one deferred tax run per company per reporting date.'),  # noqa: E501
+        ('check_rate', 'CHECK (statutory_rate >= 0 AND statutory_rate <= 100)', 'Statutory rate must be between 0 and 100.'),  # noqa: E501
     ]
 
     # ---- compute ----
@@ -316,8 +316,8 @@ class EhDeferredTaxRun(models.Model):
                 run.line_ids.mapped('unrecognised_dta'))
             run.closing_dtl = sum(run.line_ids.mapped('closing_dtl'))
             run.net_deferred_tax = run.closing_dtl - run.closing_dta
-            pl = run.line_ids.filtered(lambda l: not l.through_oci)
-            oci = run.line_ids.filtered(lambda l: l.through_oci)
+            pl = run.line_ids.filtered(lambda line_item: not line_item.through_oci)
+            oci = run.line_ids.filtered(lambda line_item: line_item.through_oci)
             run.pl_movement = (
                 sum(pl.mapped('movement_dtl')) - sum(pl.mapped('movement_dta')))
             run.oci_movement = (
@@ -342,7 +342,7 @@ class EhDeferredTaxRun(models.Model):
             key=lambda item: (item[0].name or '', item[0].id or 0))
         Line = self.env['eh.deferred.tax.line']
         return [
-            (jur, Line.browse([l.id for l in lines]))
+            (jur, Line.browse([line_item.id for line_item in lines]))
             for jur, lines in ordered
         ]
 
@@ -503,7 +503,7 @@ class EhDeferredTaxRun(models.Model):
         for run in self:
             if run.state == 'draft':
                 continue
-            if run.line_ids.filtered(lambda l: l.through_oci) \
+            if run.line_ids.filtered(lambda line_item: line_item.through_oci) \
                     and not run.oci_account_id:
                 raise ValidationError(_(
                     "Run %s has a line recognised in OCI but no OCI / equity "
@@ -714,7 +714,7 @@ class EhDeferredTaxRun(models.Model):
         jurisdiction first, so offsetting and disclosure group correctly.
         """
         self.ensure_one()
-        orphans = self.line_ids.filtered(lambda l: not l.jurisdiction_id)
+        orphans = self.line_ids.filtered(lambda line_item: not line_item.jurisdiction_id)
         if orphans:
             default = self.env['eh.tax.jurisdiction']._get_company_default(
                 self.company_id)
@@ -847,7 +847,7 @@ class EhDeferredTaxRun(models.Model):
             missing.append(_("deferred tax liability account"))
         if not self.deferred_tax_expense_account_id:
             missing.append(_("deferred tax expense account"))
-        if self.line_ids.filtered(lambda l: l.through_oci) \
+        if self.line_ids.filtered(lambda line_item: line_item.through_oci) \
                 and not self.oci_account_id:
             missing.append(_("OCI / equity account"))
         if missing:
@@ -875,7 +875,7 @@ class EhDeferredTaxRun(models.Model):
         """
         self.ensure_one()
         currency = self.currency_id
-        oci = self.line_ids.filtered(lambda l: l.through_oci)
+        oci = self.line_ids.filtered(lambda line_item: line_item.through_oci)
 
         legs = []
         if self.offsetting_policy == 'net_by_jurisdiction':

@@ -7,18 +7,18 @@
 ##############################################################################
 {
     'name': 'Bank Reconciliation Pro',
-    'summary': 'A modern bank reconciliation workspace for Odoo 17 Community Edition with a five-signal suggestion engine that ranks candidate journal items by confidence, so an operator confirms each match with one click or a drag. Odoo 17 Community bank reconciliation, bank reconciliation widget Odoo Community, reconciliation suggestion engine, auto match bank statement lines, user-defined reconciliation rules, reconciliation audit log, bank statement reconciliation workspace, FX rounding write-off, reconciliation exception report.',
-    'description': """Bank Reconciliation Pro gives Odoo 17 Community a reconciliation experience built around a scored suggestion engine and a tamper-evident audit trail.
+    'summary': 'A modern bank reconciliation workspace for Odoo 17 Community Edition with a five-signal suggestion engine that ranks candidate journal items by confidence, so an operator confirms each match with one click or a drag. Odoo 17 Community bank reconciliation, bank reconciliation widget Odoo Community, reconciliation suggestion engine, auto match bank statement lines, user-defined reconciliation rules, reconciliation audit log, bank statement reconciliation workspace, FX rounding write-off, reconciliation exception report.',  # noqa: E501
+    'description': """Bank Reconciliation Pro gives Odoo 17 Community a reconciliation experience built around a scored suggestion engine and a tamper-evident audit trail.  # noqa: E501
 
-The two-pane workspace puts unreconciled statement lines on the left and scored candidate journal items on the right. A separate kanban lists past reconciliation sessions. For each statement line, a five-signal engine (amount, date proximity, partner, reference token overlap, and 90-day history) scores each candidate and surfaces its combined confidence score in the workspace, with the per-signal breakdown returned by the suggestion API. The operator confirms each match with one click, or drags a candidate journal entry onto the selected line. Tick several candidates and match them to the selected line in one action (1-to-N).
+The two-pane workspace puts unreconciled statement lines on the left and scored candidate journal items on the right. A separate kanban lists past reconciliation sessions. For each statement line, a five-signal engine (amount, date proximity, partner, reference token overlap, and 90-day history) scores each candidate and surfaces its combined confidence score in the workspace, with the per-signal breakdown returned by the suggestion API. The operator confirms each match with one click, or drags a candidate journal entry onto the selected line. Tick several candidates and match them to the selected line in one action (1-to-N).  # noqa: E501
 
-User-defined rules (payment-reference or narration regex, amount band, direction, partner) boost matching candidates so reliable patterns rank higher. Each rule definition is validated at write time, invalid regex and amount_max below amount_min are rejected before a rule can fire. The rule code that fired is stamped on the audit row.
+User-defined rules (payment-reference or narration regex, amount band, direction, partner) boost matching candidates so reliable patterns rank higher. Each rule definition is validated at write time, invalid regex and amount_max below amount_min are rejected before a rule can fire. The rule code that fired is stamped on the audit row.  # noqa: E501
 
-Every match decision records the user, the time, the confidence, the rules that fired, and whether it was an accepted suggestion or a manual override. These audit rows are append-only, write and unlink are blocked at the model level.
+Every match decision records the user, the time, the confidence, the rules that fired, and whether it was an accepted suggestion or a manual override. These audit rows are append-only, write and unlink are blocked at the model level.  # noqa: E501
 
-FX residual write-offs auto-route to the company exchange gain or loss account by residual sign, with an optional small-variance cap so bank-charge variance never lands in a generic suspense account. Write-offs, including FX residual write-offs, post inside a database savepoint so a failed write-off rolls back cleanly without disturbing the session.
+FX residual write-offs auto-route to the company exchange gain or loss account by residual sign, with an optional small-variance cap so bank-charge variance never lands in a generic suspense account. Write-offs, including FX residual write-offs, post inside a database savepoint so a failed write-off rolls back cleanly without disturbing the session.  # noqa: E501
 
-A reconciliation exception PDF reports, per journal over a date range, the reconciled percentage, unmatched count and amount, oldest-unmatched age, and write-off and skip counts.
+A reconciliation exception PDF reports, per journal over a date range, the reconciled percentage, unmatched count and amount, oldest-unmatched age, and write-off and skip counts.  # noqa: E501
 
 Coexists cleanly with other Community accounting modules.""",
     'author': 'ERP Heritage',
@@ -39,7 +39,7 @@ Coexists cleanly with other Community accounting modules.""",
     ],
     'demo': ['demo/reconcile_demo.xml'],
     'assets': {
-        'web.assets_backend': ['eh_account_reconcile_pro/static/src/components/**/*', 'eh_account_reconcile_pro/static/src/js/tours/reconcile_tour.js'],
+        'web.assets_backend': ['eh_account_reconcile_pro/static/src/components/**/*', 'eh_account_reconcile_pro/static/src/js/tours/reconcile_tour.js'],  # noqa: E501
     },
     'images': ['static/description/banner.gif'],
     'installable': True,

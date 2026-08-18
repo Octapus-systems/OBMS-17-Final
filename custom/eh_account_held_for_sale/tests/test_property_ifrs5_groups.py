@@ -115,7 +115,7 @@ class TestPropertyIfrs5Groups(EhGoldenTestCase):
             group.action_classify()
 
             asset_lines = group.line_ids.filtered(
-                lambda l: not l.is_liability)
+                lambda line_item: not line_item.is_liability)
             liability_lines = group.line_ids.filtered('is_liability')
             goodwill_lines = asset_lines.filtered('is_goodwill')
             other_lines = asset_lines - goodwill_lines
@@ -169,7 +169,7 @@ class TestPropertyIfrs5Groups(EhGoldenTestCase):
             # Floored member absorbs at most its headroom.
             if case['floor']:
                 floored = group.line_ids.filtered(
-                    lambda l: l.name == 'M0')
+                    lambda line_item: line_item.name == 'M0')
                 self.assertLessEqual(
                     floored.allocated_writedown,
                     self.FLOOR_HEADROOM + 0.005,
@@ -219,8 +219,8 @@ class TestPropertyIfrs5Groups(EhGoldenTestCase):
              'account_id': self.member_accounts[1].id},
         ], 40000.0 - 100.01)
         group.action_classify()
-        a = group.line_ids.filtered(lambda l: l.name == 'A')
-        b = group.line_ids.filtered(lambda l: l.name == 'B')
+        a = group.line_ids.filtered(lambda line_item: line_item.name == 'A')
+        b = group.line_ids.filtered(lambda line_item: line_item.name == 'B')
         self.assertAlmostEqual(a.allocated_writedown, 75.01, places=2)
         self.assertAlmostEqual(b.allocated_writedown, 25.00, places=2)
         self.assertAlmostEqual(

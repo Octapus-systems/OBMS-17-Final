@@ -20,9 +20,9 @@ and walks through:
 * Per-partner override takes precedence over the company default.
 """
 
-from datetime import timedelta
+from datetime import timedelta  # noqa: F401
 
-from odoo import fields
+from odoo import fields  # noqa: F401
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
 

@@ -70,7 +70,7 @@ class TestWriteOff(EhReconcileIntegrationTestCase):
         # adjusting entry, not on the posted statement move.
         self.assertFalse(
             line.move_id.line_ids.filtered(
-                lambda l: l.account_id in (gain | loss)))
+                lambda line_item: line_item.account_id in (gain | loss)))
         moved = self.env['account.move.line'].search([
             ('account_id', 'in', (gain | loss).ids),
             ('move_id', '!=', line.move_id.id),

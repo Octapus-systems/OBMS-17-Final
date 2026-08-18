@@ -56,8 +56,8 @@ class EhBudgetActivity(models.Model):
     )
 
     _sql_constraints = [
-        ('activity_period_range', 'check(period_from <= period_to)', 'Activity period_from must be before or equal to period_to.'),
-        ('activity_non_negative', 'check(budgeted_activity >= 0 AND actual_activity >= 0)', 'Activity levels must be zero or positive.'),
+        ('activity_period_range', 'check(period_from <= period_to)', 'Activity period_from must be before or equal to period_to.'),  # noqa: E501
+        ('activity_non_negative', 'check(budgeted_activity >= 0 AND actual_activity >= 0)', 'Activity levels must be zero or positive.'),  # noqa: E501
     ]
 
 
@@ -143,5 +143,5 @@ class EhBudgetForecastRevisionLine(models.Model):
     )
 
     _sql_constraints = [
-        ('revision_period_range', 'check(period_from <= period_to)', 'Revision line period_from must be before or equal to period_to.'),
+        ('revision_period_range', 'check(period_from <= period_to)', 'Revision line period_from must be before or equal to period_to.'),  # noqa: E501
     ]

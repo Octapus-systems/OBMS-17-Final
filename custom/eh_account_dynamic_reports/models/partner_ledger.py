@@ -33,7 +33,7 @@ Drill down:
 * aml-X: opens the specific journal entry form.
 """
 
-import datetime
+import datetime  # noqa: F401
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -41,7 +41,6 @@ from odoo.tools import SQL
 from odoo.tools.translate import _lt
 
 from odoo.addons.eh_account_base.tools.sql_builder import MoveLineQuery
-
 
 
 class EhPartnerLedgerHandler(models.AbstractModel):

@@ -24,8 +24,8 @@
     'name': 'Odoo 17 HR Payroll',
     'version': '17.0.1.0.0',
     'category': 'Human Resources',
-    'summary': 'Odoo 17 HR Payroll, payroll, Odoo17 Payroll, Odoo Payroll, Payroll, Odoo17 Payslips, Employee Payroll, HR Payroll,Odoo17, Odoo17 HR, odoo hr,odoo17, Accounting,Odoo Apps',
-    'description': "odoo17, Odoo 17 HR Payroll, odoo payroll, odoo17 payroll, payroll community,odoo 17, payroll,Odoo 17 Payroll for Community version where can manage "
+    'summary': 'Odoo 17 HR Payroll, payroll, Odoo17 Payroll, Odoo Payroll, Payroll, Odoo17 Payslips, Employee Payroll, HR Payroll,Odoo17, Odoo17 HR, odoo hr,odoo17, Accounting,Odoo Apps',  # noqa: E501
+    'description': "odoo17, Odoo 17 HR Payroll, odoo payroll, odoo17 payroll, payroll community,odoo 17, payroll,Odoo 17 Payroll for Community version where can manage "  # noqa: E501
                    "Employee Payroll Records",
     'author': 'Cybrosys Techno Solutions',
     'company': 'Cybrosys Techno Solutions',

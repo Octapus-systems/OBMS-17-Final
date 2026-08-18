@@ -98,7 +98,7 @@ class EhApprovalPolicy(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('check_thresholds', 'CHECK (re_approval_threshold_pct >= 0 AND re_approval_threshold_abs >= 0)', 'Re-approval thresholds cannot be negative.'),
+        ('check_thresholds', 'CHECK (re_approval_threshold_pct >= 0 AND re_approval_threshold_abs >= 0)', 'Re-approval thresholds cannot be negative.'),  # noqa: E501
     ]
 
     @api.depends('rule_ids')
@@ -244,8 +244,8 @@ class EhApprovalPolicyRule(models.Model):
     )
 
     _sql_constraints = [
-        ('check_amount_band', 'CHECK (min_amount >= 0 AND max_amount >= 0 AND (max_amount = 0 OR max_amount >= min_amount))', 'Amount band invalid: min and max must be non-negative and max >= min when max is non-zero.'),
-        ('check_sla_hours_non_negative', 'CHECK (sla_hours >= 0 AND reminder_after_hours >= 0 AND escalate_after_hours >= 0)', 'SLA, reminder and escalation hours must be zero or positive.'),
+        ('check_amount_band', 'CHECK (min_amount >= 0 AND max_amount >= 0 AND (max_amount = 0 OR max_amount >= min_amount))', 'Amount band invalid: min and max must be non-negative and max >= min when max is non-zero.'),  # noqa: E501
+        ('check_sla_hours_non_negative', 'CHECK (sla_hours >= 0 AND reminder_after_hours >= 0 AND escalate_after_hours >= 0)', 'SLA, reminder and escalation hours must be zero or positive.'),  # noqa: E501
     ]
 
     @api.depends('step_ids')

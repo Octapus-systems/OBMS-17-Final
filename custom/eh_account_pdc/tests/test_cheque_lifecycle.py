@@ -10,7 +10,7 @@
 from datetime import timedelta
 from unittest.mock import patch
 
-from odoo import fields
+from odoo import fields  # noqa: F401
 from odoo.exceptions import UserError
 from odoo.tests import tagged
 

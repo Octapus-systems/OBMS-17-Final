@@ -1,1 +1,1 @@
-from . import build_batch_wizard
+from . import build_batch_wizard  # noqa: F401

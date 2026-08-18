@@ -1,15 +1,15 @@
-from . import audit_mixins
-from . import workflow_mixins
-from . import res_company
-from . import res_partner
-from . import res_config_settings
-from . import account_move
-from . import account_account
-from . import report_execution
-from . import report_handler_base
-from . import report_handler_sectioned
-from . import dynamic_report
-from . import report_annotation
-from . import report_wizard
-from . import saved_view
-from . import report_fold_state
+from . import audit_mixins  # noqa: F401
+from . import workflow_mixins  # noqa: F401
+from . import res_company  # noqa: F401
+from . import res_partner  # noqa: F401
+from . import res_config_settings  # noqa: F401
+from . import account_move  # noqa: F401
+from . import account_account  # noqa: F401
+from . import report_execution  # noqa: F401
+from . import report_handler_base  # noqa: F401
+from . import report_handler_sectioned  # noqa: F401
+from . import dynamic_report  # noqa: F401
+from . import report_annotation  # noqa: F401
+from . import report_wizard  # noqa: F401
+from . import saved_view  # noqa: F401
+from . import report_fold_state  # noqa: F401

@@ -26,7 +26,7 @@ receivable raise UserError that names the partner; partial-month
 fractions round to two decimals via Decimal.
 """
 
-from datetime import date, timedelta
+from datetime import date, timedelta  # noqa: F401
 from decimal import Decimal, ROUND_HALF_UP
 
 from odoo import _, api, fields, models

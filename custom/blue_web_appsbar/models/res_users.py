@@ -1,14 +1,14 @@
-from odoo import models, fields, api
+from odoo import models, fields, api  # noqa: F401
 
 
 class ResUsers(models.Model):
-    
+
     _inherit = 'res.users'
-    
-    #----------------------------------------------------------
+
+    # ----------------------------------------------------------
     # Properties
-    #----------------------------------------------------------
-    
+    # ----------------------------------------------------------
+
     @property
     def SELF_READABLE_FIELDS(self):
         return super().SELF_READABLE_FIELDS + [
@@ -21,16 +21,16 @@ class ResUsers(models.Model):
             'sidebar_type',
         ]
 
-    #----------------------------------------------------------
+    # ----------------------------------------------------------
     # Fields
-    #----------------------------------------------------------
-    
+    # ----------------------------------------------------------
+
     sidebar_type = fields.Selection(
         selection=[
             ('invisible', 'Invisible'),
             ('small', 'Small'),
             ('large', 'Large')
-        ], 
+        ],
         string="Sidebar Type",
         default='large',
         required=True,

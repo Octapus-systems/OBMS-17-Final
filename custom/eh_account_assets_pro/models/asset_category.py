@@ -15,7 +15,7 @@ schedule is generated.
 """
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError  # noqa: F401
 from odoo.addons.eh_account_base.tools.orm_compat import read_group_compat
 
 
@@ -104,14 +104,14 @@ class EhAssetCategory(models.Model):
     _sql_constraints = [
         ('uniq_code_company', 'unique(code, company_id)', 'Category code must be unique per company.'),
         ('check_useful_life_positive', 'CHECK (useful_life_months > 0)', 'Useful life must be greater than zero.'),
-        ('check_salvage_rate_range', 'CHECK (salvage_rate >= 0 AND salvage_rate < 1)', 'Salvage rate must be in [0, 1).'),
+        ('check_salvage_rate_range', 'CHECK (salvage_rate >= 0 AND salvage_rate < 1)', 'Salvage rate must be in [0, 1).'),  # noqa: E501
     ]
 
     @api.depends()
     def _compute_asset_count(self):
         Asset = self.env['eh.asset']
-        counts = dict(read_group_compat(Asset, 
-            [('category_id', 'in', self.ids)],
+        counts = dict(read_group_compat(Asset,
+            [('category_id', 'in', self.ids)],  # noqa: E128
             ['category_id'],
             ['__count'],
         ))

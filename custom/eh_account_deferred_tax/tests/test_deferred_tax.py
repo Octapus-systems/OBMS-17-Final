@@ -47,11 +47,11 @@ class TestDeferredTax(EhAccountIntegrationTestCase):
 
     def _debit(self, move, account):
         return sum(move.line_ids.filtered(
-            lambda l: l.account_id == account).mapped('debit'))
+            lambda line_item: line_item.account_id == account).mapped('debit'))
 
     def _credit(self, move, account):
         return sum(move.line_ids.filtered(
-            lambda l: l.account_id == account).mapped('credit'))
+            lambda line_item: line_item.account_id == account).mapped('credit'))
 
     def test_compute_seeds_rate(self):
         run = self._run(rate=30.0)

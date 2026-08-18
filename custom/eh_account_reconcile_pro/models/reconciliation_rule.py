@@ -81,7 +81,7 @@ class EhReconciliationRule(models.Model):
 
     payment_ref_regex = fields.Char(
         string="Payment ref regex",
-        help="Optional. Statement line payment_ref must match this regex (Python re syntax). Anchored with ^ and $ if you want full match.",
+        help="Optional. Statement line payment_ref must match this regex (Python re syntax). Anchored with ^ and $ if you want full match.",  # noqa: E501
     )
     narration_regex = fields.Char(
         string="Narration regex",
@@ -143,7 +143,7 @@ class EhReconciliationRule(models.Model):
     )
     auto_confirm = fields.Boolean(
         default=False,
-        help="When enabled, a suggestion produced by this rule is auto-confirmed instead of waiting for a user click. Use sparingly: requires high pattern specificity.",
+        help="When enabled, a suggestion produced by this rule is auto-confirmed instead of waiting for a user click. Use sparingly: requires high pattern specificity.",  # noqa: E501
     )
 
     # ---- audit ----
@@ -158,8 +158,8 @@ class EhReconciliationRule(models.Model):
 
     _sql_constraints = [
         ('unique_code_company', 'unique(code, company_id)', 'Rule code must be unique per company.'),
-        ('check_score_boost', 'CHECK (score_boost >= 0 AND score_boost <= 1)', 'Score boost must be between 0.0 and 1.0.'),
-        ('check_amounts', 'CHECK ((amount_min = 0 AND amount_max = 0) OR amount_min <= amount_max OR amount_max = 0)', 'amount_max must be greater than or equal to amount_min when both are set.'),
+        ('check_score_boost', 'CHECK (score_boost >= 0 AND score_boost <= 1)', 'Score boost must be between 0.0 and 1.0.'),  # noqa: E501
+        ('check_amounts', 'CHECK ((amount_min = 0 AND amount_max = 0) OR amount_min <= amount_max OR amount_max = 0)', 'amount_max must be greater than or equal to amount_min when both are set.'),  # noqa: E501
     ]
 
     @api.constrains('code')

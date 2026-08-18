@@ -305,7 +305,7 @@ class EhAssetRevalueWizard(models.TransientModel):
                 "Revaluation would reduce the carrying amount below salvage "
                 "value.",
             ))
-        unposted = asset.depreciation_line_ids.filtered(lambda l: not l.is_posted)
+        unposted = asset.depreciation_line_ids.filtered(lambda line_item: not line_item.is_posted)
         remaining_periods = len(unposted)
         if not remaining_periods:
             raise UserError(_(

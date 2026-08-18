@@ -29,11 +29,11 @@ another partner's statement.
 
 import base64
 import logging
-from datetime import date, timedelta
+from datetime import date, timedelta  # noqa: F401
 from urllib.parse import quote
 
 from odoo import _, fields, http
-from odoo.exceptions import AccessError, MissingError, UserError
+from odoo.exceptions import AccessError, MissingError, UserError  # noqa: F401
 from odoo.http import request
 
 from odoo.addons.portal.controllers.portal import CustomerPortal

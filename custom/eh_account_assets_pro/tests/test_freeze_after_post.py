@@ -35,7 +35,7 @@ class TestFreezeAfterPost(EhAssetTestCase):
         )
         asset.action_activate()
         asset.action_post_due_lines()
-        posted = asset.depreciation_line_ids.filtered(lambda l: l.is_posted)
+        posted = asset.depreciation_line_ids.filtered(lambda line_item: line_item.is_posted)
         self.assertTrue(posted, "expected at least one posted line")
         return asset, posted[0]
 
@@ -52,7 +52,7 @@ class TestFreezeAfterPost(EhAssetTestCase):
     def test_unposted_line_still_editable(self):
         asset, _line = self._posted_asset()
         unposted = asset.depreciation_line_ids.filtered(
-            lambda l: not l.is_posted)
+            lambda line_item: not line_item.is_posted)
         self.assertTrue(unposted, "expected some unposted lines to remain")
         # Editing a not-yet-posted line stays allowed (default behaviour).
         unposted[0].amount = unposted[0].amount  # no-op write must not raise

@@ -240,10 +240,10 @@ class EhAccountSetupTaskLine(models.Model):
             same_company = self.search([
                 ('company_id', '=', line.company_id.id),
             ])
-            relevant = same_company.filtered(lambda l: l.is_relevant)
+            relevant = same_company.filtered(lambda line_item: line_item.is_relevant)
             line.company_total_count = len(relevant)
             line.company_done_count = len(
-                relevant.filtered(lambda l: l.state == 'done'),
+                relevant.filtered(lambda line_item: line_item.state == 'done'),
             )
 
     @api.depends('task_id', 'state')
@@ -258,7 +258,7 @@ class EhAccountSetupTaskLine(models.Model):
             ])
             line.task_total_count = len(same_task)
             line.task_done_count = len(
-                same_task.filtered(lambda l: l.state == 'done'),
+                same_task.filtered(lambda line_item: line_item.state == 'done'),
             )
 
     def action_view_company_lines(self):

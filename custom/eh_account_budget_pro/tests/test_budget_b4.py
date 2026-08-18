@@ -114,10 +114,10 @@ class TestBudgetB4(EhAccountIntegrationTestCase):
         # 2 accounts x 2 analytic x 4 quarters = 16 lines.
         self.assertEqual(len(budget.line_ids), 16)
         self.assertTrue(all(
-            l.budgeted_amount == 100.0 for l in budget.line_ids))
+            line_item.budgeted_amount == 100.0 for line_item in budget.line_ids))
         self.assertEqual(
             len(budget.line_ids.filtered(
-                lambda l: l.analytic_account_id == self.an1)), 8)
+                lambda line_item: line_item.analytic_account_id == self.an1)), 8)
 
     def test_split_wizard_no_analytic(self):
         budget = self._budget(code='split_plain')

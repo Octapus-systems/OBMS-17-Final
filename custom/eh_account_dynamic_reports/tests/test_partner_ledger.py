@@ -113,7 +113,7 @@ class TestPartnerLedgerHandler(EhAccountIntegrationTestCase):
         ])
         result = self.handler.compute(self.options)
         partner_lines = self._lines_for_partner(result, self.partner_a.id)
-        kinds = [(l.get('meta') or {}).get('kind') for l in partner_lines]
+        kinds = [(line_item.get('meta') or {}).get('kind') for line_item in partner_lines]
         self.assertIn('partner_header', kinds)
         self.assertIn('opening_balance', kinds)
         self.assertIn('aml', kinds)
@@ -134,10 +134,10 @@ class TestPartnerLedgerHandler(EhAccountIntegrationTestCase):
         result = self.handler.compute(self.options)
         partner_lines = self._lines_for_partner(result, self.partner_a.id)
         aml_lines = [
-            l for l in partner_lines
-            if (l.get('meta') or {}).get('kind') == 'aml'
+            line_item for line_item in partner_lines
+            if (line_item.get('meta') or {}).get('kind') == 'aml'
         ]
-        balances = [self._column_value(l, 'balance') for l in aml_lines]
+        balances = [self._column_value(line_item, 'balance') for line_item in aml_lines]
         # Two debit lines (receivable +100, cash +30) and one credit
         # (receivable -30) attached to partner_a. Order is by aml.id.
         self.assertEqual(len(balances), 3)

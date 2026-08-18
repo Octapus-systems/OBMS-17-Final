@@ -36,7 +36,7 @@ This module is original work; the parser below implements the published
 Socrata JSON shape and does not derive from any third-party rate library.
 """
 
-from decimal import Decimal
+from decimal import Decimal  # noqa: F401
 
 from .. import rate_providers as rp
 from ..rate_providers import BaseHttpProvider, to_decimal

@@ -9,7 +9,7 @@
 FX revaluation performance regression guards.
 """
 
-from odoo import fields
+from odoo import fields  # noqa: F401
 from odoo.tests import tagged
 
 from odoo.addons.eh_account_base.tests.common import EhAccountIntegrationTestCase

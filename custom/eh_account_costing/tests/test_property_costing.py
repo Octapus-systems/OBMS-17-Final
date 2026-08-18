@@ -139,7 +139,7 @@ class TestPropertyCosting(EhGoldenTestCase):
 
     def _oracle(self, actual, elements, units):
         """Recompute every variance independently of the engine."""
-        by_line = {l.element: l for l in actual.line_ids}
+        by_line = {line_item.element: line_item for line_item in actual.line_ids}
         variances = {}   # (element, kind) -> amount
         total_actual = total_absorbed = 0.0
         for element in elements:
@@ -206,7 +206,7 @@ class TestPropertyCosting(EhGoldenTestCase):
                 '%s: line count %s' % (label, len(run.line_ids)))
             for (element, kind), amount in expected.items():
                 line = run.line_ids.filtered(
-                    lambda l: l.element == element and l.kind == kind)
+                    lambda line_item: line_item.element == element and line_item.kind == kind)
                 self.assertEqual(
                     len(line), 1, '%s: missing %s/%s' % (
                         label, element, kind))
@@ -241,7 +241,7 @@ class TestPropertyCosting(EhGoldenTestCase):
                 # The absorption leg carries exactly the net variance:
                 # credit when net adverse, debit when net favourable.
                 absorption = move.line_ids.filtered(
-                    lambda l: l.account_id == self.acc_absorption)
+                    lambda line_item: line_item.account_id == self.acc_absorption)
                 net = round(total_actual - total_absorbed, 2)
                 self.assertEqual(len(absorption), 1, label)
                 self.assertAlmostEqual(

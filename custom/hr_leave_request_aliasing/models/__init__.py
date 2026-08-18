@@ -20,5 +20,5 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_leave
-from . import res_config_settings
+from . import hr_leave  # noqa: F401
+from . import res_config_settings  # noqa: F401

@@ -172,7 +172,7 @@ class EhEclWriteoff(models.Model):
         })
         move.action_post()
         credit_line = move.line_ids.filtered(
-            lambda l: l.account_id == line.account_id)
+            lambda line_item: line_item.account_id == line.account_id)
         (line + credit_line).reconcile()
         return move
 

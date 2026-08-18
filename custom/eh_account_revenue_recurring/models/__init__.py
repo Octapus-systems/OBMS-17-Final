@@ -1,2 +1,2 @@
 # -*- encoding: utf-8 -*-
-from . import recurring_template
+from . import recurring_template  # noqa: F401

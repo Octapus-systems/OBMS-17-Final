@@ -110,7 +110,7 @@ class TestGoldenIfrs9(EhGoldenTestCase):
 
     def _receivable_line(self, invoice):
         return invoice.line_ids.filtered(
-            lambda l: l.account_id.account_type == 'asset_receivable')
+            lambda line_item: line_item.account_id.account_type == 'asset_receivable')
 
     # ------------------------------------------------------------------
     # staging engine
@@ -166,7 +166,7 @@ class TestGoldenIfrs9(EhGoldenTestCase):
             (self.impairment, 36.0, 0.0),
             (self.allowance, 0.0, 36.0),
         ])
-        recon = {l.stage: l for l in run2.recon_ids}
+        recon = {line_item.stage: line_item for line_item in run2.recon_ids}
         s1, s2 = recon['1'], recon['2']
         self.assertAlmostEqual(s1.opening, 12.0, places=2)
         self.assertAlmostEqual(s1.transfers_out, 12.0, places=2)
@@ -251,7 +251,7 @@ class TestGoldenIfrs9(EhGoldenTestCase):
         self.assertEqual(transfer.reason, 'poci')
         self.assertEqual(transfer.from_stage, transfer.to_stage)
         run.action_post()
-        recon = {l.stage: l for l in run.recon_ids}
+        recon = {line_item.stage: line_item for line_item in run.recon_ids}
         self.assertAlmostEqual(recon['poci'].closing, 48.0, places=2)
         self.assertAlmostEqual(recon['1'].closing, 0.0, places=2)
 
@@ -545,7 +545,7 @@ class TestGoldenIfrs9(EhGoldenTestCase):
             over.action_post_writeoff()
 
         # Reconciliation: closing 250 measured - 160 written off = 90.
-        recon = {l.stage: l for l in run.recon_ids}
+        recon = {line_item.stage: line_item for line_item in run.recon_ids}
         s3 = recon['3']
         self.assertAlmostEqual(s3.opening, 0.0, places=2)
         self.assertAlmostEqual(s3.remeasurement, 250.0, places=2)

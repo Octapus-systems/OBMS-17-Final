@@ -44,7 +44,7 @@ class HrEmployee(models.Model):
         employee.sudo()._attendance_action_change({
             'city': request.geoip.city.name or _('Unknown'),
             'country_name': request.geoip.country.name or
-                            request.geoip.continent.name or _('Unknown'),
+                            request.geoip.continent.name or _('Unknown'),  # noqa: E131
             'latitude': request.geoip.location.latitude or False,
             'longitude': request.geoip.location.longitude or False,
             'ip_address': request.geoip.ip,
@@ -73,7 +73,7 @@ class HrEmployee(models.Model):
         query = """
         select count(id)
         from hr_leave
-        WHERE (hr_leave.date_from::DATE,hr_leave.date_to::DATE) 
+        WHERE (hr_leave.date_from::DATE,hr_leave.date_to::DATE)
         OVERLAPS ('%s', '%s') and
         state='validate'""" % (today, today)
         cr = self._cr
@@ -85,7 +85,7 @@ class HrEmployee(models.Model):
         query = """
                 select count(id)
                 from hr_leave
-                WHERE (hr_leave.date_from::DATE,hr_leave.date_to::DATE) 
+                WHERE (hr_leave.date_from::DATE,hr_leave.date_to::DATE)
                 OVERLAPS ('%s', '%s')
                 and  state='validate'""" % (first_day, last_day)
         cr = self._cr
@@ -98,18 +98,18 @@ class HrEmployee(models.Model):
         timesheet_view_id = self.env.ref(
             'hr_timesheet.hr_timesheet_line_search')
         job_applications = self.env['hr.applicant'].sudo().search_count([])
-        
+
         # Additional custom HR metrics (Loans, Salary Advance)
         loans_to_approve = 0
         if 'hr.loan' in self.env:
             loans_to_approve = self.env['hr.loan'].sudo().search_count(
                 [('state', '=', 'waiting_approval_1')])
-        
+
         advances_to_approve = 0
         if 'salary.advance' in self.env:
             advances_to_approve = self.env['salary.advance'].sudo().search_count(
                 [('state', 'in', ['submit', 'waiting_approval'])])
-                
+
         my_pending_loans = 0
         my_pending_advances = 0
         if employee:
@@ -122,7 +122,7 @@ class HrEmployee(models.Model):
                     [('employee_id', '=', emp_id), ('state', 'in', ['submit', 'waiting_approval'])])
 
         if employee:
-            sql = """select broad_factor from hr_employee_broad_factor 
+            sql = """select broad_factor from hr_employee_broad_factor
             where id =%s"""
             self.env.cr.execute(sql, (employee[0]['id'],))
             result = self.env.cr.dictfetchall()
@@ -175,9 +175,9 @@ class HrEmployee(models.Model):
         cr.execute("""select *,
         (to_char(dob,'ddd')::int-to_char(now(),'ddd')::int+
         total_days)%total_days as dif
-        from (select he.id, he.name, to_char(he.birthday, 'Month dd') 
+        from (select he.id, he.name, to_char(he.birthday, 'Month dd')
         as birthday, hj.name as job_id , he.birthday as dob,
-        (to_char((to_char(now(),'yyyy')||'-12-31')::date,'ddd')::int) as 
+        (to_char((to_char(now(),'yyyy')||'-12-31')::date,'ddd')::int) as
         total_days FROM hr_employee he
         join hr_job hj on hj.id = he.job_id) birth
         where (to_char(dob,'ddd')::int-to_char(now(),'DDD')::int+
@@ -238,7 +238,7 @@ class HrEmployee(models.Model):
     def get_dept_employee(self):
         cr = self._cr
         cr.execute("""select department_id, hr_department.name,count(*)
-        from hr_employee join hr_department on 
+        from hr_employee join hr_department on
         hr_department.id=hr_employee.department_id
         group by hr_employee.department_id,hr_department.name""")
         dat = cr.fetchall()
@@ -279,9 +279,9 @@ class HrEmployee(models.Model):
              , generate_series(date_trunc('month', date_from::timestamp)
                              , date_trunc('month', date_to::timestamp)
                              , interval '1 month') y
-        where date_trunc('month', GREATEST(y , h.date_from)) >= 
+        where date_trunc('month', GREATEST(y , h.date_from)) >=
         date_trunc('month', now()) - interval '6 month' and
-        date_trunc('month', GREATEST(y , h.date_from)) <= 
+        date_trunc('month', GREATEST(y , h.date_from)) <=
         date_trunc('month', now())
         and h.department_id is not null
         """
@@ -383,9 +383,9 @@ class HrEmployee(models.Model):
                      , generate_series(date_trunc('month', date_from::timestamp)
                                      , date_trunc('month', date_to::timestamp)
                                      , interval '1 month') y
-                where date_trunc('month', GREATEST(y , h.date_from)) >= 
+                where date_trunc('month', GREATEST(y , h.date_from)) >=
                 date_trunc('month', now()) - interval '6 month' and
-                date_trunc('month', GREATEST(y , h.date_from)) <= 
+                date_trunc('month', GREATEST(y , h.date_from)) <=
                 date_trunc('month', now()) and h.employee_id = %s """
         self.env.cr.execute(sql, (employee[0]['id'],))
         results = self.env.cr.dictfetchall()
@@ -486,15 +486,15 @@ class HrEmployee(models.Model):
         month_join = monthly_join_resign[0]['values']
         month_resign = monthly_join_resign[1]['values']
         sql = """
-        SELECT (date_trunc('month', CURRENT_DATE))::date - interval '1' 
+        SELECT (date_trunc('month', CURRENT_DATE))::date - interval '1'
         month * s.a AS month_start
         FROM generate_series(0,11,1) AS s(a);"""
         self._cr.execute(sql)
         month_start_list = self._cr.fetchall()
         for month_date in month_start_list:
-            self._cr.execute("""select count(id), 
+            self._cr.execute("""select count(id),
             to_char(date '%s', 'Month YYYY') as l_month from hr_employee
-            where resign_date> date '%s' or resign_date is null and 
+            where resign_date> date '%s' or resign_date is null and
             joining_date < date '%s'
             """ % (month_date[0], month_date[0], month_date[0],))
             month_emp = self._cr.fetchone()

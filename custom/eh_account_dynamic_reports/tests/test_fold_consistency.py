@@ -171,7 +171,7 @@ class TestFoldConsistency(EhAccountIntegrationTestCase):
         lines = payload['lines']
         parents = self._parents_with_children(lines)
         foldables = [
-            l for l in lines if l.get('unfoldable')
+            line_item for line_item in lines if line_item.get('unfoldable')
         ]
         for line in foldables:
             # Every foldable line here must be foldable for a REAL reason:
@@ -187,14 +187,14 @@ class TestFoldConsistency(EhAccountIntegrationTestCase):
         # none with children -> zero foldable lines.
         payload = self._render('cash_flow')
         self.assertFalse(
-            any(l.get('unfoldable') for l in payload['lines']),
+            any(line_item.get('unfoldable') for line_item in payload['lines']),
             "cash_flow must have no foldable rows (it is flat)",
         )
 
     def test_executive_summary_no_stray_carets(self):
         payload = self._render('executive_summary')
         self.assertFalse(
-            any(l.get('unfoldable') for l in payload['lines']),
+            any(line_item.get('unfoldable') for line_item in payload['lines']),
             "executive_summary must have no foldable rows (it is flat)",
         )
 
@@ -214,9 +214,9 @@ class TestFoldConsistency(EhAccountIntegrationTestCase):
             [('code', '=', 'partner_ledger')], limit=1)
         opts = dict(self.options, eager_expand=True)
         payload = report.render(opts, use_cache=False)
-        kinds = [(l.get('meta') or {}).get('kind') for l in payload['lines']]
+        kinds = [(line_item.get('meta') or {}).get('kind') for line_item in payload['lines']]
         self.assertIn('aml', kinds, "eager path must inline aml rows")
         header = next(
-            l for l in payload['lines']
-            if (l.get('meta') or {}).get('kind') == 'partner_header')
+            line_item for line_item in payload['lines']
+            if (line_item.get('meta') or {}).get('kind') == 'partner_header')
         self.assertFalse(header.get('unfoldable'))

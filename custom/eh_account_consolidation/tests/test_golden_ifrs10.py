@@ -197,20 +197,20 @@ class TestGoldenProportional(_GoldenConsolBase):
         )
         run = self._run()
         sub_lines = run.line_ids.filtered(
-            lambda l: l.kind == 'subsidiary_balance')
+            lambda line_item: line_item.kind == 'subsidiary_balance')
         self.assertEqual(len(sub_lines), 2)
         cash_line = sub_lines.filtered(
-            lambda l: l.account_id == self.account_cash)
+            lambda line_item: line_item.account_id == self.account_cash)
         revenue_line = sub_lines.filtered(
-            lambda l: l.account_id == self.account_revenue)
+            lambda line_item: line_item.account_id == self.account_revenue)
         self.assertAlmostEqual(cash_line.amount, 675.00, places=2)
         self.assertAlmostEqual(revenue_line.amount, -637.50, places=2)
         # NCI is blocked for proportional members: no NCI line whatsoever.
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.kind == 'nci'),
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'nci'),
             "the proportional method must never carve NCI")
         # The member-tagged CTA plug balances the scaled residual.
-        cta_lines = run.line_ids.filtered(lambda l: l.kind == 'cta')
+        cta_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'cta')
         self.assertEqual(len(cta_lines), 1)
         self.assertEqual(cta_lines.member_id, member)
         self.assertAlmostEqual(cta_lines.amount, -37.50, places=2)
@@ -267,14 +267,14 @@ class TestGoldenEquityMethod(_GoldenConsolBase):
         run = self._run()
         for _cycle in range(2):
             pickup = run.line_ids.filtered(
-                lambda l: l.kind == 'equity_pickup')
+                lambda line_item: line_item.kind == 'equity_pickup')
             self.assertEqual(
                 len(pickup), 2,
                 "exactly two pick-up legs per compute, never doubled")
             inv_leg = pickup.filtered(
-                lambda l: l.account_id == self.investment_account)
+                lambda line_item: line_item.account_id == self.investment_account)
             sop_leg = pickup.filtered(
-                lambda l: l.account_id == self.sop_account)
+                lambda line_item: line_item.account_id == self.sop_account)
             self.assertAlmostEqual(inv_leg.amount, 400.00, places=2)
             self.assertAlmostEqual(sop_leg.amount, -400.00, places=2)
             self.assertRunBalances(run)
@@ -313,9 +313,9 @@ class TestGoldenEquityMethod(_GoldenConsolBase):
         self._seed_profit(1000.0)
         run = self._run()
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.kind == 'equity_pickup'),
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'equity_pickup'),
             "no equity pick-up under the fair value option")
-        disclosure = run.line_ids.filtered(lambda l: l.kind == 'disclosure')
+        disclosure = run.line_ids.filtered(lambda line_item: line_item.kind == 'disclosure')
         self.assertEqual(len(disclosure), 1)
         self.assertEqual(disclosure.member_id, member)
         self.assertAlmostEqual(disclosure.amount, 0.00, places=2)
@@ -373,11 +373,11 @@ class TestGoldenInvestmentElimination(_GoldenConsolBase):
         self._seed_equity(600.0)
         run = self._run()
         equity_leg = run.line_ids.filtered(
-            lambda l: l.account_id == self.equity_elim_account)
+            lambda line_item: line_item.account_id == self.equity_elim_account)
         inv_leg = run.line_ids.filtered(
-            lambda l: l.account_id == self.investment_account)
+            lambda line_item: line_item.account_id == self.investment_account)
         gw_leg = run.line_ids.filtered(
-            lambda l: l.account_id == self.goodwill_account)
+            lambda line_item: line_item.account_id == self.goodwill_account)
         self.assertAlmostEqual(equity_leg.amount, 600.00, places=2)
         self.assertAlmostEqual(inv_leg.amount, -800.00, places=2)
         self.assertAlmostEqual(gw_leg.amount, 200.00, places=2)
@@ -395,7 +395,7 @@ class TestGoldenInvestmentElimination(_GoldenConsolBase):
         self._seed_equity(600.0)
         run = self._run()
         gw_leg = run.line_ids.filtered(
-            lambda l: l.account_id == self.goodwill_account)
+            lambda line_item: line_item.account_id == self.goodwill_account)
         self.assertAlmostEqual(gw_leg.amount, -100.00, places=2)
         self.assertEqual(gw_leg.kind, 'goodwill')
         self.assertRunBalances(run)
@@ -416,9 +416,9 @@ class TestGoldenInvestmentElimination(_GoldenConsolBase):
         self._seed_equity(600.0)
         run = self._run()
         equity_leg = run.line_ids.filtered(
-            lambda l: l.account_id == self.equity_elim_account)
+            lambda line_item: line_item.account_id == self.equity_elim_account)
         gw_leg = run.line_ids.filtered(
-            lambda l: l.account_id == self.goodwill_account)
+            lambda line_item: line_item.account_id == self.goodwill_account)
         self.assertAlmostEqual(equity_leg.amount, 300.00, places=2)
         self.assertAlmostEqual(gw_leg.amount, 500.00, places=2)
         self.assertRunBalances(run)
@@ -434,12 +434,12 @@ class TestGoldenInvestmentElimination(_GoldenConsolBase):
         run = self._run()
         self.assertFalse(
             run.line_ids.filtered(
-                lambda l: l.account_id in (
+                lambda line_item: line_item.account_id in (
                     self.investment_account | self.equity_elim_account
                     | self.goodwill_account)),
             "no elimination legs when the entity opts out")
         self.assertFalse(
-            run.line_ids.filtered(lambda l: l.kind == 'goodwill'))
+            run.line_ids.filtered(lambda line_item: line_item.kind == 'goodwill'))
         self.assertIn(
             'not eliminated', run.consolidation_warning or '')
 
@@ -502,10 +502,10 @@ class TestGoldenNciFairValue(_GoldenConsolBase):
         self._seed_equity_and_profit(1000.0, 50.0)
         run = self._run()
         gw_leg = run.line_ids.filtered(
-            lambda l: l.account_id == self.goodwill_account)
+            lambda line_item: line_item.account_id == self.goodwill_account)
         self.assertAlmostEqual(gw_leg.amount, 220.00, places=2)
         self.assertEqual(gw_leg.kind, 'goodwill')
-        nci_lines = run.line_ids.filtered(lambda l: l.kind == 'nci')
+        nci_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'nci')
         self.assertEqual(
             len(nci_lines), 2,
             "acquisition-date FV NCI plus the post-acquisition share")
@@ -530,13 +530,13 @@ class TestGoldenNciFairValue(_GoldenConsolBase):
         )
         self._seed_equity_and_profit(1000.0, 50.0)
         run = self._run()
-        nci_lines = run.line_ids.filtered(lambda l: l.kind == 'nci')
+        nci_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'nci')
         self.assertEqual(len(nci_lines), 1)
         self.assertAlmostEqual(nci_lines.amount, -230.00, places=2)
         self.assertAlmostEqual(run.nci_amount, -230.00, places=2)
         reclass = run.line_ids.filtered(
-            lambda l: l.kind == 'elimination'
-            and l.account_id == self.re_account)
+            lambda line_item: line_item.kind == 'elimination'
+            and line_item.account_id == self.re_account)
         self.assertAlmostEqual(reclass.amount, 230.00, places=2)
         self.assertRunBalances(run)
 
@@ -586,7 +586,7 @@ class TestGoldenCtaRecycle(_GoldenConsolBase):
         member = self._member(method='full', ownership_pct=100.0)
         self._seed_fx_gain_books()
         run = self._run()
-        cta_lines = run.line_ids.filtered(lambda l: l.kind == 'cta')
+        cta_lines = run.line_ids.filtered(lambda line_item: line_item.kind == 'cta')
         self.assertEqual(len(cta_lines), 1)
         self.assertEqual(cta_lines.member_id, member)
         self.assertAlmostEqual(cta_lines.amount, -4000.00, places=2)
@@ -594,12 +594,12 @@ class TestGoldenCtaRecycle(_GoldenConsolBase):
         #   Dr CTA reserve +4,000.00 / Cr FX recycling gain -4,000.00
         member.disposal_pct = 100.0
         member.action_dispose_member()
-        recycle = run.line_ids.filtered(lambda l: l.kind == 'cta_recycle')
+        recycle = run.line_ids.filtered(lambda line_item: line_item.kind == 'cta_recycle')
         self.assertEqual(len(recycle), 2)
         reserve_leg = recycle.filtered(
-            lambda l: l.account_id == self.cta_account)
+            lambda line_item: line_item.account_id == self.cta_account)
         gain_leg = recycle.filtered(
-            lambda l: l.account_id == self.fx_gain_account)
+            lambda line_item: line_item.account_id == self.fx_gain_account)
         self.assertAlmostEqual(reserve_leg.amount, 4000.00, places=2)
         self.assertAlmostEqual(gain_leg.amount, -4000.00, places=2)
         # Remaining member CTA is zero; a second disposal has nothing left.
@@ -617,11 +617,11 @@ class TestGoldenCtaRecycle(_GoldenConsolBase):
         # Partial disposal 25%: reclass = 25% x 4,000 = 1,000.00.
         member.disposal_pct = 25.0
         member.action_dispose_member()
-        recycle = run.line_ids.filtered(lambda l: l.kind == 'cta_recycle')
+        recycle = run.line_ids.filtered(lambda line_item: line_item.kind == 'cta_recycle')
         reserve_leg = recycle.filtered(
-            lambda l: l.account_id == self.cta_account)
+            lambda line_item: line_item.account_id == self.cta_account)
         gain_leg = recycle.filtered(
-            lambda l: l.account_id == self.fx_gain_account)
+            lambda line_item: line_item.account_id == self.fx_gain_account)
         self.assertAlmostEqual(reserve_leg.amount, 1000.00, places=2)
         self.assertAlmostEqual(gain_leg.amount, -1000.00, places=2)
         # Remaining balance drawn down to -3,000.00 (4,000 - 1,000 gain).
@@ -632,10 +632,10 @@ class TestGoldenCtaRecycle(_GoldenConsolBase):
         member.action_dispose_member()
         self.assertAlmostEqual(
             run._eh_member_cta_balance(member), 0.00, places=2)
-        recycle = run.line_ids.filtered(lambda l: l.kind == 'cta_recycle')
+        recycle = run.line_ids.filtered(lambda line_item: line_item.kind == 'cta_recycle')
         self.assertAlmostEqual(
             sum(recycle.filtered(
-                lambda l: l.account_id == self.fx_gain_account,
+                lambda line_item: line_item.account_id == self.fx_gain_account,
             ).mapped('amount')), -4000.00, places=2)
         self.assertRunBalances(run)
 

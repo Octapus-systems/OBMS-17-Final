@@ -359,7 +359,7 @@ class TestGoldenIas37Depth(EhGoldenTestCase):
             p.restructuring_excluded_total, 5000.00, places=2)
         self.assertFalse(
             p.restructuring_line_ids.filtered(
-                lambda l: l.cost_kind == 'retraining').in_scope)
+                lambda line_item: line_item.cost_kind == 'retraining').in_scope)
         with self.assertRaises(UserError):
             p.action_recognise()
         self.assertFalse(p.move_ids)

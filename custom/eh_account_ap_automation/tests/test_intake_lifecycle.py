@@ -48,7 +48,7 @@ class TestIntakeLifecycle(EhApTestCase):
         self.assertEqual(intake.vendor_reference, 'INV-2026-00042')
         self.assertAlmostEqual(intake.extracted_total, 250.0, places=2)
         self.assertEqual(len(intake.line_ids), 2)
-        line_a = intake.line_ids.filtered(lambda l: l.product_code == 'WIDGET-001')
+        line_a = intake.line_ids.filtered(lambda line_item: line_item.product_code == 'WIDGET-001')
         self.assertTrue(line_a)
         self.assertEqual(line_a.invoice_qty, 10.0)
         self.assertEqual(line_a.invoice_price, 12.5)

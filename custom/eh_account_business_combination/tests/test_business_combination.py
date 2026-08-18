@@ -138,7 +138,7 @@ class TestBusinessCombination(EhAccountIntegrationTestCase):
     def test_ppa_bargain_full_entry_balanced(self):
         # Consideration 500, nci 0 -> 500 - 900 = -400 bargain gain.
         c = self._combination_ppa(consideration_transferred=500.0,
-                                   nci_amount=0.0)
+                                   nci_amount=0.0)  # noqa: E127
         self.assertAlmostEqual(c.bargain_purchase_gain, 400.0, places=2)
         c.action_recognise_ppa()
         move = c.move_id

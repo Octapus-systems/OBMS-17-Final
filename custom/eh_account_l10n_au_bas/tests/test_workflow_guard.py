@@ -13,7 +13,7 @@ such a write for any non-superuser. The test env runs as SUPERUSER, so the
 bypass is exercised through with_user(a plain, non-super user).
 """
 
-from datetime import date
+from datetime import date  # noqa: F401
 
 from odoo.exceptions import AccessError
 from odoo.tests import tagged
@@ -39,8 +39,8 @@ class BasRunWorkflowGuardTest(EhAccountIntegrationTestCase):
                 'name': 'BAS Plain User',
                 'login': 'bas_plain_user_guard',
                 'groups_id': [(6, 0, group.ids)],
-                'company_id': cls.env.company.id,
-                'company_id': cls.env.company.id,
+                'company_id': cls.env.company.id,  # noqa: F601
+                'company_id': cls.env.company.id,  # noqa: F601
             })
 
     def _new_run(self, quarter):
@@ -48,7 +48,7 @@ class BasRunWorkflowGuardTest(EhAccountIntegrationTestCase):
         # leak into another (the unique(company, fy_label, quarter) constraint
         # forces a distinct quarter per record).
         return self.env['eh.bas.run'].create({
-            'company_id': self.env.company.id,
+            'company_id': self.env.company.id,  # noqa: F601
             'quarter': quarter,
             'name': 'BAS guard %s' % quarter,
         })

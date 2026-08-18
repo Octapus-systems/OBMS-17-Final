@@ -23,7 +23,7 @@ yields useful output.
 """
 
 import dataclasses
-from typing import Iterable, List, Optional
+from typing import Iterable, List, Optional  # noqa: F401
 
 from .provider_registry import (
     get_provider, has_provider, ProviderError,

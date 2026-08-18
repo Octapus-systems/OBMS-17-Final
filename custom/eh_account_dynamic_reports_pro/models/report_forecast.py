@@ -24,11 +24,11 @@ optimistic vs pessimistic side by side) are deferred to v1.1; the model
 fields are placeholders ready for that work.
 """
 
-import json
+import json  # noqa: F401
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 from odoo.exceptions import UserError
 
 

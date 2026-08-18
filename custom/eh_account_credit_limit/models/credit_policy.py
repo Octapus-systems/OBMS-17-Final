@@ -112,7 +112,7 @@ class EhCreditPolicy(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('check_default_limit_non_negative', 'CHECK (default_credit_limit >= 0)', 'Default credit limit cannot be negative.'),
+        ('check_default_limit_non_negative', 'CHECK (default_credit_limit >= 0)', 'Default credit limit cannot be negative.'),  # noqa: E501
     ]
 
     @api.constrains('is_company_default', 'company_id', 'active')

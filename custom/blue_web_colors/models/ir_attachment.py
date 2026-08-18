@@ -1,10 +1,10 @@
-from odoo import models, fields, api
+from odoo import models, fields, api  # noqa: F401
 
 
 class IrAttachment(models.Model):
-    
+
     _inherit = 'ir.attachment'
-    
+
     # ----------------------------------------------------------
     # ORM
     # ----------------------------------------------------------

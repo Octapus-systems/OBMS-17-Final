@@ -47,7 +47,7 @@ class TestSuspenseConfigImmutable(EhReconcileIntegrationTestCase):
             {'account': self.account_revenue, 'credit': amount},
         ])
         line = move.line_ids.filtered(
-            lambda l: l.account_id == self.suspense_account)
+            lambda line_item: line_item.account_id == self.suspense_account)
         # Sanity: a reconcilable account carries a nonzero residual.
         self.assertTrue(line)
         self.assertFalse(line.reconciled)

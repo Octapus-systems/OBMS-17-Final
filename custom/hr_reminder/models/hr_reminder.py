@@ -37,8 +37,8 @@ class HrReminder(models.Model):
     field_id = fields.Many2one('ir.model.fields', string='Field',
                                help="Choose the field",
                                domain="[('model_id', '=',model_id),"
-                                      "('ttype', 'in', ['datetime','date'])]"
-                               , required=True, ondelete='cascade')
+                                      "('ttype', 'in', ['datetime','date'])]",
+                               required=True, ondelete='cascade')
     search_by = fields.Selection([('today', 'Today'),
                                   ('set_period', 'Set Period'),
                                   ('set_date', 'Set Date'), ],

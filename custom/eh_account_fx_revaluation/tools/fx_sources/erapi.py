@@ -23,7 +23,7 @@ overrides ``fetch`` rather than ``_fetch_native``, and never calls
 ``cross_derive``.
 """
 
-from decimal import Decimal
+from decimal import Decimal  # noqa: F401
 
 from ..rate_providers import (
     BaseHttpProvider,

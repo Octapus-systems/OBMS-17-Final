@@ -127,9 +127,9 @@ class EhAccountSetupTask(models.Model):
     def _compute_line_counts(self):
         for task in self:
             lines = task.line_ids
-            done = len(lines.filtered(lambda l: l.state == 'done'))
-            todo = len(lines.filtered(lambda l: l.state == 'todo'))
-            skipped = len(lines.filtered(lambda l: l.state == 'skipped'))
+            done = len(lines.filtered(lambda line_item: line_item.state == 'done'))
+            todo = len(lines.filtered(lambda line_item: line_item.state == 'todo'))
+            skipped = len(lines.filtered(lambda line_item: line_item.state == 'skipped'))
             task.line_count = len(lines)
             task.line_done_count = done
             task.line_todo_count = todo

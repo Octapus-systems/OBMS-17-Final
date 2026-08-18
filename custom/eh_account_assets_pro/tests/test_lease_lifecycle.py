@@ -93,7 +93,7 @@ class TestLeaseLifecycle(EhAssetTestCase):
         )
         lease.action_activate()
         lease.action_post_due_lines()
-        posted = lease.schedule_line_ids.filtered(lambda l: l.is_posted)
+        posted = lease.schedule_line_ids.filtered(lambda line_item: line_item.is_posted)
         self.assertGreater(len(posted), 0)
         for line in posted:
             self.assertTrue(line.move_id)
@@ -219,7 +219,7 @@ class TestLeaseLifecycle(EhAssetTestCase):
         )
         lease.action_activate()
         lease.action_post_due_lines()
-        posted = lease.schedule_line_ids.filtered(lambda l: l.is_posted)
+        posted = lease.schedule_line_ids.filtered(lambda line_item: line_item.is_posted)
         self.assertGreater(len(posted), 0)
         for line in posted:
             move = line.move_id

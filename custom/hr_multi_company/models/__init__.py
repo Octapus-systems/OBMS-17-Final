@@ -20,7 +20,7 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_attendance
-from . import hr_leave
-from . import hr_payslip_run
-from . import hr_salary_rule_category
+from . import hr_attendance  # noqa: F401
+from . import hr_leave  # noqa: F401
+from . import hr_payslip_run  # noqa: F401
+from . import hr_salary_rule_category  # noqa: F401

@@ -214,7 +214,7 @@ class TestExecutiveSummaryHandler(EhAccountIntegrationTestCase):
         self.assertIn('lines', payload)
         self.assertIn('columns', payload)
         self.assertTrue(any(
-            l['id'] == 'exec-revenue' for l in payload['lines']))
+            line_item['id'] == 'exec-revenue' for line_item in payload['lines']))
 
     # ---- drilldown ----
 

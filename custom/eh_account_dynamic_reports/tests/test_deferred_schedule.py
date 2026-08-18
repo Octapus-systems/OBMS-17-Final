@@ -25,7 +25,7 @@ into two groups:
 
 from datetime import date
 
-from odoo import fields
+from odoo import fields  # noqa: F401
 from odoo.tests import tagged
 
 from odoo.addons.eh_account_base.tests.common import (
@@ -237,7 +237,7 @@ class TestDeferredScheduleHandler(EhAccountIntegrationTestCase):
         rev_asset = self._make_deferred('deferred_revenue')
         exp_asset = self._make_deferred('deferred_expense')
         exp_result = self.exp_handler.compute(self.options)
-        ids = {l['id'] for l in exp_result['lines']}
+        ids = {line_item['id'] for line_item in exp_result['lines']}
         self.assertIn('asset-%s' % exp_asset.id, ids)
         self.assertNotIn('asset-%s' % rev_asset.id, ids)
 
@@ -247,4 +247,4 @@ class TestDeferredScheduleHandler(EhAccountIntegrationTestCase):
         # No deferrals created in this test -> empty line list, no raise.
         result = self.rev_handler.compute(self.options)
         self.assertEqual(
-            [l for l in result['lines'] if l['id'].startswith('asset-')], [])
+            [line_item for line_item in result['lines'] if line_item['id'].startswith('asset-')], [])

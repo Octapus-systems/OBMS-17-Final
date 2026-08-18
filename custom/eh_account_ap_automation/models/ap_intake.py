@@ -262,10 +262,10 @@ class EhApIntake(models.Model):
         for intake in self:
             intake.line_count = len(intake.line_ids)
             intake.ok_count = len(intake.line_ids.filtered(
-                lambda l: l.match_status in ('ok', 'overridden'),
+                lambda line_item: line_item.match_status in ('ok', 'overridden'),
             ))
             intake.exception_count = len(intake.line_ids.filtered(
-                lambda l: l.match_status in (
+                lambda line_item: line_item.match_status in (
                     'qty_exception', 'price_exception',
                     'no_match', 'over_received',
                 ),

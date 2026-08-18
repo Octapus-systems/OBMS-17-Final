@@ -114,7 +114,7 @@ class TestProfitAndLossHandler(EhAccountIntegrationTestCase):
               'partner': self.partner_a}],
             date=fields.Date.from_string('2026-06-20'))
         ar_lines = (inv.line_ids + pay.line_ids).filtered(
-            lambda l: l.account_id == self.account_receivable)
+            lambda line_item: line_item.account_id == self.account_receivable)
         ar_lines.reconcile()
 
         # Accrual: full 1000 recognised.
@@ -268,8 +268,8 @@ class TestProfitAndLossHandler(EhAccountIntegrationTestCase):
         ])
         result = self.handler.compute(self.options)
         income_total = next(
-            self._amount(l) for l in result['lines']
-            if l['id'] == 'section-income-total'
+            self._amount(line_item) for line_item in result['lines']
+            if line_item['id'] == 'section-income-total'
         )
         self.assertAlmostEqual(income_total, 1000.0, places=2)
 
@@ -283,10 +283,10 @@ class TestProfitAndLossHandler(EhAccountIntegrationTestCase):
         result = self.handler.compute(self.options)
         # Expense account untouched: should not appear as a sub line.
         sub_account_lines = [
-            l for l in result['lines']
-            if (l.get('meta') or {}).get('account_code')
+            line_item for line_item in result['lines']
+            if (line_item.get('meta') or {}).get('account_code')
         ]
-        codes = {l['meta']['account_code'] for l in sub_account_lines}
+        codes = {line_item['meta']['account_code'] for line_item in sub_account_lines}
         self.assertNotIn('5000', codes)
 
     def test_account_filter(self):
@@ -519,7 +519,7 @@ class TestProfitAndLossHorizontal(EhAccountIntegrationTestCase):
         result = self.handler.compute(options)
         col_keys = [c['expression_label'] for c in result['columns']]
         self.assertEqual(col_keys, ['account', 'group_1', 'group_2', 'total'])
-        net = next(l for l in result['lines'] if l['id'] == 'net_profit')
+        net = next(line_item for line_item in result['lines'] if line_item['id'] == 'net_profit')
         cols = {c['expression_label']: c['value'] for c in net['columns']}
         self.assertAlmostEqual(cols['group_1'], 1000.0, places=2)
         self.assertAlmostEqual(cols['group_2'], 600.0, places=2)
@@ -614,8 +614,8 @@ class TestProfitAndLossByFunction(EhAccountIntegrationTestCase):
         self._seed_full_pnl()
         result = self.handler.compute(self.options)
         headers = [
-            l['name'] for l in result['lines']
-            if (l.get('meta') or {}).get('kind') == 'section_header']
+            line_item['name'] for line_item in result['lines']
+            if (line_item.get('meta') or {}).get('kind') == 'section_header']
         self.assertEqual(set(headers), {'Income', 'Expenses'})
         self.assertIsNone(self._line_by_id(result, 'gross_profit'))
         # Net Profit = 1000 - (300 + 200 + 50) = 450.
@@ -751,7 +751,7 @@ class TestProfitAndLossByFunction(EhAccountIntegrationTestCase):
 
         # The 'account-<id>' line for the shared account appears exactly once.
         leaf_id = 'account-%d' % self.account_interest.id
-        leaf_count = sum(1 for l in result['lines'] if l['id'] == leaf_id)
+        leaf_count = sum(1 for line_item in result['lines'] if line_item['id'] == leaf_id)
         self.assertEqual(leaf_count, 1)
 
         # Ties to the by-nature Net Profit exactly.
@@ -826,7 +826,7 @@ class TestProfitAndLossByFunction(EhAccountIntegrationTestCase):
         for acc in (self.account_current_tax, self.account_deferred_tax):
             leaf_id = 'account-%d' % acc.id
             self.assertEqual(
-                sum(1 for l in result['lines'] if l['id'] == leaf_id), 1)
+                sum(1 for line_item in result['lines'] if line_item['id'] == leaf_id), 1)
 
         # Profit for the Period still ties to the by-nature Net Profit:
         # 1000 - 300 - 200 - 80 - 20 = 400.
@@ -912,10 +912,10 @@ class TestProfitAndLossVarianceSemantics(EhAccountIntegrationTestCase):
             date=fields.Date.from_string('2026-06-15'))
         result = self.handler.compute(self._base_options())
         income_total = next(
-            l for l in result['lines'] if l['id'] == 'section-income-total')
+            line_item for line_item in result['lines'] if line_item['id'] == 'section-income-total')
         expense_total = next(
-            l for l in result['lines'] if l['id'] == 'section-expenses-total')
-        net = next(l for l in result['lines'] if l['id'] == 'net_profit')
+            line_item for line_item in result['lines'] if line_item['id'] == 'section-expenses-total')
+        net = next(line_item for line_item in result['lines'] if line_item['id'] == 'net_profit')
         # Income rows: a rise is favourable.
         self.assertIs(
             income_total['meta'].get('higher_is_better'), True,
@@ -928,9 +928,9 @@ class TestProfitAndLossVarianceSemantics(EhAccountIntegrationTestCase):
         self.assertIs(net['meta'].get('higher_is_better'), True)
         # Account leaves inherit their section's directionality.
         income_accounts = [
-            l for l in result['lines']
-            if (l.get('meta') or {}).get('account_code')
-            and l['meta'].get('higher_is_better') is True]
+            line_item for line_item in result['lines']
+            if (line_item.get('meta') or {}).get('account_code')
+            and line_item['meta'].get('higher_is_better') is True]
         self.assertTrue(
             income_accounts,
             "income account leaves must carry higher_is_better=True")

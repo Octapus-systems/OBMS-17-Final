@@ -295,10 +295,10 @@ class TestHedgeMovements(EhAccountIntegrationTestCase):
         self.assertTrue(mvt.move_id)
         # Verify the OCI leg was credited 900 and the P&L leg credited 100.
         oci_lines = mvt.move_id.line_ids.filtered(
-            lambda l: l.account_id == self.oci,
+            lambda line_item: line_item.account_id == self.oci,
         )
         pl_lines = mvt.move_id.line_ids.filtered(
-            lambda l: l.account_id == self.pl,
+            lambda line_item: line_item.account_id == self.pl,
         )
         self.assertAlmostEqual(sum(oci_lines.mapped('credit')), 900.0, places=2)
         self.assertAlmostEqual(sum(pl_lines.mapped('credit')), 100.0, places=2)
@@ -313,13 +313,13 @@ class TestHedgeMovements(EhAccountIntegrationTestCase):
         })
         mvt.action_post()
         oci_lines = mvt.move_id.line_ids.filtered(
-            lambda l: l.account_id == self.oci,
+            lambda line_item: line_item.account_id == self.oci,
         )
         hedged_lines = mvt.move_id.line_ids.filtered(
-            lambda l: l.account_id == self.hedged_item,
+            lambda line_item: line_item.account_id == self.hedged_item,
         )
         pl_lines = mvt.move_id.line_ids.filtered(
-            lambda l: l.account_id == self.pl,
+            lambda line_item: line_item.account_id == self.pl,
         )
         # FVH never touches OCI.
         self.assertFalse(oci_lines)
@@ -353,10 +353,10 @@ class TestHedgeMovements(EhAccountIntegrationTestCase):
         # Reclass entry: Dr OCI 900, Cr P&L 900.
         recl = mvt.reclassification_move_id
         oci_lines = recl.line_ids.filtered(
-            lambda l: l.account_id == self.oci,
+            lambda line_item: line_item.account_id == self.oci,
         )
         pl_lines = recl.line_ids.filtered(
-            lambda l: l.account_id == self.pl,
+            lambda line_item: line_item.account_id == self.pl,
         )
         self.assertAlmostEqual(sum(oci_lines.mapped('debit')), 900.0, places=2)
         self.assertAlmostEqual(sum(pl_lines.mapped('credit')), 900.0, places=2)
@@ -391,7 +391,7 @@ class TestHedgeMovements(EhAccountIntegrationTestCase):
         self.assertEqual(mvt.state, 'posted')
         # Full 1000 in P&L, nothing deferred to OCI.
         pl_lines = mvt.move_id.line_ids.filtered(
-            lambda l: l.account_id == self.pl,
+            lambda line_item: line_item.account_id == self.pl,
         )
         self.assertAlmostEqual(sum(pl_lines.mapped('credit')), 1000.0, places=2)
 

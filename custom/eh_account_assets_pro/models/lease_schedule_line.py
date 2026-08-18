@@ -27,7 +27,7 @@ Storing all legs on one move keeps the period view tight and reconciles
 the lease liability (or net investment) cleanly.
 """
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 from odoo.exceptions import UserError
 
 

@@ -18,7 +18,7 @@ Compute fields read from the live ledger via a single SQL pass per case
 batch, so a screen of 200 cases refreshes its totals in one query.
 """
 
-from collections import defaultdict
+from collections import defaultdict  # noqa: F401
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -235,7 +235,7 @@ class EhCollectionsCase(models.Model):
     )
 
     _sql_constraints = [
-        ('open_case_per_partner_company', 'EXCLUDE (partner_id WITH =, company_id WITH =)\n               WHERE (NOT is_resolved)', 'Only one open case per partner per company.'),
+        ('open_case_per_partner_company', 'EXCLUDE (partner_id WITH =, company_id WITH =)\n               WHERE (NOT is_resolved)', 'Only one open case per partner per company.'),  # noqa: E501
     ]
 
     # ---- defaults / lifecycle ----
@@ -829,7 +829,7 @@ class EhCollectionsCase(models.Model):
             ],
             limit=batch_size,
         )
-        def _send(case):
+        def _send(case):  # noqa: E306
             level = case._next_followup_level()
             if not level:
                 return
@@ -1005,7 +1005,7 @@ class EhCollectionsCase(models.Model):
         if not cases:
             return
         today = fields.Date.context_today(self)
-        partner_ids = list({c.partner_id.id for c in cases})
+        partner_ids = list({c.partner_id.id for c in cases})  # noqa: F841
         company_ids = list({c.company_id.id for c in cases})
         rows = self._fetch_overdue_aggregation(company_ids, today)
         by_key = {

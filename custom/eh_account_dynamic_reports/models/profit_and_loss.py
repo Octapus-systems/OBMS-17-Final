@@ -36,7 +36,6 @@ from odoo import _, api, fields, models
 from odoo.tools.translate import _lt
 
 
-
 class EhProfitAndLossHandler(models.AbstractModel):
     _name = 'eh.account.dynamic.report.handler.profit_and_loss'
     _inherit = 'eh.account.dynamic.report.handler.sectioned'

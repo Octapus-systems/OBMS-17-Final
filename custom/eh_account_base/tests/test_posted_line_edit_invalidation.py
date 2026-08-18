@@ -42,7 +42,7 @@ class TestPostedLineEditInvalidation(EhAccountIntegrationTestCase):
 
         # Re-point the credit line to a different account. This is a
         # balance-preserving, financially-material edit on a posted move.
-        credit_line = move.line_ids.filtered(lambda l: l.credit > 0)
+        credit_line = move.line_ids.filtered(lambda line_item: line_item.credit > 0)
         credit_line.write({'account_id': self.account_equity.id})
 
         self.assertGreater(
@@ -92,7 +92,7 @@ class TestPostedLineEditInvalidation(EhAccountIntegrationTestCase):
         company_recs.invalidate_recordset(['eh_move_version'])
         key_before = sum(company_recs.mapped('eh_move_version'))
 
-        credit_line = move.line_ids.filtered(lambda l: l.credit > 0)
+        credit_line = move.line_ids.filtered(lambda line_item: line_item.credit > 0)
         credit_line.write({'account_id': self.account_equity.id})
 
         company_recs.invalidate_recordset(['eh_move_version'])
@@ -217,8 +217,8 @@ class TestPostedLineEditInvalidation(EhAccountIntegrationTestCase):
 
         # Draft moves allow line_ids edits; change both legs so the entry
         # stays balanced (30 == 30). The move is draft, so no bump.
-        credit_line = move.line_ids.filtered(lambda l: l.credit > 0)
-        debit_line = move.line_ids.filtered(lambda l: l.debit > 0)
+        credit_line = move.line_ids.filtered(lambda line_item: line_item.credit > 0)
+        debit_line = move.line_ids.filtered(lambda line_item: line_item.debit > 0)
         move.write({'line_ids': [
             (1, credit_line.id, {'credit': 30.0}),
             (1, debit_line.id, {'debit': 30.0}),

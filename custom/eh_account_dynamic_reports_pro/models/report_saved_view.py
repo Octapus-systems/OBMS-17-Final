@@ -85,7 +85,7 @@ class EhReportSavedView(models.Model):
     use_count = fields.Integer(default=0, readonly=True)
 
     _sql_constraints = [
-        ('unique_user_report_name', 'unique(user_id, report_id, name)', 'Saved view names must be unique per user and per report.'),
+        ('unique_user_report_name', 'unique(user_id, report_id, name)', 'Saved view names must be unique per user and per report.'),  # noqa: E501
     ]
 
     # ---- public api ----

@@ -19,7 +19,7 @@ vaults would become unrecoverable.
 
 import base64
 import os
-import stat
+import stat  # noqa: F401
 import tempfile
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM

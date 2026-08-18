@@ -20,5 +20,5 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_payslips_employees
-from . import payslip_lines_contribution_register
+from . import hr_payslips_employees  # noqa: F401
+from . import payslip_lines_contribution_register  # noqa: F401

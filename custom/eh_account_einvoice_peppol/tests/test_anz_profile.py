@@ -6,7 +6,7 @@
 A-NZ PEPPOL profile tests.
 """
 
-import unittest
+import unittest  # noqa: F401
 
 from odoo.tests import TransactionCase, tagged
 

@@ -151,7 +151,7 @@ class EhAssetImpairment(models.Model):
     posted_by_id = fields.Many2one('res.users', readonly=True)
 
     _sql_constraints = [
-        ('check_amount_positive', 'CHECK (amount > 0)', 'Impairment amount must be positive (sign is implied by is_reversal).'),
+        ('check_amount_positive', 'CHECK (amount > 0)', 'Impairment amount must be positive (sign is implied by is_reversal).'),  # noqa: E501
     ]
 
     @api.constrains('amount', 'is_reversal', 'asset_id')
@@ -208,7 +208,7 @@ class EhAssetImpairment(models.Model):
             asset = rec.asset_id
             posted_dep = sum(
                 asset.depreciation_line_ids
-                .filtered(lambda l: l.is_posted)
+                .filtered(lambda line_item: line_item.is_posted)
                 .mapped('amount'),
             )
             nbv_before_reversal = (

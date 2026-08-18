@@ -28,9 +28,9 @@
     'description': """OH Addon: Manages Employee Related Documents with Expiry
      Notifications. As such dates approach, the system is programmed to send
      automated alerts to relevant employees.These timely notifications are
-     essential for ensuring that necessary actions can be taken to update 
+     essential for ensuring that necessary actions can be taken to update
      or renew documents before they lapse, thereby avoiding potential legal,
-     regulatory, or operational complications that may arise from expired 
+     regulatory, or operational complications that may arise from expired
      documentation.""",
     'live_test_url': 'https://youtu.be/4fe5tzAG8Ng',
     'author': 'Cybrosys Techno solutions,Open HRMS',

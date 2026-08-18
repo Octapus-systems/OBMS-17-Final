@@ -45,7 +45,7 @@ class TestEvents(EhAccountIntegrationTestCase):
                         'adjustment': -1500.0}),
             ],
         })
-        inv = c.line_ids.filtered(lambda l: l.name == 'Inventory')
+        inv = c.line_ids.filtered(lambda line_item: line_item.name == 'Inventory')
         self.assertAlmostEqual(inv.as_restated, 8500.0, places=2)
         self.assertAlmostEqual(c.retained_earnings_impact, -3000.0, places=2)
 
@@ -89,7 +89,7 @@ class TestEvents(EhAccountIntegrationTestCase):
             sum(move.line_ids.mapped('debit')),
             sum(move.line_ids.mapped('credit')), places=2)
         re_line = move.line_ids.filtered(
-            lambda l: l.account_id == self.account_equity)
+            lambda line_item: line_item.account_id == self.account_equity)
         self.assertAlmostEqual(re_line.debit, 1500.0, places=2)
         # Posting again raises.
         with self.assertRaises(UserError):
@@ -281,11 +281,11 @@ class TestEvents(EhAccountIntegrationTestCase):
         # One leg per affected account, plus the opening-RE leg = 3 lines.
         self.assertEqual(len(move.line_ids), 3)
         inv_leg = move.line_ids.filtered(
-            lambda l: l.account_id == inv_acct)
+            lambda line_item: line_item.account_id == inv_acct)
         rec_leg = move.line_ids.filtered(
-            lambda l: l.account_id == self.account_receivable)
+            lambda line_item: line_item.account_id == self.account_receivable)
         re_leg = move.line_ids.filtered(
-            lambda l: l.account_id == self.account_equity)
+            lambda line_item: line_item.account_id == self.account_equity)
         # Negative adjustments credit the affected assets.
         self.assertAlmostEqual(inv_leg.credit, 1500.0, places=2)
         self.assertAlmostEqual(rec_leg.credit, 900.0, places=2)
@@ -397,7 +397,7 @@ class TestEvents(EhAccountIntegrationTestCase):
             sum(move.line_ids.mapped('debit')),
             sum(move.line_ids.mapped('credit')), places=2)
         debit_leg = move.line_ids.filtered(
-            lambda l: l.account_id == self.account_expense)
+            lambda line_item: line_item.account_id == self.account_expense)
         self.assertAlmostEqual(debit_leg.debit, 50000.0, places=2)
         # Booking again raises.
         with self.assertRaises(UserError):

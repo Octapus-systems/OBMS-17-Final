@@ -283,8 +283,8 @@ class TestFxRevaluation(EhAccountIntegrationTestCase):
             'name': 'FX Plain User',
             'login': 'fx_plain_user',
             'email': 'fx_plain_user@example.com',
-            'company_id': self.company.id,
-            'company_id': self.company.id,
+            'company_id': self.company.id,  # noqa: F601
+            'company_id': self.company.id,  # noqa: F601
             'groups_id': [(6, 0, group_user.ids)],
         })
         self.assertFalse(
@@ -413,13 +413,13 @@ class TestFxRevaluation(EhAccountIntegrationTestCase):
         credit = sum(move.line_ids.mapped('credit'))
         self.assertAlmostEqual(debit, credit)
         receivable_leg = move.line_ids.filtered(
-            lambda l: l.account_id == self.account_receivable,
+            lambda line_item: line_item.account_id == self.account_receivable,
         )
         self.assertEqual(len(receivable_leg), 1)
         self.assertGreater(receivable_leg.debit, 0)
         self.assertEqual(receivable_leg.credit, 0)
         gain_leg = move.line_ids.filtered(
-            lambda l: l.account_id == self.gain_account,
+            lambda line_item: line_item.account_id == self.gain_account,
         )
         self.assertEqual(len(gain_leg), 1)
         self.assertGreater(gain_leg.credit, 0)
@@ -452,13 +452,13 @@ class TestFxRevaluation(EhAccountIntegrationTestCase):
         credit = sum(move.line_ids.mapped('credit'))
         self.assertAlmostEqual(debit, credit)
         payable_leg = move.line_ids.filtered(
-            lambda l: l.account_id == self.account_payable,
+            lambda line_item: line_item.account_id == self.account_payable,
         )
         self.assertEqual(len(payable_leg), 1)
         self.assertGreater(payable_leg.credit, 0)
         self.assertEqual(payable_leg.debit, 0)
         loss_leg = move.line_ids.filtered(
-            lambda l: l.account_id == self.loss_account,
+            lambda line_item: line_item.account_id == self.loss_account,
         )
         self.assertEqual(len(loss_leg), 1)
         self.assertGreater(loss_leg.debit, 0)
@@ -491,7 +491,7 @@ class TestFxRevaluation(EhAccountIntegrationTestCase):
     def test_residual_at_date_ignores_later_settlement(self):
         inv = self._post_eur_invoice_balance(1000.0, 1000.0)
         ar_line = inv.line_ids.filtered(
-            lambda l: l.account_id == self.account_receivable)
+            lambda line_item: line_item.account_id == self.account_receivable)
         # A partial settlement dated AFTER the revaluation date.
         pay = self.env['account.move'].create({
             'move_type': 'entry', 'date': '2026-05-10',
@@ -510,7 +510,7 @@ class TestFxRevaluation(EhAccountIntegrationTestCase):
         })
         pay.action_post()
         pay_ar = pay.line_ids.filtered(
-            lambda l: l.account_id == self.account_receivable)
+            lambda line_item: line_item.account_id == self.account_receivable)
         (ar_line + pay_ar).reconcile()
         run = self.env['eh.fx.revaluation.run'].create({
             'revaluation_date': '2026-03-31',

@@ -221,7 +221,7 @@ class EhAssetBook(models.Model):
         rebuilds from the current parameters.
         """
         for book in self:
-            posted = book.line_ids.filtered(lambda l: l.is_posted)
+            posted = book.line_ids.filtered(lambda line_item: line_item.is_posted)
             if posted:
                 raise UserError(_(
                     "Book %(book)s has %(n)d posted line(s); recompute "

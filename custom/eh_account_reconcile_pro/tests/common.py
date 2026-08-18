@@ -84,5 +84,5 @@ class EhReconcileIntegrationTestCase(EhAccountIntegrationTestCase):
         if ref:
             move.ref = ref
         return move.line_ids.filtered(
-            lambda l: l.account_id == cls.account_receivable
+            lambda line_item: line_item.account_id == cls.account_receivable
         )

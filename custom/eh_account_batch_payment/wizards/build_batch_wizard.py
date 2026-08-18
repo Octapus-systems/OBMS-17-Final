@@ -20,7 +20,7 @@ documentation lives on the resulting payment record.
 
 from collections import defaultdict
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 from odoo.exceptions import UserError
 
 
@@ -110,7 +110,7 @@ class EhBatchPaymentBuildWizard(models.TransientModel):
         # -> batch. Both directions (debit and credit) checked because
         # eh_batch_payment_id lives on account.payment, not on
         # account.move. The previous chain crashed with AttributeError.
-        def _has_existing_batch(move):
+        def _has_existing_batch(move):  # noqa: E306
             for line in move.line_ids:
                 for partial in (line.matched_debit_ids
                                 + line.matched_credit_ids):
@@ -128,7 +128,7 @@ class EhBatchPaymentBuildWizard(models.TransientModel):
         if self.aggregate_per_partner:
             payments = self._build_aggregated_payments()
         else:
-            payments = self._build_per_invoice_payments()
+            payments = self._build_per_invoice_payments()  # noqa: F841
         if already_batched:
             self.batch_id.message_post(body=_(
                 "%d source document(s) were already partially settled "

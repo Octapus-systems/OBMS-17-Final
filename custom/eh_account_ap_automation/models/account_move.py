@@ -22,7 +22,7 @@ The status is queryable for the journal dashboard (count of bills awaiting
 release, on hold, or in exception).
 """
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 
 
 class AccountMove(models.Model):

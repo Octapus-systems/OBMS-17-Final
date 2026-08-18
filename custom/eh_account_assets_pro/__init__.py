@@ -1,3 +1,3 @@
 # -*- encoding: utf-8 -*-
-from . import models
-from . import wizards
+from . import models  # noqa: F401
+from . import wizards  # noqa: F401

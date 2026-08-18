@@ -34,7 +34,7 @@ Out of scope (queued for follow-ups):
 from datetime import date
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError  # noqa: F401
 
 
 _FIRST_YEAR_RATE = 18.75
@@ -323,7 +323,7 @@ class EhAssetLvpPool(models.Model):
         """
         self.ensure_one()
         year = year or fields.Date.context_today(self).year
-        existing = self.line_ids.filtered(lambda l: l.year == year)
+        existing = self.line_ids.filtered(lambda line_item: line_item.year == year)
         if existing:
             raise UserError(_(
                 "A line already exists for pool %(pool)s in year "
@@ -332,7 +332,7 @@ class EhAssetLvpPool(models.Model):
             ))
         # Opening balance = transferred-in lifetime - depreciation
         # already booked in prior years.
-        prior_lines = self.line_ids.filtered(lambda l: l.year < year)
+        prior_lines = self.line_ids.filtered(lambda line_item: line_item.year < year)
         prior_dep = sum(prior_lines.mapped('amount'))
         # Classify each asset by the year it was ALLOCATED into the pool
         # (its transfer date), not its in-service year: the ATO first-year

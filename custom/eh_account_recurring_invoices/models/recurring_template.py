@@ -429,7 +429,7 @@ class EhRecurringInvoiceTemplate(models.Model):
         self.ensure_one()
         invoice_date = self.next_run_date or fields.Date.context_today(self)
         line_vals = []
-        for line in self.line_ids.sorted(lambda l: l.sequence):
+        for line in self.line_ids.sorted(lambda line_item: line_item.sequence):
             line_dict = {
                 'name': line.name,
                 'quantity': line.quantity or 1.0,

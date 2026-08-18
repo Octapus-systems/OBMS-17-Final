@@ -74,12 +74,12 @@ class TestHierarchicalGroups(EhAccountIntegrationTestCase):
         )
 
     def _line_ids(self, result):
-        return [l['id'] for l in result['lines']]
+        return [line_item['id'] for line_item in result['lines']]
 
     def _line_by_id(self, result, line_id):
-        for l in result['lines']:
-            if l['id'] == line_id:
-                return l
+        for line_item in result['lines']:
+            if line_item['id'] == line_id:
+                return line_item
         return None
 
     def test_group_lines_emitted_with_parent_chain(self):

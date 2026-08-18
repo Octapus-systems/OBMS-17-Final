@@ -291,13 +291,13 @@ class TestHeldForSale(EhAccountIntegrationTestCase):
         item.action_classify()
         self.assertEqual(asset.state, 'paused')
         posted_before = len(
-            asset.depreciation_line_ids.filtered(lambda l: l.is_posted))
+            asset.depreciation_line_ids.filtered(lambda line_item: line_item.is_posted))
         # Run the cron with a cut-off well past every scheduled line.
         self.env['eh.asset'].with_context(
             allowed_company_ids=self.company.ids
         )._cron_post_due()
         posted_after = len(
-            asset.depreciation_line_ids.filtered(lambda l: l.is_posted))
+            asset.depreciation_line_ids.filtered(lambda line_item: line_item.is_posted))
         self.assertEqual(
             posted_after, posted_before,
             "The cron must not post depreciation for a paused held-for-sale "

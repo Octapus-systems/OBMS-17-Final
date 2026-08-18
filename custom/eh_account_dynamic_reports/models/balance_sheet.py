@@ -41,7 +41,6 @@ from odoo import _, api, fields, models
 from odoo.tools.translate import _lt
 
 
-
 class EhBalanceSheetHandler(models.AbstractModel):
     _name = 'eh.account.dynamic.report.handler.balance_sheet'
     _inherit = 'eh.account.dynamic.report.handler.sectioned'

@@ -35,7 +35,7 @@ module surfaces that attribution requirement so deployments quote the
 Czech National Bank as the origin of the rates.
 """
 
-from decimal import Decimal
+from decimal import Decimal  # noqa: F401
 
 from ..rate_providers import BaseHttpProvider, to_decimal, register
 

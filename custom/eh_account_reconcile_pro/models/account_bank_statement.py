@@ -37,7 +37,7 @@ class AccountBankStatement(models.Model):
         for statement in self:
             statement.eh_unmatched_line_count = len(
                 statement.line_ids.filtered(
-                    lambda l: not getattr(l, 'is_reconciled', False),
+                    lambda line_item: not getattr(line_item, 'is_reconciled', False),
                 ),
             )
 

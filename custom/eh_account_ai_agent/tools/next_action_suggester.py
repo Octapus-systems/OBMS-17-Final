@@ -27,7 +27,7 @@ deterministic action is returned.
 """
 
 import dataclasses
-import datetime
+import datetime  # noqa: F401
 from typing import Optional
 
 from .provider_registry import (

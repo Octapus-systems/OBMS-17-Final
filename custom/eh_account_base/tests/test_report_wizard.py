@@ -19,10 +19,10 @@ Covers:
 import base64
 import unittest
 
-from datetime import date, timedelta
+from datetime import date, timedelta  # noqa: F401
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError  # noqa: F401
 from odoo.tests import tagged
 
 from .common import EhAccountUnitTestCase

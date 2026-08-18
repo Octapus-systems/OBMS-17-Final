@@ -24,7 +24,7 @@ seed a minimal dynamic report so the call resolves without going
 through the full handler stack.
 """
 
-import json
+import json  # noqa: F401
 from unittest.mock import patch
 
 from odoo.exceptions import UserError

@@ -137,7 +137,7 @@ class TestGoldenCosting(EhGoldenTestCase):
 
     def _line_amount(self, run, element, kind):
         line = run.line_ids.filtered(
-            lambda l: l.element == element and l.kind == kind)
+            lambda line_item: line_item.element == element and line_item.kind == kind)
         self.assertEqual(
             len(line), 1,
             'expected exactly one %s/%s line, got %s' % (

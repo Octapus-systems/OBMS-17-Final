@@ -354,7 +354,7 @@ class EhReportBuilderLine(models.Model):
             if not rec.code:
                 continue
             others = rec.builder_id.line_ids.filtered(
-                lambda l: l.code == rec.code and l.id != rec.id,
+                lambda line_item: line_item.code == rec.code and line_item.id != rec.id,
             )
             if others:
                 raise ValidationError(_(

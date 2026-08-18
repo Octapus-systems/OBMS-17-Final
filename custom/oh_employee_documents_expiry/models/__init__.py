@@ -20,8 +20,8 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import document_type
-from . import hr_document
-from . import hr_employee
-from . import hr_employee_document
-from . import ir_attachment
+from . import document_type  # noqa: F401
+from . import hr_document  # noqa: F401
+from . import hr_employee  # noqa: F401
+from . import hr_employee_document  # noqa: F401
+from . import ir_attachment  # noqa: F401

@@ -33,7 +33,7 @@ This module is original work; the parser implements the published XML
 shape and does not derive from any third-party rate library.
 """
 
-from decimal import Decimal
+from decimal import Decimal  # noqa: F401
 
 from ..rate_providers import BaseHttpProvider, to_decimal, register
 

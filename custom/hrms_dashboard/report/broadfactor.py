@@ -37,7 +37,7 @@ class EmployeeBroadFactor(models.Model):
 
     def init(self):
         tools.drop_view_if_exists(self._cr, 'hr_employee_broad_factor')
-        date_today = date.today()
+        date_today = date.today()  # noqa: F841
         self._cr.execute("""
             create or replace view hr_employee_broad_factor as (
                 select
@@ -45,7 +45,7 @@ class EmployeeBroadFactor(models.Model):
                     sum(h.number_of_days) as no_of_days,
                     count(h.*)*count(h.*)*sum(h.number_of_days) as broad_factor
                 from hr_employee e
-                    full join (select * from hr_leave where state = 'validate' 
+                    full join (select * from hr_leave where state = 'validate'
                     and date_to <= now()::timestamp) h
                     on e.id =h.employee_id
                 group by e.id

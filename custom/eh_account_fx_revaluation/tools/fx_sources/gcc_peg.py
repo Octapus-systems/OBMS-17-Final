@@ -31,7 +31,7 @@ Central Bank of Kuwait publication.
 
 from decimal import Decimal
 
-from ..rate_providers import BaseHttpProvider, register, RateProviderError
+from ..rate_providers import BaseHttpProvider, register, RateProviderError  # noqa: F401
 
 
 class GccPegRateProvider(BaseHttpProvider):

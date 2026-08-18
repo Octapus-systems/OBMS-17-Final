@@ -31,7 +31,7 @@ class EhBankStatementImportProfile(models.Model):
         'account.journal',
         string="Default Bank Journal",
         domain="[('type', 'in', ['bank', 'cash'])]",
-        help="Default journal selected when this profile is chosen in the import wizard. The user can override per import.",
+        help="Default journal selected when this profile is chosen in the import wizard. The user can override per import.",  # noqa: E501
     )
     company_id = fields.Many2one(
         'res.company', required=True,
@@ -65,24 +65,24 @@ class EhBankStatementImportProfile(models.Model):
     )
 
     col_date = fields.Integer(default=0, required=True,
-        help="Zero-based index of the date column.")
+        help="Zero-based index of the date column.")  # noqa: E128
     col_amount = fields.Integer(default=-1,
-        help="Zero-based index of the signed amount column. Use -1 if the bank ships separate debit and credit columns.")
+        help="Zero-based index of the signed amount column. Use -1 if the bank ships separate debit and credit columns.")  # noqa: E501,E128
     col_debit = fields.Integer(default=-1,
-        help="Zero-based index of the debit column. Use -1 if amount is single-column.")
+        help="Zero-based index of the debit column. Use -1 if amount is single-column.")  # noqa: E128
     col_credit = fields.Integer(default=-1,
-        help="Zero-based index of the credit column. Use -1 if amount is single-column.")
+        help="Zero-based index of the credit column. Use -1 if amount is single-column.")  # noqa: E128
     col_ref = fields.Integer(default=-1,
-        help="Zero-based index of the payment reference column.")
+        help="Zero-based index of the payment reference column.")  # noqa: E128
     col_narration = fields.Integer(default=-1,
-        help="Zero-based index of the narration / memo column.")
+        help="Zero-based index of the narration / memo column.")  # noqa: E128
     col_partner = fields.Integer(default=-1,
-        help="Zero-based index of the counter party name column.")
+        help="Zero-based index of the counter party name column.")  # noqa: E128
 
     notes = fields.Text()
 
     _sql_constraints = [
-        ('check_amount_columns', 'CHECK (col_amount >= 0 OR (col_debit >= 0 AND col_credit >= 0))', 'Either col_amount must be set, or both col_debit and col_credit must be set.'),
+        ('check_amount_columns', 'CHECK (col_amount >= 0 OR (col_debit >= 0 AND col_credit >= 0))', 'Either col_amount must be set, or both col_debit and col_credit must be set.'),  # noqa: E501
     ]
 
     @api.constrains('csv_delimiter', 'csv_quotechar')

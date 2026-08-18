@@ -19,7 +19,7 @@ freezes the queue.
 import logging
 from datetime import timedelta
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 
 from odoo.addons.eh_account_ai_agent.tools import anomaly_detector
 

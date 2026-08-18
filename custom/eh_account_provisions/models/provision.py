@@ -317,7 +317,7 @@ class EhProvision(models.Model):
         ('check_rate', 'CHECK (discount_rate >= 0)', 'Discount rate cannot be negative.'),
         ('check_periods', 'CHECK (periods_to_settlement >= 0)', 'Periods to settlement cannot be negative.'),
         ('check_onerous_inputs', 'CHECK (unavoidable_cost_fulfil >= 0 AND penalty_exit >= 0 '
-        'AND contract_benefit_expected >= 0)', 'Onerous contract inputs cannot be negative.'),
+        'AND contract_benefit_expected >= 0)', 'Onerous contract inputs cannot be negative.'),  # noqa: E128
     ]
 
     # ---- onerous measurement (IAS 37.66-69) ----
@@ -420,7 +420,7 @@ class EhProvision(models.Model):
                 "or start of implementation, IAS 37.72) on %s.",
                 self.display_name))
         included = self.restructuring_line_ids.filtered(
-            lambda l: l.cost_kind in RESTRUCTURING_INCLUDED_KINDS)
+            lambda line_item: line_item.cost_kind in RESTRUCTURING_INCLUDED_KINDS)
         if not included:
             raise UserError(_(
                 "Break %s into its direct cost components (termination "

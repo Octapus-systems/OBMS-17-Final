@@ -36,7 +36,7 @@ impairment. Nothing here changes an asset that is not assigned to a CGU.
 """
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError  # noqa: F401
 
 
 class EhAssetCgu(models.Model):
@@ -278,9 +278,9 @@ class EhAssetCgu(models.Model):
             # Cap each pro-rata share at the asset's own NBV, then spread
             # any residue (from caps) again; finally true-up on the last
             # uncapped line so the total ties exactly to `remaining`.
-            pro_rata = []
+            pro_rata = []  # noqa: F841
             allocated = 0.0
-            uncapped = others
+            uncapped = others  # noqa: F841
             target = remaining
             # Simple pro-rata with per-asset NBV cap.
             shares = []

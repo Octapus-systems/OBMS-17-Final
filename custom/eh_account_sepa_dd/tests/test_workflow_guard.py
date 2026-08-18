@@ -75,8 +75,8 @@ class TestWorkflowGuard(TransactionCase):
                 'name': 'Guard plain user',
                 'login': 'eh_sepa_dd_guard_user',
                 'email': 'eh_sepa_dd_guard_user@example.com',
-                'company_id': cls.env.company.id,
-                'company_id': cls.env.company.id,
+                'company_id': cls.env.company.id,  # noqa: F601
+                'company_id': cls.env.company.id,  # noqa: F601
                 # Odoo 19: res.users uses group_ids (not groups_id).
                 'groups_id': [(4, group.id)],
             })

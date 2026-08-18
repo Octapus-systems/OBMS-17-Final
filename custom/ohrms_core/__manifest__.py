@@ -24,14 +24,14 @@
     'name': 'Open HRMS Core',
     'version': '17.0.1.0.0',
     'category': 'Services',
-    'summary': """Open HRMS Odoo17, HRMS odoo17, Odoo HR, HR Dashboard, Odoo17 Payroll, HR Management, Odoo Branch, Odoo Loan, Salary Advance, Odoo17,Payroll,Dashboard,Accounting,HR Kit,HR,Odoo Apps""",
+    'summary': """Open HRMS Odoo17, HRMS odoo17, Odoo HR, HR Dashboard, Odoo17 Payroll, HR Management, Odoo Branch, Odoo Loan, Salary Advance, Odoo17,Payroll,Dashboard,Accounting,HR Kit,HR,Odoo Apps""",  # noqa: E501
     'description': """Openhrms, Main module of Open HRMS,Payroll, Payroll Accounting, Expense, Dashboard,
-    Employees, Employee Document, Resignation, Salary Advance, Loan Management, 
-    Gratuity, Service Request, Gosi, WPS Report, Reminder, Multi Company, 
+    Employees, Employee Document, Resignation, Salary Advance, Loan Management,
+    Gratuity, Service Request, Gosi, WPS Report, Reminder, Multi Company,
     Shift Management, Employee History, Branch Transfer, Employee Appraisal,
     Biometric Device, Announcements, Insurance Management, Vacation Management,
-    Employee Appreciations, Asset Custody, Employee Checklist, Entry and Exit 
-    Checklist, Disciplinary Actions, openhrms, Open HRMS, hrms, Attrition Rate, 
+    Employee Appreciations, Asset Custody, Employee Checklist, Entry and Exit
+    Checklist, Disciplinary Actions, openhrms, Open HRMS, hrms, Attrition Rate,
     Document Expiry, Visa Expiry, Law Suit Management, Employee, Employee Training, payroll, odoo17 payroll""",
     'author': 'Cybrosys Techno solutions',
     'company': 'Cybrosys Techno Solutions',

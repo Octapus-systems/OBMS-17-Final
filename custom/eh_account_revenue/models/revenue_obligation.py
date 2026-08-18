@@ -185,9 +185,9 @@ class EhRevenueObligation(models.Model):
 
     _sql_constraints = [
         ('check_ssp', 'CHECK (standalone_price >= 0)', 'Standalone selling price cannot be negative.'),
-        ('check_pct', 'CHECK (percent_complete >= 0 AND percent_complete <= 100)', 'Percent complete must be between 0 and 100.'),
+        ('check_pct', 'CHECK (percent_complete >= 0 AND percent_complete <= 100)', 'Percent complete must be between 0 and 100.'),  # noqa: E501
         ('check_var_estimate', 'CHECK (variable_estimate >= 0)', 'Variable consideration estimate cannot be negative.'),
-        ('check_var_constraint', 'CHECK (variable_constraint >= 0)', 'Variable consideration constraint cannot be negative.'),
+        ('check_var_constraint', 'CHECK (variable_constraint >= 0)', 'Variable consideration constraint cannot be negative.'),  # noqa: E501
         ('check_specific_discount', 'CHECK (discount_specific >= 0)', 'A specific discount cannot be negative.'),
         ('check_cost_incurred', 'CHECK (cost_incurred >= 0)', 'Cost incurred cannot be negative.'),
         ('check_cost_total', 'CHECK (cost_total_estimate >= 0)', 'The total cost estimate cannot be negative.'),

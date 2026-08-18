@@ -27,7 +27,7 @@ amount, so sequential partial bills can never leave a phantom
 residual reserved forever.
 """
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models  # noqa: F401
 
 
 class AccountMove(models.Model):

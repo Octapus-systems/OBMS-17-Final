@@ -20,6 +20,6 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import hr_general_settings
-from . import menu_management_setting
-from . import menu_order_sequence
+from . import hr_general_settings  # noqa: F401
+from . import menu_management_setting  # noqa: F401
+from . import menu_order_sequence  # noqa: F401

@@ -41,17 +41,17 @@ class HrEmployee(models.Model):
                  ('state', 'in', ('approved', 'done')),
                  ('date_start', '<=', fields.Date.today())])
             announcement_ids_emp = (self.env['hr.announcement'].
-            sudo().search_count(
+            sudo().search_count(  # noqa: E128
                 [('employee_ids', 'in', self.id),
                  ('state', 'in', ('approved', 'done')),
                  ('date_start', '<=', fields.Date.today())]))
             announcement_ids_dep = (self.env['hr.announcement'].
-            sudo().search_count(
+            sudo().search_count(  # noqa: E128
                 [('department_ids', 'in', self.department_id.id),
                  ('state', 'in', ('approved', 'done')),
                  ('date_start', '<=', fields.Date.today())]))
             announcement_ids_job = (self.env['hr.announcement'].
-            sudo().search_count(
+            sudo().search_count(  # noqa: E128
                 [('position_ids', 'in', self.job_id.id),
                  ('state', 'in', ('approved', 'done')),
                  ('date_start', '<=', fields.Date.today())]))

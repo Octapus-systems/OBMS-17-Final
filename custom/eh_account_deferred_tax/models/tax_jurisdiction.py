@@ -136,5 +136,5 @@ class EhTaxRate(models.Model):
 
     _sql_constraints = [
         ('check_rate_range', 'CHECK (rate >= 0 AND rate <= 100)', 'Tax rate must be between 0 and 100.'),
-        ('unique_jurisdiction_from', 'unique(jurisdiction_id, effective_from)', 'Only one rate row per jurisdiction per effective date.'),
+        ('unique_jurisdiction_from', 'unique(jurisdiction_id, effective_from)', 'Only one rate row per jurisdiction per effective date.'),  # noqa: E501
     ]

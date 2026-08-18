@@ -92,7 +92,7 @@ class TestPropertyIfrs9(EhGoldenTestCase):
         })
         inv.action_post()
         return inv.line_ids.filtered(
-            lambda l: l.account_id.account_type == 'asset_receivable')
+            lambda line_item: line_item.account_id.account_type == 'asset_receivable')
 
     # ------------------------------------------------------------------
     # cure probation
@@ -215,7 +215,7 @@ class TestPropertyIfrs9(EhGoldenTestCase):
             for bucket in current.bucket_ids:
                 measured[bucket._recon_stage()] += bucket.ecl_effective
             prior_recon = {
-                l.stage: l for l in current._prior_run().recon_ids}
+                line_item.stage: line_item for line_item in current._prior_run().recon_ids}
             self.assertEqual(len(current.recon_ids), 4, label)
             for recon_line in current.recon_ids:
                 stage = recon_line.stage
@@ -239,7 +239,7 @@ class TestPropertyIfrs9(EhGoldenTestCase):
                     places=2, msg='closing wrong for %s / %s' % (
                         stage, label))
             if case['movement'] == 'writeoff':
-                by_stage = {l.stage: l for l in current.recon_ids}
+                by_stage = {line_item.stage: line_item for line_item in current.recon_ids}
                 self.assertAlmostEqual(
                     by_stage[stage_key].writeoffs, 50.0, places=2,
                     msg=label)

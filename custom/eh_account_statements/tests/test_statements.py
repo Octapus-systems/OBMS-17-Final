@@ -50,11 +50,11 @@ class TestStatements(EhAccountIntegrationTestCase):
             ],
         })
         # Share capital 100000 + 20000 = 120000.
-        sc = soce.line_ids.filtered(lambda l: l.component == 'share_capital')
+        sc = soce.line_ids.filtered(lambda line_item: line_item.component == 'share_capital')
         self.assertAlmostEqual(sc.closing_balance, 120000.0, places=2)
         # Retained 50000 + 30000 - 10000 = 70000.
         re = soce.line_ids.filtered(
-            lambda l: l.component == 'retained_earnings')
+            lambda line_item: line_item.component == 'retained_earnings')
         self.assertAlmostEqual(re.closing_balance, 70000.0, places=2)
         # Totals: opening 150000, closing 120000 + 70000 + 5000 = 195000.
         self.assertAlmostEqual(soce.total_opening, 150000.0, places=2)
@@ -271,9 +271,9 @@ class TestStatements(EhAccountIntegrationTestCase):
         })
         soce.action_derive_from_ledger()
         share_line = soce.line_ids.filtered(
-            lambda l: l.component == 'share_capital')
+            lambda line_item: line_item.component == 'share_capital')
         retained_line = soce.line_ids.filtered(
-            lambda l: l.component == 'retained_earnings')
+            lambda line_item: line_item.component == 'retained_earnings')
         # Each component gets ITS OWN opening, not the whole 200000 on line[0].
         self.assertAlmostEqual(share_line.opening_balance, 150000.0, places=2)
         self.assertAlmostEqual(

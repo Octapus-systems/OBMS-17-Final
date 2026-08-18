@@ -50,7 +50,7 @@ class TestReportFoldState(TransactionCase):
         self.assertEqual(pl.get('l2'), True)
 
     def test_unique_per_user_report_line(self):
-        from psycopg2.errors import UniqueViolation
+        from psycopg2.errors import UniqueViolation  # noqa: F401
         # Two creates with the same key should violate the constraint;
         # Odoo wraps it as IntegrityError.
         self.Model.create({

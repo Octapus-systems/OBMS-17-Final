@@ -7,16 +7,16 @@
 ##############################################################################
 {
     'name': 'Dynamic Reports Pro',
-    'summary': 'Premium upgrade for Dynamic Accounting Reports: schedule any report to land in inboxes and chat channels on an hourly cron, compose new reports in a form, save per-user filter sets, and project published reports forward by month. Odoo 17 Community custom financial report builder, scheduled accounting report email, automated PDF and XLSX delivery cron, Slack and Microsoft Teams report webhook, saved report filter views, multi-period P and L and cash flow forecast, multi-company report scheduling.',
-    'description': """Dynamic Reports Pro adds four capabilities on top of the free Dynamic Accounting Reports engine: scheduled multi-channel delivery, a form-driven custom report builder, per-user saved views, and multi-period forward projection.
+    'summary': 'Premium upgrade for Dynamic Accounting Reports: schedule any report to land in inboxes and chat channels on an hourly cron, compose new reports in a form, save per-user filter sets, and project published reports forward by month. Odoo 17 Community custom financial report builder, scheduled accounting report email, automated PDF and XLSX delivery cron, Slack and Microsoft Teams report webhook, saved report filter views, multi-period P and L and cash flow forecast, multi-company report scheduling.',  # noqa: E501
+    'description': """Dynamic Reports Pro adds four capabilities on top of the free Dynamic Accounting Reports engine: scheduled multi-channel delivery, a form-driven custom report builder, per-user saved views, and multi-period forward projection.  # noqa: E501
 
-Scheduled delivery binds any published report to an options set, a recipient list, and a cadence (daily, weekly, or monthly), then an hourly cron runs every schedule whose next run is due. Each delivery attaches a PDF, an XLSX, or both, and can fan out to email plus a Slack, Microsoft Teams, or generic HTTP webhook in the same run. Channels succeed independently: an email bounce does not block the webhook, and the schedule is marked successful if at least one channel lands.
+Scheduled delivery binds any published report to an options set, a recipient list, and a cadence (daily, weekly, or monthly), then an hourly cron runs every schedule whose next run is due. Each delivery attaches a PDF, an XLSX, or both, and can fan out to email plus a Slack, Microsoft Teams, or generic HTTP webhook in the same run. Channels succeed independently: an email bounce does not block the webhook, and the schedule is marked successful if at least one channel lands.  # noqa: E501
 
-The custom report builder lets you compose new reports without Python or XML. Define section headers, account roll-up lines (by code prefix or account type, with sign), and arithmetic formulas in a form, with drag-to-reorder line ordering. Each builder publishes into the same OWL viewer, PDF, and XLSX pipeline as the standard reports and renders a single Amount column.
+The custom report builder lets you compose new reports without Python or XML. Define section headers, account roll-up lines (by code prefix or account type, with sign), and arithmetic formulas in a form, with drag-to-reorder line ordering. Each builder publishes into the same OWL viewer, PDF, and XLSX pipeline as the standard reports and renders a single Amount column.  # noqa: E501
 
-Saved views capture a complete filter set under a name, can be pinned for quick access or shared company-wide, and carry usage telemetry so dead views are easy to spot.
+Saved views capture a complete filter set under a name, can be pinned for quick access or shared company-wide, and carry usage telemetry so dead views are easy to spot.  # noqa: E501
 
-Forecasting projects any published report (P and L, Cash Flow, or a custom build) forward N months using flat or compound-linear monthly growth.
+Forecasting projects any published report (P and L, Cash Flow, or a custom build) forward N months using flat or compound-linear monthly growth.  # noqa: E501
 
 Requires eh_account_dynamic_reports (free, install first).""",
     'author': 'ERP Heritage',

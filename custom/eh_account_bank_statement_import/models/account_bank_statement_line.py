@@ -70,7 +70,7 @@ class AccountBankStatementLine(models.Model):
     # the statement line in Odoo 16/17, so a two-column unique constraint
     # silently fails to install there).
     _sql_constraints = [
-        ('eh_unique_import_ref', 'unique(unique_import_ref)', 'A bank statement line with this import reference already exists for the journal.'),
+        ('eh_unique_import_ref', 'unique(unique_import_ref)', 'A bank statement line with this import reference already exists for the journal.'),  # noqa: E501
     ]
 
     @api.model

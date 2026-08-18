@@ -20,9 +20,9 @@ The base class re-expresses that table against the company currency,
 so this module never calls cross_derive itself.
 """
 
-from decimal import Decimal
+from decimal import Decimal  # noqa: F401
 
-from ..rate_providers import (
+from ..rate_providers import (  # noqa: F401
     BaseHttpProvider,
     RateProviderError,
     register,

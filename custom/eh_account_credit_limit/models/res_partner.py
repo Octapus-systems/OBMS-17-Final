@@ -162,8 +162,8 @@ class ResPartner(models.Model):
             # amount_total_signed is in company currency and signs
             # refunds negative, so a draft refund reduces exposure
             # rather than inflating it.
-            draft_rows = read_group_compat(Move, 
-                [
+            draft_rows = read_group_compat(Move,
+                [  # noqa: E128
                     ('partner_id', '=', self.commercial_partner_id.id),
                     ('move_type', 'in', ('out_invoice', 'out_refund')),
                     ('state', '=', 'draft'),

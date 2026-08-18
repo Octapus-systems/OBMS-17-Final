@@ -78,7 +78,7 @@ class TestEclPeriodEndResidual(EhAccountIntegrationTestCase):
         the point-in-time residual filters on.
         """
         recv = inv.line_ids.filtered(
-            lambda l: l.account_id.account_type == 'asset_receivable')
+            lambda line_item: line_item.account_id.account_type == 'asset_receivable')
         settle = self.env['account.move'].create({
             'move_type': 'entry',
             'date': on_date,
@@ -96,7 +96,7 @@ class TestEclPeriodEndResidual(EhAccountIntegrationTestCase):
         })
         settle.action_post()
         credit = settle.line_ids.filtered(
-            lambda l: l.account_id == recv.account_id)
+            lambda line_item: line_item.account_id == recv.account_id)
         (recv + credit).reconcile()
         return settle
 
@@ -107,7 +107,7 @@ class TestEclPeriodEndResidual(EhAccountIntegrationTestCase):
         self._settle(inv, 1000.0, '2026-07-05')
         # The live figures now show a fully reconciled, zero-residual line...
         recv = inv.line_ids.filtered(
-            lambda l: l.account_id.account_type == 'asset_receivable')
+            lambda line_item: line_item.account_id.account_type == 'asset_receivable')
         self.assertTrue(recv.reconciled)
         self.assertAlmostEqual(recv.amount_residual, 0.0, places=2)
         # ...yet the 30 Jun run measures it at its 30 Jun carrying amount.

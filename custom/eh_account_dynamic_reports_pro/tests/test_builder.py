@@ -268,8 +268,8 @@ class TestBuilderRender(EhAccountIntegrationTestCase):
         result = builder.published_report_id.render(self.options)
         # Find the revenue line by builder line code in meta.
         revenue_line = next(
-            (l for l in result['lines']
-             if (l.get('meta') or {}).get('builder_line_code') == 'revenue'),
+            (line_item for line_item in result['lines']
+             if (line_item.get('meta') or {}).get('builder_line_code') == 'revenue'),
             None,
         )
         self.assertIsNotNone(revenue_line)
@@ -284,8 +284,8 @@ class TestBuilderRender(EhAccountIntegrationTestCase):
         builder = self._make_pl_builder()
         result = builder.published_report_id.render(self.options)
         net_profit_line = next(
-            (l for l in result['lines']
-             if (l.get('meta') or {}).get('builder_line_code') == 'net_profit'),
+            (line_item for line_item in result['lines']
+             if (line_item.get('meta') or {}).get('builder_line_code') == 'net_profit'),
             None,
         )
         self.assertIsNotNone(net_profit_line)
@@ -326,8 +326,8 @@ class TestBuilderRender(EhAccountIntegrationTestCase):
             **self.options, 'show_zero': False,
         })
         empty_line = [
-            l for l in result['lines']
-            if (l.get('meta') or {}).get('builder_line_code') == 'empty'
+            line_item for line_item in result['lines']
+            if (line_item.get('meta') or {}).get('builder_line_code') == 'empty'
         ]
         self.assertEqual(empty_line, [])
         # With show_zero true the line appears.
@@ -335,8 +335,8 @@ class TestBuilderRender(EhAccountIntegrationTestCase):
             **self.options, 'show_zero': True,
         })
         empty_line2 = [
-            l for l in result2['lines']
-            if (l.get('meta') or {}).get('builder_line_code') == 'empty'
+            line_item for line_item in result2['lines']
+            if (line_item.get('meta') or {}).get('builder_line_code') == 'empty'
         ]
         self.assertEqual(len(empty_line2), 1)
 
@@ -344,8 +344,8 @@ class TestBuilderRender(EhAccountIntegrationTestCase):
         builder = self._make_pl_builder()
         result = builder.published_report_id.render(self.options)
         headers = [
-            l for l in result['lines']
-            if (l.get('meta') or {}).get('kind') == 'section_header'
+            line_item for line_item in result['lines']
+            if (line_item.get('meta') or {}).get('kind') == 'section_header'
         ]
         self.assertGreaterEqual(len(headers), 2)
 
@@ -373,8 +373,8 @@ class TestBuilderRender(EhAccountIntegrationTestCase):
         builder.action_publish()
         result = builder.published_report_id.render(self.options)
         line = next(
-            l for l in result['lines']
-            if (l.get('meta') or {}).get('builder_line_code') == 'cash_ar'
+            line_item for line_item in result['lines']
+            if (line_item.get('meta') or {}).get('builder_line_code') == 'cash_ar'
         )
         amount = next(
             c['value'] for c in line['columns']

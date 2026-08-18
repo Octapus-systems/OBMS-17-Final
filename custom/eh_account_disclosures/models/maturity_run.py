@@ -302,7 +302,7 @@ class EhFinMaturityRun(models.Model):
                     "Maturity run %s is finalised; its bands cannot be "
                     "re-populated. Ask a manager to reopen it first.",
                     run.name))
-            run.line_ids.filtered(lambda l: l.origin != 'manual').unlink()
+            run.line_ids.filtered(lambda line_item: line_item.origin != 'manual').unlink()
             # Per-instrument projection takes precedence when instruments are
             # listed: each instrument's contractual coupons and principal
             # repayment are bucketed with its OWN rate, so a coupon bond bands

@@ -30,7 +30,7 @@ Engine conventions (read from models/sbp_plan.py and sbp_run.py):
   months from the modification date to the final vesting end.
 """
 
-from datetime import date
+from datetime import date  # noqa: F401
 
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
@@ -352,8 +352,8 @@ class TestGoldenIfrs2(EhGoldenTestCase):
         self.assertEqual(len(settle_moves), 2,
                          'settlement posts a true-up and a payment')
         trueup = settle_moves.filtered(
-            lambda m: any(l.credit and l.account_id == self.sbp_expense
-                          for l in m.line_ids))
+            lambda m: any(line_item.credit and line_item.account_id == self.sbp_expense
+                          for line_item in m.line_ids))
         payment = settle_moves - trueup
         self.assertMoveLines(trueup, [
             (self.sbp_liability, 100.00, 0.0),

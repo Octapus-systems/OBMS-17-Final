@@ -1,12 +1,12 @@
-from . import models
+from . import models  # noqa: F401
 
 import base64
 
-from odoo.tools import file_open, file_path
+from odoo.tools import file_open, file_path  # noqa: F401
 
 
 def _setup_module(env):
-    if env.ref('base.main_company', False): 
+    if env.ref('base.main_company', False):
         with file_open('web/static/img/favicon.ico', 'rb') as file:
             env.ref('base.main_company').write({
                 'favicon': base64.b64encode(file.read())

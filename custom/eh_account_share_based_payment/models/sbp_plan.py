@@ -203,7 +203,7 @@ class EhSbpPlan(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('check_vesting', 'CHECK (vesting_years >= 0 AND vesting_months >= 0)', 'The vesting period cannot be negative.'),
+        ('check_vesting', 'CHECK (vesting_years >= 0 AND vesting_months >= 0)', 'The vesting period cannot be negative.'),  # noqa: E501
     ]
 
     # ------------------------------------------------------------------
@@ -763,9 +763,9 @@ class EhSbpGrant(models.Model):
 
     _sql_constraints = [
         ('check_granted', 'CHECK (instruments_granted > 0)', 'A grant must carry a positive number of instruments.'),
-        ('check_fv', 'CHECK (grant_date_fair_value >= 0 AND exercise_price >= 0)', 'Fair value and exercise price cannot be negative.'),
+        ('check_fv', 'CHECK (grant_date_fair_value >= 0 AND exercise_price >= 0)', 'Fair value and exercise price cannot be negative.'),  # noqa: E501
         ('check_quantities', 'CHECK (actual_vested_qty >= 0 AND exercised_qty >= 0 '
-        'AND expired_qty >= 0)', 'Grant quantities cannot be negative.'),
+        'AND expired_qty >= 0)', 'Grant quantities cannot be negative.'),  # noqa: E128
     ]
 
     @api.constrains('expected_forfeiture_pct')

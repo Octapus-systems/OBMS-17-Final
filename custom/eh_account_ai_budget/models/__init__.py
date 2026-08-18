@@ -1,2 +1,2 @@
 # -*- encoding: utf-8 -*-
-from . import budget
+from . import budget  # noqa: F401

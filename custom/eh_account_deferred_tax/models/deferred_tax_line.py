@@ -404,7 +404,7 @@ class EhDeferredTaxLine(models.Model):
         if not prior_run:
             return empty
         prior_line = prior_run.line_ids.filtered(
-            lambda l: l.name == self.name)[:1]
+            lambda line_item: line_item.name == self.name)[:1]
         if not prior_line:
             return empty
         return {

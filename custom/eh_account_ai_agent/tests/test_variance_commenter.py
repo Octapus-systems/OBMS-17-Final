@@ -54,7 +54,7 @@ class VarianceCommenterTest(TransactionCase):
     def test_zero_budget_with_actual(self):
         snap = [
             BudgetLineSnapshot(label='Surprise expense',
-                              budget=0.0, actual=5000.0),
+                              budget=0.0, actual=5000.0),  # noqa: E128
         ]
         out = comment(snap)
         # Should not crash on the divide-by-zero; should produce

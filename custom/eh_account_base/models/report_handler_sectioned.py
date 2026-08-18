@@ -146,7 +146,7 @@ class EhAccountDynamicReportSectionedHandler(models.AbstractModel):
         the variance percentage. Lines that exist in only one of the
         inputs receive zero on the missing side.
         """
-        prior_by_id = {l['id']: l for l in prior_lines}
+        prior_by_id = {line_item['id']: line_item for line_item in prior_lines}
         merged = []
         seen = set()
         for cur in current_lines:
@@ -242,7 +242,7 @@ class EhAccountDynamicReportSectionedHandler(models.AbstractModel):
         is appended with zero current.
         """
         prior_maps = [
-            {l['id']: l for l in prior} for prior in prior_line_lists
+            {line_item['id']: line_item for line_item in prior} for prior in prior_line_lists
         ]
         merged = []
         seen = set()
@@ -305,7 +305,7 @@ class EhAccountDynamicReportSectionedHandler(models.AbstractModel):
         group; lines appearing only in later groups are appended. A line
         missing from a group contributes zero to that group's column.
         """
-        maps = [{l['id']: l for l in group} for group in group_line_lists]
+        maps = [{line_item['id']: line_item for line_item in group} for group in group_line_lists]
 
         def _make_row(line_id, template):
             cols = []
@@ -478,11 +478,11 @@ class EhAccountDynamicReportSectionedHandler(models.AbstractModel):
         its receivable/payable lines. No AR/AP line -> fully recognised
         (a direct cash entry)."""
         ar_ap = move.line_ids.filtered(
-            lambda l: l.account_id.account_type in (
+            lambda line_item: line_item.account_id.account_type in (
                 'asset_receivable', 'liability_payable'))
         if not ar_ap:
             return 1.0
-        total = sum(abs(l.balance) for l in ar_ap)
+        total = sum(abs(line_item.balance) for line_item in ar_ap)
         if not total:
             return 1.0
         partials = ar_ap.matched_debit_ids | ar_ap.matched_credit_ids
@@ -681,7 +681,7 @@ class EhAccountDynamicReportSectionedHandler(models.AbstractModel):
                 all_paths.add(cumulative)
         # Sort paths so parents render before children, and siblings
         # render in code-prefix order to match the chart-of-accounts.
-        def _path_sort_key(p):
+        def _path_sort_key(p):  # noqa: E301
             # Look up the code_prefix_start for each leg of the path
             # so siblings sort by prefix; falls back to id.
             keys = []

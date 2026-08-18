@@ -1,4 +1,4 @@
-from . import res_config_settings
-from . import web_editor_assets
-from . import ir_attachment
-from . import ir_asset
+from . import res_config_settings  # noqa: F401
+from . import web_editor_assets  # noqa: F401
+from . import ir_attachment  # noqa: F401
+from . import ir_asset  # noqa: F401

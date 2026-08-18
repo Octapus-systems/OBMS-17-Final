@@ -44,7 +44,7 @@ class TestLeaseModifyTerminate(EhAssetTestCase):
         self.assertEqual(lease.payment_amount, 800.0)
         self.assertEqual(lease.modification_count, 1)
         # Has unposted lines under the new schedule.
-        unposted = lease.schedule_line_ids.filtered(lambda l: not l.is_posted)
+        unposted = lease.schedule_line_ids.filtered(lambda line_item: not line_item.is_posted)
         self.assertGreater(len(unposted), 0)
 
     def test_modify_blocked_in_draft(self):
@@ -78,7 +78,7 @@ class TestLeaseModifyTerminate(EhAssetTestCase):
         self.assertTrue(lease.termination_move_id)
         # No unposted schedule lines remain.
         self.assertFalse(lease.schedule_line_ids.filtered(
-            lambda l: not l.is_posted,
+            lambda line_item: not line_item.is_posted,
         ))
 
     def test_terminate_with_settlement(self):
@@ -99,7 +99,7 @@ class TestLeaseModifyTerminate(EhAssetTestCase):
         self.assertEqual(lease.state, 'terminated')
         # Cash credit leg posted.
         cash_lines = lease.termination_move_id.line_ids.filtered(
-            lambda l: l.account_id == self.account_cash,
+            lambda line_item: line_item.account_id == self.account_cash,
         )
         self.assertEqual(len(cash_lines), 1)
         self.assertAlmostEqual(cash_lines.credit, 500.0, places=2)

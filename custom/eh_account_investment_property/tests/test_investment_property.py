@@ -209,7 +209,7 @@ class TestInvestmentProperty(EhAccountIntegrationTestCase):
 
     def test_transfer_out_reclassifies_at_carrying(self):
         p = self._prop(initial_cost=500000.0,
-                        transfer_target_account_id=self.ppe.id)
+                        transfer_target_account_id=self.ppe.id)  # noqa: E127
         p.action_activate()
         p.fair_value = 560000.0
         p.action_remeasure()
@@ -239,7 +239,7 @@ class TestInvestmentProperty(EhAccountIntegrationTestCase):
         xfer = p.move_ids.sorted('id')[-1]
         # Property account credited with the full gross cost (500000).
         prop_line = xfer.line_ids.filtered(
-            lambda l: l.account_id == self.prop)
+            lambda line_item: line_item.account_id == self.prop)
         self.assertAlmostEqual(prop_line.credit, 500000.0, places=2)
         self.assertAlmostEqual(prop_line.debit, 0.0, places=2)
         # Net book value (490000) carried into the transfer target.
@@ -255,7 +255,7 @@ class TestInvestmentProperty(EhAccountIntegrationTestCase):
 
     def test_transfer_out_requires_manager(self):
         p = self._prop(initial_cost=500000.0,
-                        transfer_target_account_id=self.ppe.id)
+                        transfer_target_account_id=self.ppe.id)  # noqa: E127
         p.action_activate()
         user = self.env['res.users'].create({
             'name': 'p2', 'login': 'ip_plain2@test',
@@ -289,16 +289,16 @@ class TestInvestmentProperty(EhAccountIntegrationTestCase):
         self.assertAlmostEqual(sum(disp.line_ids.mapped('debit')),
                                sum(disp.line_ids.mapped('credit')), places=2)
         prop_line = disp.line_ids.filtered(
-            lambda l: l.account_id == self.prop)
+            lambda line_item: line_item.account_id == self.prop)
         self.assertAlmostEqual(prop_line.credit, 560000.0, places=2)
         self.assertAlmostEqual(prop_line.debit, 0.0, places=2)
         # Cash in for 600000.
         cash_line = disp.line_ids.filtered(
-            lambda l: l.account_id == self.account_cash)
+            lambda line_item: line_item.account_id == self.account_cash)
         self.assertAlmostEqual(cash_line.debit, 600000.0, places=2)
         # 40000 gain is a credit to the gain/loss account on the same move.
         gl_line = disp.line_ids.filtered(
-            lambda l: l.account_id == self.fv_gl)
+            lambda line_item: line_item.account_id == self.fv_gl)
         self.assertAlmostEqual(gl_line.credit, 40000.0, places=2)
         self.assertAlmostEqual(gl_line.debit, 0.0, places=2)
 
@@ -333,7 +333,7 @@ class TestInvestmentProperty(EhAccountIntegrationTestCase):
         disp = p.move_ids.sorted('id')[-1]
         # Property account credited with the full gross cost (500000).
         prop_line = disp.line_ids.filtered(
-            lambda l: l.account_id == self.prop)
+            lambda line_item: line_item.account_id == self.prop)
         self.assertAlmostEqual(prop_line.credit, 500000.0, places=2)
         # Accumulated depreciation reversed out (debit 10000): net ledger nil.
         self.assertAlmostEqual(self._bal(self.accum_dep), 0.0, places=2)

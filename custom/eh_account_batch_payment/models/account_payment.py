@@ -60,18 +60,18 @@ class AccountPayment(models.Model):
             if not moves or not payment.move_id:
                 continue
             pay_lines = payment.move_id.line_ids.filtered(
-                lambda l: l.account_id.account_type in (
+                lambda line_item: line_item.account_id.account_type in (
                     'asset_receivable', 'liability_payable')
-                and l.account_id.reconcile and not l.reconciled)
+                and line_item.account_id.reconcile and not line_item.reconciled)
             inv_lines = moves.line_ids.filtered(
-                lambda l: l.account_id.account_type in (
+                lambda line_item: line_item.account_id.account_type in (
                     'asset_receivable', 'liability_payable')
-                and l.account_id.reconcile and not l.reconciled
-                and l.amount_residual != 0.0)
+                and line_item.account_id.reconcile and not line_item.reconciled
+                and line_item.amount_residual != 0.0)
             # Reconcile per shared account: the framework matches the single
             # payment leg across every invoice leg on the same AR/AP account.
             for account in pay_lines.mapped('account_id'):
                 group = (pay_lines + inv_lines).filtered(
-                    lambda l: l.account_id == account and not l.reconciled)
+                    lambda line_item: line_item.account_id == account and not line_item.reconciled)
                 if len(group) >= 2:
                     group.reconcile()

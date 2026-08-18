@@ -97,7 +97,7 @@ class EhSepaCreditor(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('unique_per_company_journal', 'unique(company_id, journal_id)', 'Only one SEPA creditor per company per journal.'),
+        ('unique_per_company_journal', 'unique(company_id, journal_id)', 'Only one SEPA creditor per company per journal.'),  # noqa: E501
     ]
 
     @api.constrains('iban')

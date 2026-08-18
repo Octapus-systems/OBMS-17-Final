@@ -27,7 +27,7 @@ class TestLearnedRules(EhReconcileIntegrationTestCase):
             {'account': self.account_cash, 'credit': 100.0},
         ])
         aml = move.line_ids.filtered(
-            lambda l: l.account_id == self.account_expense)
+            lambda line_item: line_item.account_id == self.account_expense)
         line = self.make_statement_line(
             100.0, partner=partner, payment_ref=payment_ref)
         self.env['eh.reconciliation.audit'].create({

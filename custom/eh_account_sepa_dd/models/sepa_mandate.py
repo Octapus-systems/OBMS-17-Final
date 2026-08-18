@@ -32,7 +32,7 @@ rule is enforced at consume time: a mandate that has not been used for
 36 calendar months is flipped to expired before consume can succeed.
 """
 
-from datetime import timedelta
+from datetime import timedelta  # noqa: F401
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
@@ -543,7 +543,7 @@ class EhSepaMandate(models.Model):
             ],
             limit=batch_size,
         )
-        def _expire(mandate):
+        def _expire(mandate):  # noqa: E306
             mandate = mandate._eh_workflow_action()
             mandate.state = 'expired'
             mandate.message_post(body=_(

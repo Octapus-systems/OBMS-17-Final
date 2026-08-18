@@ -15,7 +15,7 @@ stub is a deliberate no-op so the cron exits cleanly.
 """
 
 import datetime
-import unittest
+import unittest  # noqa: F401
 
 from odoo.tests import TransactionCase, tagged
 

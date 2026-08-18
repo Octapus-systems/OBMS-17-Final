@@ -126,7 +126,7 @@ class TestGoldenIfrs16Remeasure(EhGoldenTestCase, EhAssetTestCase):
             lease._rou_carrying_amount(), 17_894.82, places=2,
         )
         # Two rebuilt (unposted) rows.
-        new_rows = mods.filtered(lambda l: not l.is_posted).sorted('sequence')
+        new_rows = mods.filtered(lambda line_item: not line_item.is_posted).sorted('sequence')
         self.assertEqual(len(new_rows), 2)
 
     # ------------------------------------------------------------------

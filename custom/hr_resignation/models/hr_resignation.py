@@ -44,7 +44,7 @@ class HrResignation(models.Model):
                        default=lambda self: _('New'))
     employee_id = fields.Many2one('hr.employee', string="Employee",
                                   default=lambda
-                                      self: self.env.user.employee_id.id,
+                                      self: self.env.user.employee_id.id,  # noqa: E127
                                   help='Name of the employee for '
                                        'whom the request is creating')
     department_id = fields.Many2one('hr.department', string="Department",
@@ -216,7 +216,7 @@ class HrResignation(models.Model):
                         resignation.state = 'approved'
                         resignation.approved_revealing_date = (
                                 resignation.resign_confirm_date + timedelta(
-                            days=contract.notice_days))
+                            days=contract.notice_days))  # noqa: E122
                     else:
                         resignation.approved_revealing_date = (
                             resignation.expected_revealing_date)
@@ -279,4 +279,3 @@ class HrResignation(models.Model):
                 if rec.employee_id.user_id:
                     rec.employee_id.user_id.active = False
                     rec.employee_id.user_id = None
-

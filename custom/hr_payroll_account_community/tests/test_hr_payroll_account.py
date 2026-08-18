@@ -58,11 +58,11 @@ class TestHrPayrollAccount(common.TransactionCase):
         })
         self.hr_structure_softwaredeveloper = self.env[
             'hr.payroll.structure'].create({
-            'name': 'Salary Structure for Software Developer',
-            'code': 'SD',
-            'company_id': self.ref('base.main_company'),
-            'parent_id': self.ref('hr_payroll_community.structure_base'),
-            'rule_ids': [
+            'name': 'Salary Structure for Software Developer',  # noqa: E122
+            'code': 'SD',  # noqa: E122
+            'company_id': self.ref('base.main_company'),  # noqa: E122
+            'parent_id': self.ref('hr_payroll_community.structure_base'),  # noqa: E122
+            'rule_ids': [  # noqa: E122
                 (6, 0,
                  [self.ref(
                      'hr_payroll_community.hr_salary_rule_houserentallowance1'),
@@ -76,8 +76,8 @@ class TestHrPayrollAccount(common.TransactionCase):
                       'hr_payroll_community.hr_salary_rule_meal_voucher'),
                   self.ref(
                       'hr_payroll_community.hr_salary_rule_sales_commission')
-            ])],
-        })
+            ])],  # noqa: E124
+        })  # noqa: E122
         # Create account journal.
         self.hr_contract_john = self.env['hr.contract'].create({
             'date_end': fields.Date.to_string(datetime.now()

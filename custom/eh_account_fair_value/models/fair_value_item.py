@@ -958,8 +958,8 @@ class EhFairValueRollforward(models.Model):
     notes = fields.Text()
 
     _sql_constraints = [
-        ('period_order', 'CHECK (period_end >= period_start)', "The reconciliation period end cannot be before its start."),
-        ('unique_item_period', 'UNIQUE (item_id, period_start, period_end)', "A fair-value item can have only one reconciliation per period."),
+        ('period_order', 'CHECK (period_end >= period_start)', "The reconciliation period end cannot be before its start."),  # noqa: E501
+        ('unique_item_period', 'UNIQUE (item_id, period_start, period_end)', "A fair-value item can have only one reconciliation per period."),  # noqa: E501
     ]
 
     @api.depends('opening_balance', 'gains_losses_in_pl', 'gains_losses_in_oci',

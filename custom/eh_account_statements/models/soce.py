@@ -261,7 +261,7 @@ class EhSoce(models.Model):
     def _compute_nci_consol_discrepancy(self):
         for s in self:
             nci_lines = s.line_ids.filtered(
-                lambda l: l.component == 'nci')
+                lambda line_item: line_item.component == 'nci')
             s.nci_component_closing = sum(
                 nci_lines.mapped('closing_balance'))
             if not s.consol_nci_available:
@@ -428,7 +428,7 @@ class EhSoce(models.Model):
             opening_date = fields.Date.to_date(s.period_start) - timedelta(
                 days=1)
             opening_equity = s._equity_balance_at(opening_date)
-            mapped_lines = s.line_ids.filtered(lambda l: l.equity_account_ids)
+            mapped_lines = s.line_ids.filtered(lambda line_item: line_item.equity_account_ids)
             if not mapped_lines:
                 # Backward-compatible path: no per-component account mapping,
                 # so the whole opening equity lands on the first line and the
@@ -459,7 +459,7 @@ class EhSoce(models.Model):
             rounding = (s.currency_id or s.company_id.currency_id).rounding
             if not float_is_zero(residual, precision_rounding=rounding or 0.01):
                 fallback = s.line_ids.filtered(
-                    lambda l: l.component == 'retained_earnings')[:1]
+                    lambda line_item: line_item.component == 'retained_earnings')[:1]
                 if not fallback:
                     fallback = s.line_ids[:1]
                 fallback.opening_balance += residual
@@ -501,7 +501,7 @@ class EhSoce(models.Model):
                 'consol_nci_available': True,
             })
             rounding = (s.currency_id or s.company_id.currency_id).rounding
-            nci_lines = s.line_ids.filtered(lambda l: l.component == 'nci')
+            nci_lines = s.line_ids.filtered(lambda line_item: line_item.component == 'nci')
             if not nci_lines:
                 s.line_ids = [(0, 0, {
                     'component': 'nci',
@@ -648,7 +648,7 @@ class EhSoceLine(models.Model):
                 + line.issue_of_shares + line.other_movement - line.dividends)
 
     def _check_parent_not_confirmed(self):
-        confirmed = self.filtered(lambda l: l.soce_id.state == 'confirmed')
+        confirmed = self.filtered(lambda line_item: line_item.soce_id.state == 'confirmed')
         if confirmed:
             raise UserError(_(
                 "Lines on a confirmed statement of changes in equity are "
