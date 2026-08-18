@@ -10,7 +10,7 @@ export class AppsBar extends Component {
 	setup() {
 		this.companyService = useService('company');
         this.appMenuService = useService('app_menu');
-    	if (this.companyService.currentCompany.has_appsbar_image) {
+    	if (this.companyService?.currentCompany?.has_appsbar_image) {
             this.sidebarImageUrl = url('/web/image', {
                 model: 'res.company',
                 field: 'appbar_image',
