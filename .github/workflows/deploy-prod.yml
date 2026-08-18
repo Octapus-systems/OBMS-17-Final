@@ -92,7 +92,7 @@ jobs:
           # Check existence inside the volume via --entrypoint sh.
 
           if docker compose run --rm --no-deps --entrypoint sh certbot \
-               -c "test -f /etc/letsencrypt/live/obms.octopus.ae/fullchain.pem" \
+               -c "test -f /etc/letsencrypt/live/obms.octapus.ae/fullchain.pem" \
                2>/dev/null; then
             # ── cert already present: normal start + opportunistic renewal ──
             echo ">>> Certificate present – starting nginx with TLS config..."
@@ -114,8 +114,8 @@ jobs:
             timeout 90 docker compose run --rm --no-deps --entrypoint certbot certbot \
               certonly \
               --webroot -w /var/www/certbot \
-              --domain obms.octopus.ae \
-              --email admin@octopus.ae \
+              --domain obms.octapus.ae \
+              --email admin@octapus.ae \
               --agree-tos --non-interactive
 
             # Restore TLS config and hot-reload nginx (no port flap).
