@@ -78,14 +78,50 @@ jobs:
           echo ">>> Building Odoo image..."
           docker compose build odoo 2>&1 | tail -30
           
-          # Recreate only changed containers
-          echo ">>> Restarting containers..."
+          # Start Odoo
+          echo ">>> Starting Odoo..."
           docker compose up -d --force-recreate --no-deps odoo
-          docker compose up -d --force-recreate --no-deps nginx
-          
-          # Cleanup
+
+          # ── TLS bootstrap ──────────────────────────────────────────────────
+          # nginx.conf (TLS) requires the cert to exist before nginx will start.
+          # On the very first deploy the cert is absent, causing the restart loop.
+          # Solution: boot nginx with the HTTP-only config first, run certbot once
+          # to obtain the cert, then switch to the TLS config and reload.
+          # On all future deploys the cert already exists so we skip straight to
+          # the TLS start (the --keep-until-expiring flag makes certbot a no-op).
+          CERT="/etc/letsencrypt/live/obms.octopus.ae/fullchain.pem"
+
+          if [ ! -f "$CERT" ]; then
+            echo ">>> Certificate absent – bootstrapping ACME..."
+            # Save the TLS config and temporarily replace with HTTP-only
+            cp nginx.conf nginx.conf.tls
+            cp nginx-http.conf nginx.conf
+            docker compose up -d --force-recreate --no-deps nginx
+            sleep 5  # give nginx a moment to bind port 80
+
+            # Obtain the certificate (one-shot container, shares certbot volumes)
+            docker compose run --rm certbot certonly \
+              --webroot -w /var/www/certbot \
+              --domain obms.octopus.ae \
+              --email admin@octopus.ae \
+              --agree-tos --non-interactive
+
+            # Restore TLS config and do a hot reload (no port flap)
+            mv nginx.conf.tls nginx.conf
+            docker compose exec nginx nginx -s reload
+            echo ">>> Certificate obtained – nginx now serving HTTPS"
+          else
+            echo ">>> Certificate present – starting nginx with TLS config..."
+            docker compose up -d --force-recreate --no-deps nginx
+            # Keep cert fresh; certbot skips renewal when >30 days remain
+            docker compose run --rm certbot renew \
+              --webroot -w /var/www/certbot --quiet || true
+          fi
+          # ───────────────────────────────────────────────────────────────────
+
+          # Cleanup old source
           rm -rf /opt/obms/src.old
-          
+
           echo ">>> Waiting for health..."
           sleep 10
           docker compose ps
