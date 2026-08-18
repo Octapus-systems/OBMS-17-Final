@@ -52,7 +52,7 @@ jobs:
           echo ">>> Extracting source..."
           rm -rf src.new
           mkdir -p src.new
-          tar -xzf obms.tar.gz -C src.new --strip-components=1
+          tar -xzf obms.tar.gz -C src.new
           rm -f obms.tar.gz
           
           # Swap atomically
@@ -81,7 +81,7 @@ jobs:
           # Recreate only changed containers
           echo ">>> Restarting containers..."
           docker compose up -d --force-recreate --no-deps odoo
-          docker compose up -d nginx
+          docker compose up -d --force-recreate --no-deps nginx
           
           # Cleanup
           rm -rf /opt/obms/src.old
