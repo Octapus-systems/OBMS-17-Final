@@ -31,7 +31,7 @@
     'maintainer': 'Cybrosys Techno Solutions',
     'website': "https://www.openhrms.com",
     'depends': ['hr', 'hr_contract', 'hr_payroll_community',
-                'hr_expense', 'hr_attendance', 'hr_employee_transfer'],
+                'hr_expense', 'hr_attendance'],
     'data': [
         'security/multi_company_security.xml',
         'views/hr_attendance_views.xml',

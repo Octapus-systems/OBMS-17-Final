@@ -47,10 +47,6 @@ class OHRMSConfiguration(models.TransientModel):
         string='Manage legal actions',
         help='Helps you to manage Lawsuit Management.\n'
              '- This installs the module Lawsuit Management.')
-    module_hr_resignation = fields.Boolean(
-        string='Handle the resignation process of the employee',
-        help='Helps you to manage Resignation Process.\n'
-             '- This installs the module Resignation Process.')
     module_hr_vacation_mngmt = fields.Boolean(
         string='Manage employee vacation',
         help='Helps you to manage Vacation Management.\n'
@@ -67,7 +63,6 @@ class OHRMSConfiguration(models.TransientModel):
     test_module_hr_insurance = fields.Boolean(default=False, invisible=True)
     test_module_oh_hr_lawsuit_management = fields.Boolean(default=False,
                                                           invisible=True)
-    test_module_hr_resignation = fields.Boolean(default=False, invisible=True)
     test_module_hr_vacation_mngmt = fields.Boolean(default=False,
                                                    invisible=True)
     test_module_oh_hr_zk_attendance = fields.Boolean(default=False,
@@ -127,17 +122,6 @@ class OHRMSConfiguration(models.TransientModel):
                     each.module_oh_hr_lawsuit_management = False
                 else:
                     each.test_module_oh_hr_lawsuit_management = False
-
-    @api.onchange('module_hr_resignation')
-    def onchange_module_hr_resignation(self):
-        for each in self:
-            if each.module_hr_resignation:
-                if not self.env['ir.module.module'].search(
-                        [('name', '=', 'hr_resignation')]):
-                    each.test_module_hr_resignation = True
-                    each.module_hr_resignation = False
-                else:
-                    each.test_module_hr_resignation = False
 
     @api.onchange('module_hr_vacation_mngmt')
     def onchange_module_hr_vacation_mngmt(self):

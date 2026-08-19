@@ -243,7 +243,6 @@ multi-version budget, dashboard, customer portal.
         'eh_account_held_for_sale',
         'eh_account_business_combination',
         'eh_account_intercompany_so_po',
-        'eh_account_events',
         'eh_account_eps',
         'eh_account_share_based_payment',
         'eh_account_employee_benefits',
