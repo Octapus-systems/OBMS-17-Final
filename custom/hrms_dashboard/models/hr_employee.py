@@ -93,10 +93,6 @@ class HrEmployee(models.Model):
         leaves_this_month = cr.fetchall()
         leaves_alloc_req = self.env['hr.leave.allocation'].sudo().search_count(
             [('state', 'in', ['confirm', 'validate1'])])
-        timesheet_count = self.env['account.analytic.line'].sudo().search_count(
-            [('project_id', '!=', False), ('user_id', '=', uid)])
-        timesheet_view_id = self.env.ref(
-            'hr_timesheet.hr_timesheet_line_search')
         job_applications = self.env['hr.applicant'].sudo().search_count([])
 
         # Additional custom HR metrics (Loans, Salary Advance)
@@ -150,13 +146,11 @@ class HrEmployee(models.Model):
                     'leaves_today': leaves_today,
                     'leaves_this_month': leaves_this_month,
                     'leaves_alloc_req': leaves_alloc_req,
-                    'emp_timesheets': timesheet_count,
                     'job_applications': job_applications,
                     'loans_to_approve': loans_to_approve,
                     'advances_to_approve': advances_to_approve,
                     'my_pending_loans': my_pending_loans,
                     'my_pending_advances': my_pending_advances,
-                    'timesheet_view_id': timesheet_view_id,
                     'experience': experience,
                     'age': age
                 }
@@ -184,18 +178,6 @@ class HrEmployee(models.Model):
         total_days)%total_days between 0 and 15 order by dif;""")
         birthday = cr.fetchall()
         event = []
-        if 'event.event' in self.env:
-            try:
-                cr.execute("""select e.name ->> %s as name, e.date_begin,
-                 e.date_end, rp.name as location
-                from event_event e
-                inner join res_partner rp
-                on e.address_id = rp.id
-                and (e.date_begin >= now())
-                order by e.date_begin""", (f"'{self.env.context.get('lang', 'en_US')}'",))
-                event = cr.fetchall()
-            except Exception:
-                event = []
         announcement = []
         if employee:
             department = employee.department_id
@@ -416,107 +398,3 @@ class HrEmployee(models.Model):
                                 :3] + " " + \
                                 result['l_month'].split(' ')[1:2][0]
         return graph_result
-
-    @api.model
-    def join_resign_trends(self):
-        cr = self._cr
-        month_list = []
-        join_trend = []
-        resign_trend = []
-        for i in range(11, -1, -1):
-            last_month = datetime.now() - relativedelta(months=i)
-            text = format(last_month, '%B %Y')
-            month_list.append(text)
-        for month in month_list:
-            vals = {
-                'l_month': month,
-                'count': 0
-            }
-            join_trend.append(vals)
-        for month in month_list:
-            vals = {
-                'l_month': month,
-                'count': 0
-            }
-            resign_trend.append(vals)
-        cr.execute('''select to_char(joining_date, 'Month YYYY') as l_month,
-         count(id) from hr_employee
-        WHERE joining_date BETWEEN CURRENT_DATE - INTERVAL '12 months'
-        AND CURRENT_DATE + interval '1 month - 1 day'
-        group by l_month''')
-        join_data = cr.fetchall()
-        cr.execute('''select to_char(resign_date, 'Month YYYY') as l_month,
-         count(id) from hr_employee
-        WHERE resign_date BETWEEN CURRENT_DATE - INTERVAL '12 months'
-        AND CURRENT_DATE + interval '1 month - 1 day'
-        group by l_month;''')
-        resign_data = cr.fetchall()
-
-        for line in join_data:
-            match = list(filter(
-                lambda d: d['l_month'].replace(' ', '') == line[0].replace(' ',
-                                                                           ''),
-                join_trend))
-            if match:
-                match[0]['count'] = line[1]
-        for line in resign_data:
-            match = list(filter(
-                lambda d: d['l_month'].replace(' ', '') == line[0].replace(' ',
-                                                                           ''),
-                resign_trend))
-            if match:
-                match[0]['count'] = line[1]
-        for join in join_trend:
-            join['l_month'] = join['l_month'].split(' ')[:1][0].strip()[:3]
-        for resign in resign_trend:
-            resign['l_month'] = resign['l_month'].split(' ')[:1][0].strip()[:3]
-        graph_result = [{
-            'name': 'Join',
-            'values': join_trend
-        }, {
-            'name': 'Resign',
-            'values': resign_trend
-        }]
-        return graph_result
-
-    @api.model
-    def get_attrition_rate(self):
-        month_attrition = []
-        monthly_join_resign = self.join_resign_trends()
-        month_join = monthly_join_resign[0]['values']
-        month_resign = monthly_join_resign[1]['values']
-        sql = """
-        SELECT (date_trunc('month', CURRENT_DATE))::date - interval '1'
-        month * s.a AS month_start
-        FROM generate_series(0,11,1) AS s(a);"""
-        self._cr.execute(sql)
-        month_start_list = self._cr.fetchall()
-        for month_date in month_start_list:
-            self._cr.execute("""select count(id),
-            to_char(date '%s', 'Month YYYY') as l_month from hr_employee
-            where resign_date> date '%s' or resign_date is null and
-            joining_date < date '%s'
-            """ % (month_date[0], month_date[0], month_date[0],))
-            month_emp = self._cr.fetchone()
-            match_join = \
-                list(filter(
-                    lambda d: d['l_month'] == month_emp[1].split(' ')[:1][
-                                                  0].strip()[:3], month_join))[
-                    0][
-                    'count']
-            match_resign = \
-                list(filter(
-                    lambda d: d['l_month'] == month_emp[1].split(' ')[:1][
-                                                  0].strip()[:3],
-                    month_resign))[0][
-                    'count']
-            month_avg = (month_emp[0] + match_join - match_resign + month_emp[
-                0]) / 2
-            attrition_rate = (match_resign / month_avg) * 100 \
-                if month_avg != 0 else 0
-            vals = {
-                'month': month_emp[1].split(' ')[:1][0].strip()[:3],
-                'attrition_rate': round(float(attrition_rate), 2)
-            }
-            month_attrition.append(vals)
-        return month_attrition
