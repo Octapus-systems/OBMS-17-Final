@@ -55,6 +55,12 @@ class HrEmployee(models.Model):
     family_info_ids = fields.One2many('hr.employee.family', 'employee_id',
                                       string='Family',
                                       help='Family Information')
+    resign_date = fields.Date(string='Resign Date', readonly=True,
+                              help="Date of the resignation")
+    resigned = fields.Boolean(string="Resigned", default=False,
+                              help="If checked then employee has resigned")
+    fired = fields.Boolean(string="Fired", default=False,
+                           help="If checked then employee has fired")
 
     @api.depends('contract_id')
     def _compute_joining_date(self):
